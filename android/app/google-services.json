@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1049194575299",
+    "project_id": "cheriviewer",
+    "storage_bucket": "cheriviewer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1049194575299:android:1c670d25f036ee4a46b976",
+        "android_client_info": {
+          "package_name": "com.cheristoryboard.viewerapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1049194575299-fd2hkb9k8mejjq4cnm706pbdp0nldtfa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cheristoryboard.viewerapp",
+            "certificate_hash": "a5713533f84619bdd963a87f6d5ae14d9e49efab"
+          }
+        },
+        {
+          "client_id": "1049194575299-j28uld610f8dgjeoajgelavmt9n5b0v4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJf7SkM3T6SubAQVY6Apb_4LE_BlGDirM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1049194575299-j28uld610f8dgjeoajgelavmt9n5b0v4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
