@@ -6,7 +6,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:viewerapp/ui/screens/home_screen.dart';
 
 import 'business_logic/providers/auth_provider.dart';
-import 'business_logic/providers/home_provider.dart';
+import 'business_logic/providers/individualpost_provider.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();

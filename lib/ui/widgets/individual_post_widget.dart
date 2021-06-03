@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:viewerapp/business_logic/providers/home_provider.dart';
+import 'package:viewerapp/business_logic/providers/individualpost_provider.dart';
 
 import '../../models/post_model.dart';
 

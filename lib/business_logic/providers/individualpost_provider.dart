@@ -6,7 +6,7 @@ import '../../models/post_model.dart';
 class PostProvider extends ChangeNotifier {
 
   void like(Post post)  {
-
+    
     print("like pressed");
     post.like = true;
     notifyListeners();
@@ -16,6 +16,8 @@ class PostProvider extends ChangeNotifier {
     post.like = false;
     notifyListeners();
   }
+
+
 
 
 }
