@@ -55,11 +55,14 @@ class _AuthScreenState extends State<AuthScreen> {
                     print("kakao info: $args");
                   });
               _controller.addJavaScriptHandler(
-                  handlerName: "naver", callback: (args) {});
+                  handlerName: "naver",
+                  callback: (args) async {
+                    return await auth_provider.signInWithNaver();
+                  });
               _controller.addJavaScriptHandler(
                   handlerName: "naver_user_info",
                   callback: (args) {
-                    print("User info: $args");
+                    print("naver info: $args");
                   });
               _controller.addJavaScriptHandler(
                   handlerName: "email", callback: (args) {});

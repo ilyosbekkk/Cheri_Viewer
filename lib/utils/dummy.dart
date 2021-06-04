@@ -39,9 +39,12 @@ String initial_data = """
                  });
         }
         
-        function naverSignIn(){
-        
-        }    
+      function naverSignIn(){
+         window.flutter_inappwebview.callHandler("naver").then(function(result) {
+                 console.log(JSON.stringify(result));
+                 window.flutter_inappwebview.callHandler("naver_user_info", result);
+                 });
+        }
         
       </script>
     </body>
