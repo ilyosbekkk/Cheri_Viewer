@@ -1,10 +1,11 @@
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:viewerapp/business_logic/providers/mainpage_provider.dart';
 import 'package:viewerapp/ui/widgets/homepage_header_widget.dart';
 import 'package:viewerapp/ui/widgets/individual_post_widget.dart';
 import 'package:viewerapp/ui/widgets/search_widget.dart';
 import 'package:viewerapp/utils/Strings.dart';
-import '../../utils/dummy.dart';
+import '../../utils/temp.dart';
 
 class MyHomePage extends StatefulWidget {
   static String route = "/";
@@ -26,7 +27,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    widget_options = [_buildHomeWidget(height, width), _buildSearchWidget(height, width), _buildFavoritesWidget(height, width)];
+    widget_options = [
+      _buildHomeWidget(height, width),
+      _buildSearchWidget(height, width),
+      _buildFavoritesWidget(height, width)
+    ];
 
     return Scaffold(
       body: Container(
@@ -36,7 +41,8 @@ class _MyHomePageState extends State<MyHomePage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: home),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: search),
-          BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: favorites),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.bookmark), label: collections),
         ],
         onTap: _onItemSelected,
         selectedItemColor: Colors.greenAccent,
@@ -68,11 +74,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildHomeChildren(int index, double height, double width) {
     if (index == 0)
-      return  UserProfile();
+      return UserProfile();
     else if (index == 1)
-      return Divider(height: 5, thickness: 1.0, color: Colors.greenAccent,);
+      return Divider(
+        height: 5,
+        thickness: 1.0,
+        color: Colors.greenAccent,
+      );
     else
-      return PostWidget(height * 0.4, width,posts[index]);
+      return PostWidget(height * 0.4, width, posts[index]);
   }
 
   //endregion

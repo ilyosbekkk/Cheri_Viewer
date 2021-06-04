@@ -1,17 +1,12 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
+import 'package:viewerapp/business_logic/services/web_services.dart';
 import 'package:viewerapp/models/post_model.dart';
 
 class MainPageProvider extends ChangeNotifier {
+  List<Post> posts = [];
+
   Future<List<Post>> fetchPostsList() async {
-    http.Response response = await http
-        .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1'));
-
-    if (response.statusCode == 200) {
-
-
-
-
-    }
+    await WebServices.fetchPosts();
   }
 }

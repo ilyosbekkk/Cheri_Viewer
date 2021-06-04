@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/business_logic/providers/auth_provider.dart';
-import 'package:viewerapp/utils/dummy.dart';
+import 'package:viewerapp/utils/temp.dart';
 
 class AuthScreen extends StatefulWidget {
   AuthScreen();

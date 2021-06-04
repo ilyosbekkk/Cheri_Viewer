@@ -1,17 +1,22 @@
-
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
-import 'package:viewerapp/ui/screens/home_screen.dart';
-
-import 'business_logic/providers/auth_provider.dart';
+import 'package:viewerapp/business_logic/providers/mainpage_provider.dart';
 import 'business_logic/providers/individualpost_provider.dart';
+import 'package:viewerapp/ui/screens/home_screen.dart';
+import 'business_logic/providers/auth_provider.dart';
+import 'package:provider/single_child_widget.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  final List<SingleChildWidget> providers = [ChangeNotifierProvider(create: (_) => PostProvider()), ChangeNotifierProvider(create: (_) => AuthProvider())];
+  final List<SingleChildWidget> providers = [
+    ChangeNotifierProvider(create: (_) => PostProvider()),
+    ChangeNotifierProvider(
+      create: (_) => AuthProvider(),
+    ),
+    ChangeNotifierProvider(create: (_) => MainPageProvider()),
+  ];
 
   runApp(MultiProvider(
     providers: providers,
