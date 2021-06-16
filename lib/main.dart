@@ -1,3 +1,4 @@
+
 import 'package:viewerapp/business_logic/providers/mainpage_provider.dart';
 import 'business_logic/providers/individualpost_provider.dart';
 import 'package:viewerapp/ui/screens/home_screen.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        primaryColor: Colors.blue
       ),
       initialRoute: MyHomePage.route,
       routes: {

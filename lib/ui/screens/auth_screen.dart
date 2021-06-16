@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/business_logic/providers/auth_provider.dart';
-import 'package:viewerapp/utils/temp.dart';
 
 class AuthScreen extends StatefulWidget {
   AuthScreen();
@@ -21,7 +20,8 @@ class _AuthScreenState extends State<AuthScreen> {
       body: SafeArea(
         child: Container(
           child: InAppWebView(
-            initialData: InAppWebViewInitialData(data: initial_data),
+            initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/login")),
+            // initialData: InAppWebViewInitialData(data: initial_data),
             initialOptions: InAppWebViewGroupOptions(
               crossPlatform: InAppWebViewOptions(
                 javaScriptEnabled: true,

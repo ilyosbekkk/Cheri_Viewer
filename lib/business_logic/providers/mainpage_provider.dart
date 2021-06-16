@@ -8,5 +8,6 @@ class MainPageProvider extends ChangeNotifier {
 
   Future<List<Post>> fetchPostsList() async {
     await WebServices.fetchPosts();
+    return posts;
   }
 }

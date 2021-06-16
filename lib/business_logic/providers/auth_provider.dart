@@ -20,9 +20,7 @@ class AuthProvider extends ChangeNotifier {
     );
     await FirebaseAuth.instance.signInWithCredential(credential);
 
-    String credentials =
-        "{access_token:${googleAuth.accessToken},id_token: ${googleAuth.idToken.toString()}}";
-    notifyListeners();
+    String credentials = "{access_token:${googleAuth.accessToken}}";
     return credentials;
   }
 
@@ -38,9 +36,7 @@ class AuthProvider extends ChangeNotifier {
         print("Code $code");
         var token = await AuthApi.instance.issueAccessToken(code);
         AccessTokenStore.instance.toStore(token);
-        var user = await UserApi.instance.me();
-        credentials =
-            "access_token:${token.accessToken}, id_token:${token.refreshToken}, access_token_experis_in:${token.expiresIn}, refresh_token_expires_in:${token.refreshTokenExpiresIn}, name:${user.kakaoAccount.legalName}";
+        credentials = "access_token:${token.accessToken}";
       } on KakaoAuthException catch (e) {
         showToast("Unexpected error occured, please try again!");
         print(e);
@@ -55,7 +51,7 @@ class AuthProvider extends ChangeNotifier {
       credentials = null;
     }
 
-    notifyListeners();
+
     return credentials;
   }
 
@@ -63,15 +59,16 @@ class AuthProvider extends ChangeNotifier {
   Future<String> signInWithNaver() async {
     String credentials;
     NaverLoginResult res = await FlutterNaverLogin.logIn();
-    NaverAccessToken naverAccessToken =
-        await FlutterNaverLogin.currentAccessToken;
-    credentials = "access_token:${naverAccessToken}, res:${res}";
-    notifyListeners();
+    NaverAccessToken naverAccessToken = await FlutterNaverLogin.currentAccessToken;
+    credentials = "access_token:${naverAccessToken}";
     return credentials;
   }
 
   //email  sign_up
-  Future<String> signInWithEmail() async {}
+  // ignore: missing_return
+  Future<String> signInWithEmail() async {
+
+  }
 
   void logout() {}
 }

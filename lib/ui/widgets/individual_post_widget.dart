@@ -65,7 +65,7 @@ class PostWidget extends StatelessWidget {
                           child: !individual_post.like
                               ? IconButton(
                                   icon: Icon(
-                                    Icons.favorite_border,
+                                    Icons.bookmark_border,
                                     color: Colors.red,
                                   ),
                                   onPressed: () {
@@ -74,7 +74,7 @@ class PostWidget extends StatelessWidget {
                                 )
                               : IconButton(
                                   icon: Icon(
-                                    Icons.favorite,
+                                    Icons.bookmark,
                                     size: 25.0,
                                     color: Colors.red,
                                   ),
