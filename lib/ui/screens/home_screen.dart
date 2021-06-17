@@ -1,176 +1,331 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:viewerapp/ui/widgets/individual_post_widget.dart';
-import 'package:viewerapp/utils/Strings.dart';
-import '../../business_logic/providers/mainpage_provider.dart';
+import '../../business_logic/providers/mainscreen_provider.dart';
+
+import '../../business_logic/services/web_services.dart';
 import '../../models/post_model.dart';
+import '../../utils/Strings.dart';
 import '../../utils/temp.dart';
-import 'auth_screen.dart';
 
-class MyHomePage extends StatefulWidget {
-  static String route = "/";
+class HomeScreen extends StatefulWidget {
+  double height;
+  double width;
+  BuildContext context;
 
-  MyHomePage();
+  HomeScreen(this.height, this.width, this.context);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  //region  vars
-  int _selectedIndex = 0;
-  List<Widget> widget_options;
+class _HomeScreenState extends State<HomeScreen> {
   List<Post> _posts = [];
-  MainPageProvider _mainPageProvider;
-
-
-
-  //endregion
-  //region overrides
 
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _mainPageProvider = Provider.of<MainPageProvider>(context, listen: false);
+    WebServices.fetchPosts().then((value) {
+      print(value);
     });
-
-    _mainPageProvider.fetchPostsList().then((value) {
-      setState(() {
-        _posts.addAll(value);
-
-      });
-    });
-
+    _posts.addAll(posts);
   }
-
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-    widget_options = [
-      _buildHomeWidget(height, width),
-      _buildSearchWidget(height, width),
-      _buildFavoritesWidget(height, width)
-    ];
+    return ListView.builder(
+        primary: false,
+        shrinkWrap: true,
+        itemCount: _posts.length,
+        itemBuilder: (BuildContext ctx, index) {
+          if (index == 0)
+            return _buidCategories(widget.width);
+          else
+            return _buildSinglePost(index, 0.4 * widget.height, widget.width);
+        });
+  }
 
-    return Scaffold(
-      body:SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            _buildSliverAppBar(),
-            widget_options[_selectedIndex]
+  Widget _buildSinglePost(int index, double height, double width) {
+    return Container(
+      margin: EdgeInsets.only(left: 5.0, right: 5.0, bottom: 10.0),
+      height: height,
+      width: double.infinity,
+      child: Card(
+        elevation: 10.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+                height: height * 0.65,
+                width: width,
+                child: Stack(
+                  fit: StackFit.expand,
+                  alignment: AlignmentDirectional.bottomStart,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: FadeInImage.assetNetwork(
+                        placeholder: 'assets/images/placeholder.png',
+                        image: _posts[index].imgUrl,
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: width * 0.2,
+                          margin: EdgeInsets.only(left: 10.0, top: 10.0),
+                          decoration: BoxDecoration(
+                              color: Colors.black54,
+                              border: Border.all(color: Colors.white),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0))),
+                          child: Text(
+                            "구매.판매",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Consumer<HomePageProvider>(
+                            builder: (context, homePageProvider, child) {
+                          return Container(
+                            child: !_posts[index].like
+                                ? IconButton(
+                                    icon: Icon(
+                                      Icons.bookmark_border,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () {
+                                      homePageProvider.like(_posts[index]);
+                                    },
+                                  )
+                                : IconButton(
+                                    icon: Icon(
+                                      Icons.bookmark,
+                                      size: 25.0,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () {
+                                      homePageProvider.unLike(_posts[index]);
+                                    },
+                                  ),
+                          );
+                        })
+                      ],
+                    ),
+                  ],
+                )),
+            Container(
+              margin: EdgeInsets.only(left: 10.0, top: 5.0),
+              child: Text(
+                _posts[index].title,
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 10.0, top: 5.0),
+              child: Text(
+                _posts[index].author,
+                style: TextStyle(fontSize: 15),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 10.0, top: 5.0),
+              child: Row(
+                children: [
+                  Text(
+                    "Views:${_posts[index].views}",
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(left: 3.0, right: 3.0),
+                      child: Icon(
+                        Icons.circle,
+                        size: 5.0,
+                      )),
+                  Text(
+                    "${_posts[index].dateTime} hours ago",
+                    style: TextStyle(fontSize: 14),
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: home),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: search),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.bookmark), label: collections),
-        ],
-        onTap: _onItemSelected,
-        selectedItemColor: Colors.greenAccent,
-        currentIndex: _selectedIndex,
-        unselectedItemColor: Colors.black38,
-      ),
     );
   }
 
-  //endregion
-  //region widgets
-  Widget _buildHomeWidget(double height, double width) {
-    return SliverToBoxAdapter(
-      child: ListView.builder(
-          primary: false,
-          shrinkWrap: true,
-          itemCount: _posts.length,
-          itemBuilder: (BuildContext ctx, index) {
-            return _buildHomeListViewVChild1(index, height, width);
-          }),
-    );
-  }
-
-  Widget _buildSearchWidget(double height, double width) {
-    return SliverToBoxAdapter(  child: Container(
-      margin: EdgeInsets.only( left: width * 0.025),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+  Widget _buidCategories(double width) {
+    var radius = width / 14;
+    return Consumer<HomePageProvider>(builder: (context, homeProvider, child) {
+      return Column(children: [
+        Container(
+          margin: EdgeInsets.only(left: 10, right: 10, top: 10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                flex: 9,
-                child: Container(
-                  height: height*0.05,
-                  child: TextField(
-                    autofocus: true,
-                    textAlign: TextAlign.start,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(left: 10.0),
-                      hintText: hint_text,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+              InkWell(
+                onTap: () {
+                  homeProvider.fetchSubCategories1(categories[0], 0);
+                },
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: radius,
+                      backgroundImage: AssetImage("assets/images/logo.png"),
                     ),
-                  ),
+                    Container(
+                        width: 2 * radius,
+                        child: Text(
+                          categories[0],
+                          maxLines: 1,
+                          textAlign: TextAlign.center,
+                        ))
+                  ],
                 ),
               ),
-              Expanded(
-                flex: 2,
-                child: MaterialButton(onPressed: () {
-
-                }, child: const Text("츼소")),
-              )
+              InkWell(
+                onTap: () {
+                  homeProvider.fetchSubCategories1(categories[1], 1);
+                },
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: radius,
+                      backgroundImage: AssetImage("assets/images/logo.png"),
+                    ),
+                    Container(
+                        width: 2 * radius,
+                        child: Text(
+                          categories[1],
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                        ))
+                  ],
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  homeProvider.fetchSubCategories1(categories[2], 2);
+                },
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: radius,
+                      backgroundImage: AssetImage("assets/images/logo.png"),
+                    ),
+                    Container(
+                        width: 2 * radius,
+                        child: Text(
+                          categories[2],
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                        ))
+                  ],
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  homeProvider.fetchSubCategories1(categories[3], 3);
+                },
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: radius,
+                      backgroundImage: AssetImage("assets/images/logo.png"),
+                    ),
+                    Container(
+                        width: 2 * radius,
+                        child: Text(
+                          categories[3],
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                        ))
+                  ],
+                ),
+              ),
             ],
           ),
-        ],
-      ),
-    ));
-  }
-
-  Widget _buildFavoritesWidget(double height, double width) {
-    return SliverToBoxAdapter(child: Text("Favorites"));
-  }
-
-  Widget _buildSliverAppBar() {
-    return SliverAppBar(
-      floating: true,
-      backgroundColor: Color.fromRGBO(250, 250, 250, 1),
-      title: Text(
-        app_name,
-        style: TextStyle(fontSize: 23, color: Colors.blue, fontWeight: FontWeight.bold),
-      ),
-      actions: [
-        IconButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AuthScreen()));
-            },
-            icon: Icon(
-              Icons.account_circle_outlined,
-              size: 30,
-              color: Colors.black54,
-            )),
-      ],
-    );
-  }
-
-  Widget _buildHomeListViewVChild1(int index, double height, double width) {
-    return PostWidget(height * 0.4, width, posts[index]);
-  }
-
-  Widget _buildHomeListViewChild2() {
-    return  Container();
-  }
-
-  //endregion
-
-  void _onItemSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
+        ),
+        if (homeProvider.showSubCategories1)
+          Container(
+            margin: EdgeInsets.all(10),
+            child: GridView.count(
+                padding: EdgeInsets.all(5.0),
+                shrinkWrap: true,
+                crossAxisCount: 4,
+                childAspectRatio: 3,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                children: List.generate(homeProvider.subCategories.length, (index) {
+                  return MaterialButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    onPressed: () {},
+                    color: Colors.amberAccent,
+                    child: Text(homeProvider.subCategories[index]),
+                  );
+                })),
+          ),
+        Container(
+          margin: EdgeInsets.all(10),
+          child: Row(
+            children: [
+              InkWell(
+                onTap: () {
+                  homeProvider.fetchSubCategories1(categories[4], 4);
+                },
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: radius,
+                      backgroundImage: AssetImage("assets/images/logo.png"),
+                    ),
+                    Container(
+                        width: 2 * radius,
+                        child: Text(
+                          categories[4],
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                        ))
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (homeProvider.showSubCategories2)
+          Container(
+            margin: EdgeInsets.all(10),
+            child: GridView.count(
+                shrinkWrap: true,
+                padding: EdgeInsets.all(5.0),
+                crossAxisCount: 4,
+                childAspectRatio: 3,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                children: List.generate(homeProvider.subCategories.length, (index) {
+                  return MaterialButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    onPressed: () {},
+                    color: Colors.amberAccent,
+                    child: Text(
+                      homeProvider.subCategories[index],
+                      maxLines: 1,
+                    ),
+                  );
+                })),
+          )
+      ]);
     });
   }
 }

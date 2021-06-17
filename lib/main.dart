@@ -1,7 +1,5 @@
-
-import 'package:viewerapp/business_logic/providers/mainpage_provider.dart';
-import 'business_logic/providers/individualpost_provider.dart';
-import 'package:viewerapp/ui/screens/home_screen.dart';
+import 'package:viewerapp/business_logic/providers/mainscreen_provider.dart';
+import 'package:viewerapp/ui/nav_controller.dart';
 import 'business_logic/providers/auth_provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,11 +10,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final List<SingleChildWidget> providers = [
-    ChangeNotifierProvider(create: (_) => PostProvider()),
-    ChangeNotifierProvider(
-      create: (_) => AuthProvider(),
-    ),
-    ChangeNotifierProvider(create: (_) => MainPageProvider()),
+
+    ChangeNotifierProvider(create: (_) => AuthProvider(),),
+    ChangeNotifierProvider(create: (_) => HomePageProvider()),
   ];
 
   runApp(MultiProvider(
@@ -35,10 +31,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         primaryColor: Colors.blue
       ),
-      initialRoute: MyHomePage.route,
-      routes: {
-        MyHomePage.route: (_) => MyHomePage(),
-      },
+    home: NavCotroller(),
+
     );
   }
 }
