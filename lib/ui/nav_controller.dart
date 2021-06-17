@@ -59,7 +59,7 @@ class _NavCotrollerState extends State<NavCotroller> {
         selectedItemColor: Colors.lightBlueAccent,
         currentIndex: _selectedIndex,
         unselectedItemColor: Colors.black38,
-      ),
+      ) ,
     );
   }
 
