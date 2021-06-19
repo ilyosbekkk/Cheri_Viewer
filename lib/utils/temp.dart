@@ -1,4 +1,4 @@
-import 'package:viewerapp/models/post_model.dart';
+import 'package:viewerapp/models/postslist_model.dart';
 
 List<Post> posts = [
   Post.create("Dummy", "Ilyosbek", 5, 200, "https://ii1.pepperfry.com/media/catalog/product/l/i/568x625/little-love--baby--and-power-miniature-garden-toys-little-love--baby--and-power-miniature-garden-toy-3ade1n.jpg", "Dummy",  true),

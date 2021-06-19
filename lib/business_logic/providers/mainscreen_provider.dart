@@ -1,4 +1,4 @@
-import 'package:viewerapp/models/post_model.dart';
+import 'package:viewerapp/models/postslist_model.dart';
 import 'package:flutter/foundation.dart';
 
 class HomePageProvider extends ChangeNotifier {
@@ -7,7 +7,7 @@ class HomePageProvider extends ChangeNotifier {
   List<String> _subCategories = [
     "Sub1",
     "Sub2",
-    "Sub2",
+    "Sub3",
     "Sub4",
     "Sub5",
     "Sub6",
@@ -17,6 +17,7 @@ class HomePageProvider extends ChangeNotifier {
     "Sub10",
   ];
   int lastButtonIndex = -1;
+  List<bool> _activeCategories = [false,false,false, false, false, false];
 
   void like(Post post) {
     print("like pressed");
@@ -30,18 +31,25 @@ class HomePageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void fetchSubCategories1(String categoryName, int index) {
+  void fetchSubCategories(String categoryName, int index) {
     print("fetching  categories");
-    if (_subCategories.length > 10) _subCategories.removeAt(6);
+    for(int  i = 0; i<_activeCategories.length; i++) {
+      _activeCategories[i] = false;
+    }
+    if (_subCategories.length > 10) _subCategories.removeAt(10);
     _subCategories.add(categoryName);
 
+    print(lastButtonIndex);
     if (lastButtonIndex == index) {
+
       if(index == 4)
         _showSubCategories2 = false;
       else
       _showSubCategories1 = false;
       lastButtonIndex = -1;
-    } else {
+    }
+    else {
+      _activeCategories[index] = true;
       lastButtonIndex = index;
       if(index == 4) {
         _showSubCategories2 = true;
@@ -60,5 +68,7 @@ class HomePageProvider extends ChangeNotifier {
   bool get showSubCategories1 => _showSubCategories1;
   bool get showSubCategories2 => _showSubCategories2;
 
+
   List<String> get subCategories => _subCategories;
+  List<bool> get activeAcategories => _activeCategories;
 }

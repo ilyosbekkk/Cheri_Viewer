@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../business_logic/providers/mainscreen_provider.dart';
 
 import '../../business_logic/services/web_services.dart';
-import '../../models/post_model.dart';
+import '../../models/postslist_model.dart';
 import '../../utils/Strings.dart';
 import '../../utils/temp.dart';
 
@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: _posts.length,
         itemBuilder: (BuildContext ctx, index) {
           if (index == 0)
-            return _buidCategories(widget.width);
+            return _buildCategories(widget.width);
           else
             return _buildSinglePost(index, 0.4 * widget.height, widget.width);
         });
@@ -80,11 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Container(
                           width: width * 0.2,
                           margin: EdgeInsets.only(left: 10.0, top: 10.0),
-                          decoration: BoxDecoration(
-                              color: Colors.black54,
-                              border: Border.all(color: Colors.white),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0))),
+                          decoration: BoxDecoration(color: Colors.black54, border: Border.all(color: Colors.white), borderRadius: BorderRadius.all(Radius.circular(5.0))),
                           child: Text(
                             "구매.판매",
                             style: TextStyle(
@@ -93,29 +89,28 @@ class _HomeScreenState extends State<HomeScreen> {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        Consumer<HomePageProvider>(
-                            builder: (context, homePageProvider, child) {
+                        Consumer<HomePageProvider>(builder: (context, homePageProvider, child) {
                           return Container(
                             child: !_posts[index].like
                                 ? IconButton(
-                                    icon: Icon(
-                                      Icons.bookmark_border,
-                                      color: Colors.red,
-                                    ),
-                                    onPressed: () {
-                                      homePageProvider.like(_posts[index]);
-                                    },
-                                  )
+                              icon: Icon(
+                                Icons.bookmark_border,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                homePageProvider.like(_posts[index]);
+                              },
+                            )
                                 : IconButton(
-                                    icon: Icon(
-                                      Icons.bookmark,
-                                      size: 25.0,
-                                      color: Colors.red,
-                                    ),
-                                    onPressed: () {
-                                      homePageProvider.unLike(_posts[index]);
-                                    },
-                                  ),
+                              icon: Icon(
+                                Icons.bookmark,
+                                size: 25.0,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                homePageProvider.unLike(_posts[index]);
+                              },
+                            ),
                           );
                         })
                       ],
@@ -163,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buidCategories(double width) {
+  Widget _buildCategories(double width) {
     var radius = width / 14;
     return Consumer<HomePageProvider>(builder: (context, homeProvider, child) {
       return Column(children: [
@@ -172,160 +167,79 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              InkWell(
-                onTap: () {
-                  homeProvider.fetchSubCategories1(categories[0], 0);
-                },
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: radius,
-                      backgroundImage: AssetImage("assets/images/logo.png"),
-                    ),
-                    Container(
-                        width: 2 * radius,
-                        child: Text(
-                          categories[0],
-                          maxLines: 1,
-                          textAlign: TextAlign.center,
-                        ))
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  homeProvider.fetchSubCategories1(categories[1], 1);
-                },
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: radius,
-                      backgroundImage: AssetImage("assets/images/logo.png"),
-                    ),
-                    Container(
-                        width: 2 * radius,
-                        child: Text(
-                          categories[1],
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                        ))
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  homeProvider.fetchSubCategories1(categories[2], 2);
-                },
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: radius,
-                      backgroundImage: AssetImage("assets/images/logo.png"),
-                    ),
-                    Container(
-                        width: 2 * radius,
-                        child: Text(
-                          categories[2],
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                        ))
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  homeProvider.fetchSubCategories1(categories[3], 3);
-                },
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: radius,
-                      backgroundImage: AssetImage("assets/images/logo.png"),
-                    ),
-                    Container(
-                        width: 2 * radius,
-                        child: Text(
-                          categories[3],
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                        ))
-                  ],
-                ),
-              ),
+              _buildCategoryWidget(homeProvider, radius, 0),
+              _buildCategoryWidget(homeProvider, radius, 1),
+              _buildCategoryWidget(homeProvider, radius, 2),
+              _buildCategoryWidget(homeProvider, radius, 3),
             ],
           ),
         ),
         if (homeProvider.showSubCategories1)
-          Container(
-            margin: EdgeInsets.all(10),
-            child: GridView.count(
-                padding: EdgeInsets.all(5.0),
-                shrinkWrap: true,
-                crossAxisCount: 4,
-                childAspectRatio: 3,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                children: List.generate(homeProvider.subCategories.length, (index) {
-                  return MaterialButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    onPressed: () {},
-                    color: Colors.amberAccent,
-                    child: Text(homeProvider.subCategories[index]),
-                  );
-                })),
-          ),
+          _buildSubCategories(homeProvider),
         Container(
           margin: EdgeInsets.all(10),
           child: Row(
-            children: [
-              InkWell(
-                onTap: () {
-                  homeProvider.fetchSubCategories1(categories[4], 4);
-                },
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: radius,
-                      backgroundImage: AssetImage("assets/images/logo.png"),
-                    ),
-                    Container(
-                        width: 2 * radius,
-                        child: Text(
-                          categories[4],
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                        ))
-                  ],
-                ),
-              ),
-            ],
+            children: [_buildCategoryWidget(homeProvider, radius, 4)],
           ),
         ),
         if (homeProvider.showSubCategories2)
-          Container(
-            margin: EdgeInsets.all(10),
-            child: GridView.count(
-                shrinkWrap: true,
-                padding: EdgeInsets.all(5.0),
-                crossAxisCount: 4,
-                childAspectRatio: 3,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                children: List.generate(homeProvider.subCategories.length, (index) {
-                  return MaterialButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    onPressed: () {},
-                    color: Colors.amberAccent,
-                    child: Text(
-                      homeProvider.subCategories[index],
-                      maxLines: 1,
-                    ),
-                  );
-                })),
-          )
+          _buildSubCategories(homeProvider)
       ]);
     });
+  }
+
+  Widget _buildCategoryWidget(HomePageProvider homeProvider, double radius, index) {
+    return InkWell(
+      onTap: () {
+        homeProvider.fetchSubCategories(categories[index], index);
+      },
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: radius,
+            backgroundColor: Colors.lightBlueAccent,
+            child: CircleAvatar(
+              radius: homeProvider.activeAcategories[index] ? 0.9 * radius: radius,
+              backgroundImage: AssetImage("assets/images/logo.png"),
+            ),
+          ),
+          Container(
+              width: 2 * radius,
+              child: Text(
+
+                categories[index],
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: homeProvider.activeAcategories[index]?Colors.lightBlueAccent:Colors.black
+                ),
+              ))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSubCategories(HomePageProvider homeProvider) {
+    return Container(
+      margin: EdgeInsets.all(10),
+      child: GridView.count(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(5.0),
+          crossAxisCount: 4,
+          childAspectRatio: 3,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          children: List.generate(homeProvider.subCategories.length, (index) {
+            return MaterialButton(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              onPressed: () {},
+              color: Colors.amberAccent,
+              child: Text(
+                homeProvider.subCategories[index],
+                maxLines: 1,
+              ),
+            );
+          })),
+    );
   }
 }
