@@ -5,7 +5,6 @@ import '../../business_logic/providers/mainscreen_provider.dart';
 import '../../business_logic/services/web_services.dart';
 import '../../models/postslist_model.dart';
 import '../../utils/Strings.dart';
-import '../../utils/temp.dart';
 
 class HomeScreen extends StatefulWidget {
   double height;
@@ -26,13 +25,19 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     WebServices.fetchPosts().then((value) {
-      print(value);
+      print(value.length);
+      setState(() {
+        _posts = value;
+
+      });
     });
-    _posts.addAll(posts);
+
   }
 
   @override
   Widget build(BuildContext context) {
+    print("posts");
+    print(_posts);
     return ListView.builder(
         primary: false,
         shrinkWrap: true,
