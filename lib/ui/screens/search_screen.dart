@@ -9,7 +9,9 @@ class SearchScreen extends StatefulWidget {
 
   double height;
   double  width;
-   SearchScreen(this.height, this.width);
+   ScrollController _scrollController;
+   SearchScreen(this.height, this.width,  this._scrollController);
+
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -19,7 +21,10 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
 
- @override
+
+  TextEditingController _controller = TextEditingController();
+
+  @override
   void initState() {
     super.initState();
   }
@@ -39,6 +44,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: Container(
                   height: widget.height*0.05,
                   child: TextField(
+                    controller: _controller,
+                    onSubmitted: (searchWord) {
+
+                    },
                     autofocus: true,
                     textAlign: TextAlign.start,
                     decoration: InputDecoration(

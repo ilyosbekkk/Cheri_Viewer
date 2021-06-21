@@ -84,7 +84,7 @@ class _NavCotrollerState extends State<NavCotroller> {
 
   Widget _buildSearchScreen(double height,  double width) {
     return SliverToBoxAdapter(
-      child: SearchScreen(height,  width),
+      child: SearchScreen(height,  width, _scrollController),
     );
   }
 

@@ -19,3 +19,9 @@ const String app_name_kr = "원팅";
 const String search_page_kr = "검색";
 const String hint_text_kr = "체리 이름을 입력하십시오...";
 const List<String> categories = ["cat1",  "cat2", "cat3", "cat4",  "cat5"];
+
+
+//Api url
+const String baseUrl = "cheri.weeknday.com";
+const String postsList = "/api/native/list";
+const String searchPost = "/api/native/search";

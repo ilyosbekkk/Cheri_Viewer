@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
-import '../../business_logic/providers/mainscreen_provider.dart';
+import '../../business_logic/providers/postslist_provider  .dart';
 
 import '../../models/postslist_model.dart';
 import '../../utils/Strings.dart';
@@ -130,9 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        Consumer<HomePageProvider>(
-                            builder: (context, homePageProvider, child) {
-                          return Container(
+                       Container(
                             child: !_homePageProvider.posts[index].like
                                 ? IconButton(
                                     icon: Icon(
@@ -140,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       color: Colors.red,
                                     ),
                                     onPressed: () {
-                                      homePageProvider.bookmark(_homePageProvider.posts[index]);
+                                      _homePageProvider.bookmark(_homePageProvider.posts[index]);
                                     },
                                   )
                                 : IconButton(
@@ -150,12 +148,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                       color: Colors.red,
                                     ),
                                     onPressed: () {
-                                      homePageProvider
+                                      _homePageProvider
                                           .unbookmark(_homePageProvider.posts[index]);
                                     },
                                   ),
-                          );
-                        })
+                          ),
+
                       ],
                     ),
                   ],

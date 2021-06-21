@@ -13,6 +13,7 @@ class HomePageProvider extends ChangeNotifier {
   String responseCode = "";
   String message = "";
   late List<Post> posts = [];
+
   List<String> _subCategories = [
     "Sub1",
     "Sub2",
@@ -25,6 +26,8 @@ class HomePageProvider extends ChangeNotifier {
     "Sub9",
     "Sub10",
   ];
+  int lastButtonIndex = -1;
+  List<bool> _activeCategories = [false, false, false, false, false, false];
 
   Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy, int category) async {
 
@@ -49,8 +52,8 @@ class HomePageProvider extends ChangeNotifier {
     }
   }
 
-  int lastButtonIndex = -1;
-  List<bool> _activeCategories = [false, false, false, false, false, false];
+
+
 
   void bookmark(Post post) {
     print("like pressed");
