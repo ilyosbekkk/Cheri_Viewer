@@ -1,6 +1,7 @@
 //English
 const String home = "Home";
 const String search = "Search";
+const  String views = "Views";
 const String collections = "Collections";
 const toast_message_like = "You liked this post!";
 const toast_message_unlike = "You unliked this post!";
@@ -8,6 +9,7 @@ const String app_name = "CheriBoard";
 const String search_page = "Search";
 const hint_text = "Please enter cheri name...";
 //Korean
+const String views_kr = "조회수";
 const String home_kr = "홈";
 const String search_kr = "검색";
 const String collections_kr = "보관함";

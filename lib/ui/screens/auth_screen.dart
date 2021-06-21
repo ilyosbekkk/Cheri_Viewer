@@ -11,7 +11,7 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  InAppWebViewController _controller;
+  late InAppWebViewController _controller;
 
   @override
   Widget build(BuildContext context) {

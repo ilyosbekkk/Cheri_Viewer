@@ -49,7 +49,6 @@ class Post {
 
   Post.create(this._title, this._author, this._dateTime, this._views, this._imgUrl, this._category, this._like);
 
-  Post();
 
   String get category => _category;
 

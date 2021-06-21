@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import '../../business_logic/providers/mainscreen_provider.dart';
 
 import '../../business_logic/services/web_services.dart';
 import '../../models/postslist_model.dart';
+import '../../utils/Strings.dart';
 import '../../utils/Strings.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,34 +21,57 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Post> _posts = [];
+  HomePageProvider _homePageProvider = HomePageProvider();
 
   @override
   void initState() {
     super.initState();
 
-    WebServices.fetchPosts().then((value) {
-      print(value.length);
-      setState(() {
-        _posts = value;
-
-      });
-    });
-
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    _homePageProvider = Provider.of<HomePageProvider>(context, listen: true);
+
+    print(_homePageProvider.message);
+    print(_homePageProvider.posts);
+    if(_homePageProvider.message  == ""){
+      _homePageProvider.fetchPostsList(8, 1, "views", 0).then((value) {
+        if(value == true){
+          setState(() {
+            _posts.addAll(_homePageProvider.posts) ;
+
+          });
+        }
+      });
+    }
+
+  }
+  @override
   Widget build(BuildContext context) {
-    print("posts");
-    print(_posts);
+
+
     return ListView.builder(
         primary: false,
         shrinkWrap: true,
-        itemCount: _posts.length,
+        itemCount: _homePageProvider.posts.length != 0 ? _homePageProvider.posts.length + 1 : 2,
         itemBuilder: (BuildContext ctx, index) {
-          if (index == 0)
+          if (index == 0) {
             return _buildCategories(widget.width);
-          else
-            return _buildSinglePost(index, 0.4 * widget.height, widget.width);
+          } else {
+            index = index - 1;
+            return _homePageProvider.posts.length != 0
+                ? _buildSinglePost(index, 0.4 * widget.height, widget.width)
+                : Center(
+                    child: Container(
+                        child: JumpingDotsProgressIndicator(
+                      fontSize: 60,
+                      color: Colors.lightBlue,
+                    )),
+                  );
+          }
         });
   }
 
@@ -74,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(15.0),
                       child: FadeInImage.assetNetwork(
                         placeholder: 'assets/images/placeholder.png',
-                        image: _posts[index].imgUrl,
+                        image: _homePageProvider.posts[index].imgUrl,
                         fit: BoxFit.fitWidth,
                       ),
                     ),
@@ -85,7 +110,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         Container(
                           width: width * 0.2,
                           margin: EdgeInsets.only(left: 10.0, top: 10.0),
-                          decoration: BoxDecoration(color: Colors.black54, border: Border.all(color: Colors.white), borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                          decoration: BoxDecoration(
+                              color: Colors.black54,
+                              border: Border.all(color: Colors.white),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0))),
                           child: Text(
                             "구매.판매",
                             style: TextStyle(
@@ -94,28 +123,30 @@ class _HomeScreenState extends State<HomeScreen> {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        Consumer<HomePageProvider>(builder: (context, homePageProvider, child) {
+                        Consumer<HomePageProvider>(
+                            builder: (context, homePageProvider, child) {
                           return Container(
-                            child: !_posts[index].like
+                            child: !_homePageProvider.posts[index].like
                                 ? IconButton(
-                              icon: Icon(
-                                Icons.bookmark_border,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                homePageProvider.like(_posts[index]);
-                              },
-                            )
+                                    icon: Icon(
+                                      Icons.bookmark_border,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () {
+                                      homePageProvider.bookmark(_homePageProvider.posts[index]);
+                                    },
+                                  )
                                 : IconButton(
-                              icon: Icon(
-                                Icons.bookmark,
-                                size: 25.0,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                homePageProvider.unLike(_posts[index]);
-                              },
-                            ),
+                                    icon: Icon(
+                                      Icons.bookmark,
+                                      size: 25.0,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () {
+                                      homePageProvider
+                                          .unbookmark(_homePageProvider.posts[index]);
+                                    },
+                                  ),
                           );
                         })
                       ],
@@ -125,14 +156,15 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               margin: EdgeInsets.only(left: 10.0, top: 5.0),
               child: Text(
-                _posts[index].title,
+                _homePageProvider.posts[index].title,
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                maxLines: 1,
               ),
             ),
             Container(
               margin: EdgeInsets.only(left: 10.0, top: 5.0),
               child: Text(
-                _posts[index].author,
+                _homePageProvider.posts[index].author,
                 style: TextStyle(fontSize: 15),
               ),
             ),
@@ -141,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 children: [
                   Text(
-                    "Views:${_posts[index].views}",
+                    "$views_kr:${_homePageProvider.posts[index].views}",
                     style: TextStyle(fontSize: 15),
                   ),
                   Container(
@@ -151,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         size: 5.0,
                       )),
                   Text(
-                    "${_posts[index].dateTime} hours ago",
+                    "${_homePageProvider.posts[index].dateTime}",
                     style: TextStyle(fontSize: 14),
                   )
                 ],
@@ -179,16 +211,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        if (homeProvider.showSubCategories1)
-          _buildSubCategories(homeProvider),
+        if (homeProvider.showSubCategories1) _buildSubCategories(homeProvider),
         Container(
           margin: EdgeInsets.all(10),
           child: Row(
             children: [_buildCategoryWidget(homeProvider, radius, 4)],
           ),
         ),
-        if (homeProvider.showSubCategories2)
-          _buildSubCategories(homeProvider)
+        if (homeProvider.showSubCategories2) _buildSubCategories(homeProvider)
       ]);
     });
   }
@@ -204,20 +234,21 @@ class _HomeScreenState extends State<HomeScreen> {
             radius: radius,
             backgroundColor: Colors.lightBlueAccent,
             child: CircleAvatar(
-              radius: homeProvider.activeAcategories[index] ? 0.9 * radius: radius,
+              radius:
+                  homeProvider.activeAcategories[index] ? 0.9 * radius : radius,
               backgroundImage: AssetImage("assets/images/logo.png"),
             ),
           ),
           Container(
               width: 2 * radius,
               child: Text(
-
                 categories[index],
                 maxLines: 1,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: homeProvider.activeAcategories[index]?Colors.lightBlueAccent:Colors.black
-                ),
+                    color: homeProvider.activeAcategories[index]
+                        ? Colors.lightBlueAccent
+                        : Colors.black),
               ))
         ],
       ),
@@ -236,7 +267,8 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisSpacing: 10,
           children: List.generate(homeProvider.subCategories.length, (index) {
             return MaterialButton(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
               onPressed: () {},
               color: Colors.amberAccent,
               child: Text(

@@ -5,20 +5,15 @@ import 'package:viewerapp/models/postslist_model.dart';
 
 class WebServices {
   //fetch all posts
-  static Future<List<Post>> fetchPosts() async {
+  static Future<http.Response> fetchPosts(int pageSize, int nowPage,  String orderBy,  int category) async {
 
-    print("helllooo");
     final  url =  Uri.https("cheri.weeknday.com", "/api/native/list" );
-    final body = {'pagesize': '8','nowpage': '2','orderby':'views','category': '0'};
+    final body = {'pagesize': '$pageSize','nowpage': '$nowPage','orderby':'$orderBy','category': '$category'};
     Map<String,  String> headers = {'Accept':'application/json;'};
 
     http.Response response = await http.post(url, headers: headers, body: body);
-    Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
-    PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
-
-
-    return postsResponse.data;
+    return response;
   }
 
 }

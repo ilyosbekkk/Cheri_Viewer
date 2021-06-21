@@ -8,7 +8,7 @@ import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
 
 class NavCotroller extends StatefulWidget {
-  const NavCotroller({Key key}) : super(key: key);
+  const NavCotroller();
 
   @override
   _NavCotrollerState createState() => _NavCotrollerState();
@@ -17,9 +17,19 @@ class NavCotroller extends StatefulWidget {
 class _NavCotrollerState extends State<NavCotroller> {
   int _selectedIndex = 0;
   var _screens = [];
+
   RefreshController _refreshController =
   RefreshController(initialRefresh: false);
 
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +60,13 @@ class _NavCotrollerState extends State<NavCotroller> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: home),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: home),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: search),
           BottomNavigationBarItem(
-              icon: Icon(Icons.bookmark), label: collections),
+              icon: Icon(Icons.bookmark_border), label: collections),
         ],
         onTap: _onItemSelected,
-        selectedItemColor: Colors.lightBlueAccent,
+        selectedItemColor: Colors.blueAccent,
         currentIndex: _selectedIndex,
         unselectedItemColor: Colors.black38,
       ) ,

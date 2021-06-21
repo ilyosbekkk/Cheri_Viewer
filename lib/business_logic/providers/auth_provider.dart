@@ -11,7 +11,7 @@ import 'package:viewerapp/utils/utils.dart';
 class AuthProvider extends ChangeNotifier {
   //google signin
   Future<String> signInWithGoogle() async {
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAccount googleUser = (await GoogleSignIn().signIn())!;
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
@@ -48,7 +48,7 @@ class AuthProvider extends ChangeNotifier {
       }
     } else {
       showToast("Kakao talk is not installed");
-      credentials = null;
+      credentials = "?";
     }
 
 
@@ -66,9 +66,7 @@ class AuthProvider extends ChangeNotifier {
 
   //email  sign_up
   // ignore: missing_return
-  Future<String> signInWithEmail() async {
 
-  }
 
   void logout() {}
 }
