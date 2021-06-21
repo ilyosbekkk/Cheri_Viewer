@@ -37,6 +37,7 @@ class HomePageProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(decodedResponse);
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
         responseCode = postsResponse.code;
         message = postsResponse.message;
@@ -53,14 +54,15 @@ class HomePageProvider extends ChangeNotifier {
   }
 
   Future<bool> searchPostByTitle(int pageSize, int nowPage, String orderBy, String searchWord) async {
+    if(searchResults.isNotEmpty)
+        searchResults.clear();
     try {
       Response response = await WebServices.searchPostByTitle(pageSize, nowPage, orderBy, searchWord);
-
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(decodedResponse);
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
-        responseCode = postsResponse.code;
-        message = postsResponse.message;
+        print(postsResponse.data);
         searchResults.addAll(postsResponse.data);
         notifyListeners();
         return true;
@@ -68,6 +70,7 @@ class HomePageProvider extends ChangeNotifier {
         return false;
       }
     } catch (e) {
+      print(e.toString());
       notifyListeners();
       return false;
     }

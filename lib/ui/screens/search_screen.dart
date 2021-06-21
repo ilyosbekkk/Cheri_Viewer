@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:progress_indicators/progress_indicators.dart';
+import 'package:provider/provider.dart';
+import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart';
+import 'package:viewerapp/models/postslist_model.dart';
+import 'package:viewerapp/ui/helper_widgets/singlepost_widget.dart';
 
 import '../../utils/Strings.dart';
 
-
-
 class SearchScreen extends StatefulWidget {
-
-
   double height;
-  double  width;
-   ScrollController _scrollController;
-   SearchScreen(this.height, this.width,  this._scrollController);
+  double width;
+  ScrollController _scrollController;
 
+  SearchScreen(this.height, this.width, this._scrollController);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
 
-
-
 class _SearchScreenState extends State<SearchScreen> {
-
-
+  bool _noMoreData = false;
   TextEditingController _controller = TextEditingController();
 
   @override
@@ -31,45 +29,79 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+    print("final");
     return Container(
-      margin: EdgeInsets.only( left: widget.width * 0.025, top: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 9,
-                child: Container(
-                  height: widget.height*0.05,
-                  child: TextField(
-                    controller: _controller,
-                    onSubmitted: (searchWord) {
+        margin: EdgeInsets.only(left: widget.width * 0.025, top: 10),
+        child: Consumer<HomePageProvider>(
+          builder: (context, homepageProvider, child) {
+            return ListView.builder(
+                primary: false,
+                shrinkWrap: true,
+                itemCount: homepageProvider.searchResults.length != 0 ? homepageProvider.searchResults.length + 2 : 2,
+                itemBuilder: (BuildContext context, index) {
+                  if (index == 0)
+                    return _buildSearchWidget(homepageProvider);
+                  else if (index == 1 && homepageProvider.searchResults.length > 0)
+                    return _buildSortWidget(_controller.text, homepageProvider.searchResults.length);
+                  else {
+                    index = index - 2;
+                    return homepageProvider.searchResults.length > 0
+                        ? _buildPostWidget(0.4 * widget.height, widget.width, index, homepageProvider)
+                        : Center(
+                            child: JumpingDotsProgressIndicator(fontSize: 60, color: Colors.blue),
+                          );
+                  }
+                });
+          },
+        ));
+  }
 
-                    },
-                    autofocus: true,
-                    textAlign: TextAlign.start,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(left: 10.0),
-                      hintText: hint_text,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
+  Widget _buildSearchWidget(HomePageProvider homePageProvider) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 9,
+          child: Container(
+            height: widget.height * 0.05,
+            child: TextField(
+              controller: _controller,
+              onSubmitted: (searchWord) async {
+                print("...searching ${searchWord}");
+                await homePageProvider.searchPostByTitle(10, 1, "views", searchWord);
+              },
+              autofocus: true,
+              textAlign: TextAlign.start,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.only(left: 10.0),
+                hintText: hint_text,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              Expanded(
-                flex: 2,
-                child: MaterialButton(onPressed: () {
-
-                }, child: const Text("츼소")),
-              )
-            ],
+            ),
           ),
-        ],
-      ),
+        ),
+        Expanded(
+          flex: 2,
+          child: MaterialButton(onPressed: () {}, child: const Text("츼소")),
+        )
+      ],
+    );
+  }
+
+  Widget _buildPostWidget(double height, double width, index, HomePageProvider homePageProvider) {
+    List<Post> posts = homePageProvider.searchResults;
+    return PostWidget(height, width, homePageProvider, posts[index]);
+  }
+
+  Widget _buildSortWidget(String searchWord, int count) {
+    return Row(
+      children: [
+        Container(margin: EdgeInsets.only(left: 10.0), child: Text('${searchWord} 검색 결과 ${count} 건')),
+        Spacer(),
+        IconButton(onPressed: () {}, icon: Icon(Icons.menu_outlined)),
+        IconButton(onPressed: () {}, icon: Icon(Icons.menu_book_sharp)),
+      ],
     );
   }
 }

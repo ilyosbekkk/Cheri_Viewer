@@ -1,7 +1,7 @@
 class PostsResponse {
   String _code;
   String _message;
-  String _category;
+  String? _category;
   List<Post> _data;
 
   PostsResponse(this._code, this._message, this._category, this._data);
@@ -10,12 +10,13 @@ class PostsResponse {
     var list = parsedJson['data'] as List;
     print(list.runtimeType);
     List<Post> postList = list.map((i) => Post.fromJson(i)).toList();
+
     return new PostsResponse(parsedJson["code"], parsedJson["msg"], parsedJson["category"], postList);
   }
 
   List<Post> get data => _data;
 
-  String get category => _category;
+  String? get category => _category;
 
   String get message => _message;
 
@@ -25,7 +26,7 @@ class PostsResponse {
     _data = value;
   }
 
-  set category(String value) {
+  set category(String? value) {
     _category = value;
   }
 

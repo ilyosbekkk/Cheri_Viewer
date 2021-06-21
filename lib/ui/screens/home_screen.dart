@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
-import 'package:viewerapp/ui/helper_widgets/single_post.dart';
+import 'package:viewerapp/ui/helper_widgets/singlepost_widget.dart';
 import '../../business_logic/providers/postslist_provider  .dart';
 
 import '../../models/postslist_model.dart';

@@ -1,5 +1,4 @@
 import 'package:viewerapp/business_logic/providers/postslist_provider  .dart';
-import 'package:viewerapp/business_logic/providers/searchscreen_provider.dart';
 import 'package:viewerapp/ui/nav_controller.dart';
 import 'business_logic/providers/auth_provider.dart';
 import 'package:provider/single_child_widget.dart';
