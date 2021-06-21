@@ -3,67 +3,74 @@ import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import '../../business_logic/providers/mainscreen_provider.dart';
 
-import '../../business_logic/services/web_services.dart';
 import '../../models/postslist_model.dart';
 import '../../utils/Strings.dart';
-import '../../utils/Strings.dart';
-
 class HomeScreen extends StatefulWidget {
   double height;
   double width;
   BuildContext context;
-
-  HomeScreen(this.height, this.width, this.context);
+  ScrollController _scrollController;
+  HomeScreen(this.height, this.width, this.context, this._scrollController);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Post> _posts = [];
   HomePageProvider _homePageProvider = HomePageProvider();
+  int initialPage = 1;
+  static const int  pageSize = 10;
+  static const int category = 0;
+  static const  orderBy = "views";
+  bool _noMoreData = false;
 
-  @override
-  void initState() {
-    super.initState();
 
-  }
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _homePageProvider = Provider.of<HomePageProvider>(context, listen: true);
 
     print(_homePageProvider.message);
     print(_homePageProvider.posts);
     if(_homePageProvider.message  == ""){
-      _homePageProvider.fetchPostsList(8, 1, "views", 0).then((value) {
+      _homePageProvider.fetchPostsList(pageSize+1, initialPage, orderBy, category).then((value) {
         if(value == true){
-          setState(() {
-            _posts.addAll(_homePageProvider.posts) ;
-
-          });
+         print("list1");
         }
       });
     }
+    widget._scrollController.addListener(() {
+      if (widget._scrollController.position.pixels == widget._scrollController.position.maxScrollExtent) {
+        initialPage = initialPage + 1;
+        _homePageProvider.fetchPostsList(pageSize+1, initialPage, "views", 0).then((value) {
+          if(value == true){
+            print("list2");
 
+          }
+        });
+      }
+    });
   }
+
   @override
   Widget build(BuildContext context) {
 
-
     return ListView.builder(
         primary: false,
+
         shrinkWrap: true,
         itemCount: _homePageProvider.posts.length != 0 ? _homePageProvider.posts.length + 1 : 2,
         itemBuilder: (BuildContext ctx, index) {
           if (index == 0) {
             return _buildCategories(widget.width);
-          } else {
-            index = index - 1;
+          }
+          else if (index == _homePageProvider.posts.length )
+            return _buildCustomLoadingWidget();
+          else {
+
             return _homePageProvider.posts.length != 0
-                ? _buildSinglePost(index, 0.4 * widget.height, widget.width)
+                ? _buildSinglePost(index-1, 0.4 * widget.height, widget.width)
                 : Center(
                     child: Container(
                         child: JumpingDotsProgressIndicator(
@@ -77,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSinglePost(int index, double height, double width) {
     return Container(
-      margin: EdgeInsets.only(left: 5.0, right: 5.0, bottom: 10.0),
+      margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
       height: height,
       width: double.infinity,
       child: Card(
@@ -278,5 +285,18 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           })),
     );
+  }
+
+  Widget _buildCustomLoadingWidget() {
+    if(!_noMoreData)
+      return  JumpingDotsProgressIndicator(
+        color: Colors.blue,
+        fontSize: 50.0,
+      );
+    else  return Center(child: Container(
+        margin: EdgeInsets.all(10),
+        child: Text("No more results:(",  style: TextStyle(
+            fontSize: 18
+        ),)),);
   }
 }

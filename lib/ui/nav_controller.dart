@@ -17,7 +17,7 @@ class NavCotroller extends StatefulWidget {
 class _NavCotrollerState extends State<NavCotroller> {
   int _selectedIndex = 0;
   var _screens = [];
-
+  ScrollController _scrollController = ScrollController();
   RefreshController _refreshController =
   RefreshController(initialRefresh: false);
 
@@ -51,6 +51,7 @@ class _NavCotrollerState extends State<NavCotroller> {
 
 
           child: CustomScrollView(
+            controller: _scrollController,
             slivers: [
               _buildSliverAppBar(),
               _screens[_selectedIndex]
@@ -77,7 +78,7 @@ class _NavCotrollerState extends State<NavCotroller> {
 
   Widget _buildHomeScreen(double height,  double width) {
     return SliverToBoxAdapter(
-      child: HomeScreen(height,  width, context),
+      child: HomeScreen(height,  width, context,  _scrollController),
     );
   }
 
