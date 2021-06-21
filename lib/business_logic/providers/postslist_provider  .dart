@@ -13,6 +13,8 @@ class HomePageProvider extends ChangeNotifier {
   String responseCode = "";
   String message = "";
   late List<Post> posts = [];
+  late List<Post> searchResults = [];
+  late List<Post> bookMarkedPosts = [];
 
   List<String> _subCategories = [
     "Sub1",
@@ -30,30 +32,46 @@ class HomePageProvider extends ChangeNotifier {
   List<bool> _activeCategories = [false, false, false, false, false, false];
 
   Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy, int category) async {
-
     try {
-     Response response =  await WebServices.fetchPosts(pageSize, nowPage, orderBy, category);
+      Response response = await WebServices.fetchPosts(pageSize, nowPage, orderBy, category);
 
-     if (response.statusCode == 200) {
-          Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-          PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
-          responseCode = postsResponse.code;
-          message = postsResponse.message;
-          posts.addAll(postsResponse.data);
-          notifyListeners();
-          return true;
-        } else {
-          return false;
-        }
-
+      if (response.statusCode == 200) {
+        Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+        PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
+        responseCode = postsResponse.code;
+        message = postsResponse.message;
+        posts.addAll(postsResponse.data);
+        notifyListeners();
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
       notifyListeners();
       return false;
     }
   }
 
+  Future<bool> searchPostByTitle(int pageSize, int nowPage, String orderBy, String searchWord) async {
+    try {
+      Response response = await WebServices.searchPostByTitle(pageSize, nowPage, orderBy, searchWord);
 
-
+      if (response.statusCode == 200) {
+        Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+        PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
+        responseCode = postsResponse.code;
+        message = postsResponse.message;
+        searchResults.addAll(postsResponse.data);
+        notifyListeners();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      notifyListeners();
+      return false;
+    }
+  }
 
   void bookmark(Post post) {
     print("like pressed");

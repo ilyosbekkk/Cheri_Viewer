@@ -14,7 +14,6 @@ void main() async {
 
     ChangeNotifierProvider(create: (_) => AuthProvider(),),
     ChangeNotifierProvider(create: (_) => HomePageProvider()),
-    ChangeNotifierProvider(create: (_) => SearchScreenProvider()),
   ];
 
   runApp(MultiProvider(

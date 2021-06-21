@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
+import 'package:viewerapp/ui/helper_widgets/single_post.dart';
 import '../../business_logic/providers/postslist_provider  .dart';
 
 import '../../models/postslist_model.dart';
@@ -83,121 +84,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSinglePost(int index, double height, double width) {
-    return Container(
-      margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
-      height: height,
-      width: double.infinity,
-      child: Card(
-        elevation: 10.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-                height: height * 0.65,
-                width: width,
-                child: Stack(
-                  fit: StackFit.expand,
-                  alignment: AlignmentDirectional.bottomStart,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child: FadeInImage.assetNetwork(
-                        placeholder: 'assets/images/placeholder.png',
-                        image: _homePageProvider.posts[index].imgUrl,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: width * 0.2,
-                          margin: EdgeInsets.only(left: 10.0, top: 10.0),
-                          decoration: BoxDecoration(
-                              color: Colors.black54,
-                              border: Border.all(color: Colors.white),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0))),
-                          child: Text(
-                            "구매.판매",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                       Container(
-                            child: !_homePageProvider.posts[index].like
-                                ? IconButton(
-                                    icon: Icon(
-                                      Icons.bookmark_border,
-                                      color: Colors.red,
-                                    ),
-                                    onPressed: () {
-                                      _homePageProvider.bookmark(_homePageProvider.posts[index]);
-                                    },
-                                  )
-                                : IconButton(
-                                    icon: Icon(
-                                      Icons.bookmark,
-                                      size: 25.0,
-                                      color: Colors.red,
-                                    ),
-                                    onPressed: () {
-                                      _homePageProvider
-                                          .unbookmark(_homePageProvider.posts[index]);
-                                    },
-                                  ),
-                          ),
-
-                      ],
-                    ),
-                  ],
-                )),
-            Container(
-              margin: EdgeInsets.only(left: 10.0, top: 5.0),
-              child: Text(
-                _homePageProvider.posts[index].title,
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                maxLines: 1,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 10.0, top: 5.0),
-              child: Text(
-                _homePageProvider.posts[index].author,
-                style: TextStyle(fontSize: 15),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 10.0, top: 5.0),
-              child: Row(
-                children: [
-                  Text(
-                    "$views_kr:${_homePageProvider.posts[index].views}",
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(left: 3.0, right: 3.0),
-                      child: Icon(
-                        Icons.circle,
-                        size: 5.0,
-                      )),
-                  Text(
-                    "${_homePageProvider.posts[index].dateTime}",
-                    style: TextStyle(fontSize: 14),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+    List<Post> posts = _homePageProvider.posts;
+    return PostWidget(height, width, _homePageProvider, posts[index]);
   }
 
   Widget _buildCategories(double width) {
