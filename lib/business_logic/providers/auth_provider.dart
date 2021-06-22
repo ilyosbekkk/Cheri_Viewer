@@ -20,7 +20,8 @@ class AuthProvider extends ChangeNotifier {
     );
     await FirebaseAuth.instance.signInWithCredential(credential);
 
-    String credentials = "{access_token:${googleAuth.accessToken}}";
+    String credentials = "{access_token:${googleAuth.accessToken}, id_token: ${googleAuth.idToken}, site_id:${googleUser.id}, email: ${googleUser.email}, name:${googleUser.displayName}}";
+
     return credentials;
   }
 
