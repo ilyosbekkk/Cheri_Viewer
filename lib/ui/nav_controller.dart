@@ -20,6 +20,8 @@ class _NavCotrollerState extends State<NavCotroller> {
   ScrollController _scrollController = ScrollController();
   RefreshController _refreshController =
   RefreshController(initialRefresh: false);
+  double  appBarHeight = 0;
+
 
 
 
@@ -42,6 +44,7 @@ class _NavCotrollerState extends State<NavCotroller> {
     ];
 
     return Scaffold(
+
       body: SafeArea(
         child: SmartRefresher(
           onLoading: _onLoading,
@@ -53,7 +56,7 @@ class _NavCotrollerState extends State<NavCotroller> {
           child: CustomScrollView(
             controller: _scrollController,
             slivers: [
-              _buildSliverAppBar(),
+              _buildSliverAppBar(height),
               _screens[_selectedIndex]
             ],
           ),
@@ -90,11 +93,20 @@ class _NavCotrollerState extends State<NavCotroller> {
 
   Widget _buildStorageBoxScreen(double height,  double width) {
     return SliverToBoxAdapter(
-      child: StorageBoxScreen(),
+      child: StorageBoxScreen(height,  width),
     );
   }
 
-  Widget _buildSliverAppBar(){
+  Widget _buildSliverAppBar(double height){
+
+    AppBar appBar = AppBar(
+      title: Text('Demo'),
+    );
+    setState(() {
+      appBarHeight = appBar.preferredSize.height;
+    });
+
+
     return SliverAppBar(
       shadowColor: Colors.blue,
       elevation: 5,

@@ -7,8 +7,12 @@ class PostsResponse {
   PostsResponse(this._code, this._message, this._category, this._data);
 
   factory PostsResponse.fromJson(Map<String, dynamic> parsedJson) {
-    var list = parsedJson['data'] as List;
-    print(list.runtimeType);
+    List<dynamic>? list = [];
+    if(parsedJson["data"] != null)
+       list = parsedJson['data'] as List;
+
+    print("resultttt");
+    print(list);
     List<Post> postList = list.map((i) => Post.fromJson(i)).toList();
 
     return new PostsResponse(parsedJson["code"], parsedJson["msg"], parsedJson["category"], postList);

@@ -18,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  HomePageProvider _homePageProvider = HomePageProvider();
+  PostListsProvider _homePageProvider = PostListsProvider();
   int initialPage = 1;
   static const int  pageSize = 10;
   static const int category = 0;
@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _homePageProvider = Provider.of<HomePageProvider>(context, listen: true);
+    _homePageProvider = Provider.of<PostListsProvider>(context, listen: true);
 
     print(_homePageProvider.message);
     print(_homePageProvider.posts);
@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildCategories(double width) {
     var radius = width / 14;
-    return Consumer<HomePageProvider>(builder: (context, homeProvider, child) {
+    return Consumer<PostListsProvider>(builder: (context, homeProvider, child) {
       return Column(children: [
         Container(
           margin: EdgeInsets.only(left: 10, right: 10, top: 10.0),
@@ -116,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Widget _buildCategoryWidget(HomePageProvider homeProvider, double radius, index) {
+  Widget _buildCategoryWidget(PostListsProvider homeProvider, double radius, index) {
     return InkWell(
       onTap: () {
         homeProvider.fetchSubCategories(categories[index], index);
@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSubCategories(HomePageProvider homeProvider) {
+  Widget _buildSubCategories(PostListsProvider homeProvider) {
     return Container(
       margin: EdgeInsets.all(10),
       child: GridView.count(

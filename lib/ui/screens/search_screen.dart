@@ -21,6 +21,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   bool _noMoreData = false;
   TextEditingController _controller = TextEditingController();
+  bool searching = false;
 
   @override
   void initState() {
@@ -32,12 +33,14 @@ class _SearchScreenState extends State<SearchScreen> {
     print("final");
     return Container(
         margin: EdgeInsets.only(left: widget.width * 0.025, top: 10),
-        child: Consumer<HomePageProvider>(
+        child: Consumer<PostListsProvider>(
           builder: (context, homepageProvider, child) {
             return ListView.builder(
                 primary: false,
                 shrinkWrap: true,
-                itemCount: homepageProvider.searchResults.length != 0 ? homepageProvider.searchResults.length + 2 : 2,
+                itemCount: homepageProvider.searchResults.length != 0
+                    ? homepageProvider.searchResults.length + 2
+                    : 2,
                 itemBuilder: (BuildContext context, index) {
                   if (index == 0)
                     return _buildSearchWidget(homepageProvider);
@@ -46,17 +49,18 @@ class _SearchScreenState extends State<SearchScreen> {
                   else {
                     index = index - 2;
                     return homepageProvider.searchResults.length > 0
-                        ? _buildPostWidget(0.4 * widget.height, widget.width, index, homepageProvider)
+                        ? _buildPostWidget(0.4 * widget.height, widget.width,
+                            index, homepageProvider)
                         : Center(
-                            child: JumpingDotsProgressIndicator(fontSize: 60, color: Colors.blue),
-                          );
+                            child: searching? JumpingDotsProgressIndicator(fontSize: 60, color: Colors.blueAccent,):Text("검색 결과가 없습니다"));
+
                   }
                 });
           },
         ));
   }
 
-  Widget _buildSearchWidget(HomePageProvider homePageProvider) {
+  Widget _buildSearchWidget(PostListsProvider homePageProvider) {
     return Row(
       children: [
         Expanded(
@@ -65,9 +69,17 @@ class _SearchScreenState extends State<SearchScreen> {
             height: widget.height * 0.05,
             child: TextField(
               controller: _controller,
-              onSubmitted: (searchWord) async {
-                print("...searching ${searchWord}");
-                await homePageProvider.searchPostByTitle(10, 1, "views", searchWord);
+              onSubmitted: (searchWord) {
+                setState(() {
+                  searching = true;
+                });
+                homePageProvider
+                    .searchPostByTitle(10, 1, "views", searchWord)
+                    .then((value) {
+                     setState(() {
+                       searching = false;
+                     });
+                });
               },
               autofocus: true,
               textAlign: TextAlign.start,
@@ -89,7 +101,8 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildPostWidget(double height, double width, index, HomePageProvider homePageProvider) {
+  Widget _buildPostWidget(
+      double height, double width, index, PostListsProvider homePageProvider) {
     List<Post> posts = homePageProvider.searchResults;
     return PostWidget(height, width, homePageProvider, posts[index]);
   }
@@ -97,7 +110,9 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildSortWidget(String searchWord, int count) {
     return Row(
       children: [
-        Container(margin: EdgeInsets.only(left: 10.0), child: Text('${searchWord} 검색 결과 ${count} 건')),
+        Container(
+            margin: EdgeInsets.only(left: 10.0),
+            child: Text('${searchWord} 검색 결과 ${count} 건')),
         Spacer(),
         IconButton(onPressed: () {}, icon: Icon(Icons.menu_outlined)),
         IconButton(onPressed: () {}, icon: Icon(Icons.menu_book_sharp)),

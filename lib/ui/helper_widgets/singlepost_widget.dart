@@ -7,7 +7,7 @@ class PostWidget extends StatelessWidget {
 
   double height;
   double width;
-  HomePageProvider homePageProvider;
+  PostListsProvider homePageProvider;
   Post post;
 
   PostWidget(this.height, this.width,  this.homePageProvider, this.post);
@@ -16,7 +16,6 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
       height: height,

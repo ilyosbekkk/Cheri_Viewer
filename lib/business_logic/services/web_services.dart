@@ -9,7 +9,6 @@ class WebServices {
     final  url =  Uri.https(baseUrl, postsList);
     final body = {'pagesize': '$pageSize','nowpage': '$nowPage','orderby':'$orderBy','category': '$category'};
     Map<String,  String> headers = {'Accept':'application/json;'};
-
     http.Response response = await http.post(url, headers: headers, body: body);
 
     return response;
@@ -19,7 +18,6 @@ class WebServices {
     final  url = Uri.https(baseUrl, searchPost);
     final body = {'pagesize': '$pageSize','nowpage': '$nowPage','orderby':'$orderBy','search_word': '$searchWord'};
     Map<String,  String> headers = {'Accept':'application/json;'};
-
     http.Response response = await http.post(url, headers: headers, body: body);
 
     return response;

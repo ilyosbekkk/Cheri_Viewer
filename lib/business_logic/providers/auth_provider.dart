@@ -5,12 +5,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:viewerapp/utils/utils.dart';
 
-
-
-
 class AuthProvider extends ChangeNotifier {
   //google signin
-  Future<String> signInWithGoogle() async {
+  Future<Map<String, String>> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = (await GoogleSignIn().signIn())!;
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
@@ -20,7 +17,7 @@ class AuthProvider extends ChangeNotifier {
     );
     await FirebaseAuth.instance.signInWithCredential(credential);
 
-    String credentials = "{access_token:${googleAuth.accessToken}, id_token: ${googleAuth.idToken}, site_id:${googleUser.id}, email: ${googleUser.email}, name:${googleUser.displayName}}";
+    Map<String,String> credentials = {"access_token":"${googleAuth.accessToken}", "id_token":" ${googleAuth.idToken}", "site_id":"${googleUser.id}", "email": "${googleUser.email}", "name":"${googleUser.displayName}"};
 
     return credentials;
   }
@@ -51,8 +48,6 @@ class AuthProvider extends ChangeNotifier {
       showToast("Kakao talk is not installed");
       credentials = "?";
     }
-
-
     return credentials;
   }
 

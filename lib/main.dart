@@ -12,7 +12,7 @@ void main() async {
   final List<SingleChildWidget> providers = [
 
     ChangeNotifierProvider(create: (_) => AuthProvider(),),
-    ChangeNotifierProvider(create: (_) => HomePageProvider()),
+    ChangeNotifierProvider(create: (_) => PostListsProvider()),
   ];
 
   runApp(MultiProvider(

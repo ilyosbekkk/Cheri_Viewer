@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 
 import '../services/web_services.dart';
 
-class HomePageProvider extends ChangeNotifier {
+class PostListsProvider extends ChangeNotifier {
   bool _showSubCategories1 = false;
   bool _showSubCategories2 = false;
   String responseCode = "";
@@ -63,7 +63,8 @@ class HomePageProvider extends ChangeNotifier {
         print(decodedResponse);
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
         print(postsResponse.data);
-        searchResults.addAll(postsResponse.data);
+
+      searchResults.addAll(postsResponse.data);
         notifyListeners();
         return true;
       } else {
@@ -74,6 +75,14 @@ class HomePageProvider extends ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  Future<bool> fetchSavedPostsList () async {
+     return  true;
+  }
+
+  Future<bool> fetchOpenedPostsList() async {
+    return  true;
   }
 
   void bookmark(Post post) {
