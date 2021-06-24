@@ -64,10 +64,10 @@ class _NavCotrollerState extends State<NavCotroller> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: home),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: search),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: home_kr),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: search_kr),
           BottomNavigationBarItem(
-              icon: Icon(Icons.bookmark_border), label: collections),
+              icon: Icon(Icons.bookmark_border), label: collections_kr),
         ],
         onTap: _onItemSelected,
         selectedItemColor: Colors.blueAccent,

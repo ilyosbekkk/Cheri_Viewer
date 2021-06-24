@@ -21,6 +21,8 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController _controller = TextEditingController();
   bool searching = false;
+  String _popupValue1 = "";
+  String _popupValue2 = "";
 
   @override
   void initState() {
@@ -118,8 +120,54 @@ class _SearchScreenState extends State<SearchScreen> {
             margin: EdgeInsets.only(left: 10.0),
             child: Text('${searchWord} 검색 결과 ${count} 건')),
         Spacer(),
-        IconButton(onPressed: () {}, icon: Icon(Icons.menu_outlined)),
-        IconButton(onPressed: () {}, icon: Icon(Icons.notes_outlined)),
+        Container(
+          margin: EdgeInsets.only(left: 5.0),
+          child: PopupMenuButton(
+              child: Icon(Icons.menu),
+              elevation: 10,
+              enabled: true,
+              onSelected: (value) {
+                setState(() {
+                  _popupValue1 = value.toString();
+                  print(_popupValue1);
+                });
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  child: Text("First"),
+                  value: "first1",
+                ),
+                PopupMenuItem(
+                  child: Text("Second"),
+                  value: "second1",
+                )
+              ]),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: 10.0, right: 10),
+          child: PopupMenuButton(
+              elevation: 10,
+              child: Icon(
+                Icons.notes_outlined,
+              ),
+              enabled: true,
+              onSelected: (value) {
+                setState(() {
+                  _popupValue2 = value.toString();
+                  print(_popupValue1);
+                });
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  child: Text("First"),
+                  value: "first2",
+                ),
+                PopupMenuItem(
+                  child: Text("Second"),
+                  value: "second2",
+                )
+              ]),
+        ),
       ],
     );
   }

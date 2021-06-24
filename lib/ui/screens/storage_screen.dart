@@ -23,6 +23,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
 
   TextEditingController _controller = TextEditingController();
   bool _searchMode = false;
+  String _popupValue1 = "";
+  String _popupValue2 = "";
 
   @override
   void didChangeDependencies() {
@@ -54,9 +56,6 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
             return _buildCustomTabView();
         });
   }
-
-
-
 
   Widget _buildCustomTabBar() {
     return Container(
@@ -129,7 +128,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
       child: Row(
         children: [
           Container(
-              margin: EdgeInsets.only(left: 10.0), child: Text('${count-1} 건')),
+              margin: EdgeInsets.only(left: 10.0),
+              child: Text('${count - 1} 건')),
           Spacer(),
           IconButton(
               onPressed: () {
@@ -138,14 +138,61 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
                 });
               },
               icon: Icon(Icons.search)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.menu_outlined)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.notes_outlined)),
+          Container(
+            margin: EdgeInsets.only(left: 5.0),
+            child: PopupMenuButton(
+                child: Icon(Icons.menu),
+                elevation: 10,
+                enabled: true,
+                onSelected: (value) {
+                  setState(() {
+                    _popupValue1 = value.toString();
+                    print(_popupValue1);
+                  });
+                },
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: Text("First"),
+                        value: "first1",
+                      ),
+                      PopupMenuItem(
+                        child: Text("Second"),
+                        value: "second1",
+                      )
+                    ]),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 10.0, right: 10),
+            child: PopupMenuButton(
+                elevation: 10,
+                child: Icon(
+                  Icons.notes_outlined,
+                ),
+                enabled: true,
+                onSelected: (value) {
+                  setState(() {
+                    _popupValue2 = value.toString();
+                    print(_popupValue1);
+                  });
+                },
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: Text("First"),
+                        value: "first2",
+                      ),
+                      PopupMenuItem(
+                        child: Text("Second"),
+                        value: "second2",
+                      )
+                    ]),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildPostWidget(double height, double width, index, PostListsProvider homePageProvider) {
+  Widget _buildPostWidget(
+      double height, double width, index, PostListsProvider homePageProvider) {
     List<Post> posts = homePageProvider.posts;
     return PostWidget(height, width, homePageProvider, posts[index]);
   }
@@ -178,15 +225,17 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
           ),
           Expanded(
             flex: 2,
-            child: IconButton(icon: Icon(Icons.clear), onPressed: () {
-              setState(() {
-                _searchMode = false;
-              });
-            },),
+            child: IconButton(
+              icon: Icon(Icons.clear),
+              onPressed: () {
+                setState(() {
+                  _searchMode = false;
+                });
+              },
+            ),
           )
         ],
       ),
     );
   }
-
 }
