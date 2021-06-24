@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 import '../../utils/Strings.dart';
 
@@ -94,6 +95,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   }
   Widget _buildIntroWidget() {
     return Container(
+
       margin: EdgeInsets.only(top: 10),
       height: height * 0.2,
       child: Column(
@@ -161,7 +163,25 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                   Text("김승규", style: TextStyle(fontSize: 18),)
                 ],
               ),
-            )
+            ),
+            Container(
+              alignment: Alignment.center,
+              width: width*0.6,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center ,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("신차 구입시, 확인 해봐야하는 꿀팁입니다 신차 구입시, 확인 해봐야하는 꿀팁입니다 신차 구입시, 확인 해봐야하는 꿀팁입니다 ", maxLines: 3, style: TextStyle(
+                    fontSize: 15
+                  ),),
+                  Text("#안녕 #한국 #미국 #호주 #소주", maxLines: 3, style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.lightBlue
+                  ),),
+                ],
+              ),
+            ),
+
           ],
         ));
   }
@@ -171,7 +191,9 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
       child: Row(
       children: [
         IconButton(onPressed: () {}, icon: Icon(Icons.bookmark_border),),
-        IconButton(onPressed: () {}, icon: Icon(Icons.share_outlined),),
+        IconButton(onPressed: () {
+          Share.share('check out my website https://example.com');
+        }, icon: Icon(Icons.share_outlined),),
       ],
       ),
     );
