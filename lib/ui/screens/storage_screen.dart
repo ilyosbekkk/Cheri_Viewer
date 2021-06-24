@@ -55,6 +55,9 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
         });
   }
 
+
+
+
   Widget _buildCustomTabBar() {
     return Container(
       margin: EdgeInsets.only(top: 10, left: 5.0, right: 5.0),
@@ -126,7 +129,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
       child: Row(
         children: [
           Container(
-              margin: EdgeInsets.only(left: 10.0), child: Text('${count} 건')),
+              margin: EdgeInsets.only(left: 10.0), child: Text('${count-1} 건')),
           Spacer(),
           IconButton(
               onPressed: () {
@@ -136,7 +139,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
               },
               icon: Icon(Icons.search)),
           IconButton(onPressed: () {}, icon: Icon(Icons.menu_outlined)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.menu_book_sharp)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.notes_outlined)),
         ],
       ),
     );

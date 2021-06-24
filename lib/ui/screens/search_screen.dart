@@ -19,7 +19,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  bool _noMoreData = false;
   TextEditingController _controller = TextEditingController();
   bool searching = false;
 
@@ -44,16 +43,21 @@ class _SearchScreenState extends State<SearchScreen> {
                 itemBuilder: (BuildContext context, index) {
                   if (index == 0)
                     return _buildSearchWidget(homepageProvider);
-                  else if (index == 1 && homepageProvider.searchResults.length > 0)
-                    return _buildSortWidget(_controller.text, homepageProvider.searchResults.length);
-                  else {
+                  else if (index == 1 && homepageProvider.searchResults.length > 0) {
+                    return _buildSortWidget(_controller.text,
+                        homepageProvider.searchResults.length);
+                  } else {
                     index = index - 2;
                     return homepageProvider.searchResults.length > 0
                         ? _buildPostWidget(0.4 * widget.height, widget.width,
                             index, homepageProvider)
                         : Center(
-                            child: searching? JumpingDotsProgressIndicator(fontSize: 60, color: Colors.blueAccent,):Text("검색 결과가 없습니다"));
-
+                            child: searching
+                                ? JumpingDotsProgressIndicator(
+                                    fontSize: 80,
+                                    color: Colors.blueAccent,
+                                  )
+                                : Text("검색 결과가 없습니다"));
                   }
                 });
           },
@@ -76,9 +80,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 homePageProvider
                     .searchPostByTitle(10, 1, "views", searchWord)
                     .then((value) {
-                     setState(() {
-                       searching = false;
-                     });
+                  setState(() {
+                    searching = false;
+                  });
                 });
               },
               autofocus: true,
@@ -115,7 +119,7 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Text('${searchWord} 검색 결과 ${count} 건')),
         Spacer(),
         IconButton(onPressed: () {}, icon: Icon(Icons.menu_outlined)),
-        IconButton(onPressed: () {}, icon: Icon(Icons.menu_book_sharp)),
+        IconButton(onPressed: () {}, icon: Icon(Icons.notes_outlined)),
       ],
     );
   }

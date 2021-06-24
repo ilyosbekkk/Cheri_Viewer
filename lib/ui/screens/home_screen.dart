@@ -41,17 +41,17 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       });
     }
-    widget._scrollController.addListener(() {
-      if (widget._scrollController.position.pixels == widget._scrollController.position.maxScrollExtent) {
-        initialPage = initialPage + 1;
-        _homePageProvider.fetchPostsList(pageSize+1, initialPage, "views", 0).then((value) {
-          if(value == true){
-            print("list2");
-
-          }
-        });
-      }
-    });
+    // widget._scrollController.addListener(() {
+    //   if (widget._scrollController.position.pixels == widget._scrollController.position.maxScrollExtent) {
+    //     initialPage = initialPage + 1;
+    //     _homePageProvider.fetchPostsList(pageSize+1, initialPage, "views", 0).then((value) {
+    //       if(value == true){
+    //         print("list2");
+    //
+    //       }
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -66,8 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
           if (index == 0) {
             return _buildCategories(widget.width);
           }
-          else if (index == _homePageProvider.posts.length )
-            return _buildCustomLoadingWidget();
+          // else if (index == _homePageProvider.posts.length )
+          //   return _buildCustomLoadingWidget();
           else {
 
             return _homePageProvider.posts.length != 0
