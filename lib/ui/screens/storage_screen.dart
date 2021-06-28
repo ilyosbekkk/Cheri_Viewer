@@ -49,7 +49,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
           if (index == 0)
             return _buildCustomTabBar();
           else if (index == 1)
-            return _buildSortWidget(_homePageProvider.posts.length);
+            return _buildSortWidget(_homePageProvider.allPosts.length);
           else if (_searchMode == true && index == 2)
             return _buildSearchWidget();
           else
@@ -101,13 +101,13 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
         controller: _tabController,
         children: [
           ListView.builder(
-              itemCount: _homePageProvider.posts.length,
+              itemCount: _homePageProvider.allPosts.length,
               itemBuilder: (BuildContext context, index) {
                 return _buildPostWidget(0.4 * widget.height, widget.width,
                     index, _homePageProvider);
               }),
           ListView.builder(
-              itemCount: _homePageProvider.posts.length,
+              itemCount: _homePageProvider.allPosts.length,
               itemBuilder: (BuildContext context, index) {
                 return _buildPostWidget(0.4 * widget.height, widget.width,
                     index, _homePageProvider);
@@ -193,7 +193,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
 
   Widget _buildPostWidget(
       double height, double width, index, PostListsProvider homePageProvider) {
-    List<Post> posts = homePageProvider.posts;
+    List<Post> posts = homePageProvider.allPosts;
     return PostWidget(height, width, homePageProvider, posts[index]);
   }
 

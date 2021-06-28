@@ -22,10 +22,11 @@ const String search_page_kr = "검색";
 const String bookmark_tab_kr = "북마크";
 const String opened_tab_kr = "여러본 체리";
 const String hint_text_kr = "체리 이름을 입력하십시오...";
-const List<String> categories = ["cat1",  "cat2", "cat3", "cat4",  "cat5"];
+const List<String> categories = ["건강",  "생활", "교육.학습", "IT.컨텐츠",  "자기개발"];
 
 
 //Api url
 const String baseUrl = "cheri.weeknday.com";
 const String postsList = "/api/native/list";
 const String searchPost = "/api/native/search";
+const String categoryList = "api/Viewerapi/side_category";

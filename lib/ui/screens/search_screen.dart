@@ -56,7 +56,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         : Center(
                             child: searching
                                 ? JumpingDotsProgressIndicator(
-                                    fontSize: 80,
+                                    fontSize: 100,
                                     color: Colors.blueAccent,
                                   )
                                 : Text("검색 결과가 없습니다"));

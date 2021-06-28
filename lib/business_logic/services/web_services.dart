@@ -24,4 +24,15 @@ class WebServices {
 
   }
 
+  static Future<http.Response> fetchCategoriesList(String site_id) async {
+    final url = Uri.https(baseUrl, categoryList);
+    final  body = {'site_id':'${site_id}'};
+    Map<String,  String> headers = {'Accept':'application/json;'};
+    http.Response response = await http.post(url, headers: headers, body: body);
+
+    print("response:${response.body}");
+    return response;
+
+  }
+
 }

@@ -31,7 +31,7 @@ class PostWidget extends StatelessWidget {
         child: Card(
           elevation: 10.0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
+            borderRadius: BorderRadius.circular(10.0),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +79,7 @@ class PostWidget extends StatelessWidget {
                                 color: Colors.red,
                               ),
                               onPressed: () {
-                                homePageProvider.bookmark(post);
+                                homePageProvider.save(post);
                               },
                             )
                                 : IconButton(
@@ -90,7 +90,7 @@ class PostWidget extends StatelessWidget {
                               ),
                               onPressed: () {
                                 homePageProvider
-                                    .unbookmark(post);
+                                    .unsave(post);
                               },
                             ),
                           ),

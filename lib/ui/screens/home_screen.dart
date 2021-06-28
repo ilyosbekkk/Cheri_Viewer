@@ -6,11 +6,13 @@ import '../../business_logic/providers/postslist_provider  .dart';
 
 import '../../models/postslist_model.dart';
 import '../../utils/Strings.dart';
+
 class HomeScreen extends StatefulWidget {
   double height;
   double width;
   BuildContext context;
   ScrollController _scrollController;
+
   HomeScreen(this.height, this.width, this.context, this._scrollController);
 
   @override
@@ -20,25 +22,29 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   PostListsProvider _homePageProvider = PostListsProvider();
   int initialPage = 1;
-  static const int  pageSize = 10;
+  static const int pageSize = 10;
   static const int category = 0;
-  static const  orderBy = "views";
+  static const orderBy = "views";
+  int activeIndex = -1;
   bool _noMoreData = false;
-
-
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _homePageProvider = Provider.of<PostListsProvider>(context, listen: true);
 
-    print(_homePageProvider.message);
-    print(_homePageProvider.posts);
-    if(_homePageProvider.message  == ""){
-      _homePageProvider.fetchPostsList(pageSize+1, initialPage, orderBy, category).then((value) {
-        if(value == true){
-         print("list1");
+
+    if (_homePageProvider.postsMessage == "") {
+      _homePageProvider
+          .fetchPostsList(pageSize + 1, initialPage, orderBy, category)
+          .then((value) {
+        if (value == true) {
+          print("list1");
         }
+      });
+
+      _homePageProvider.fetchCategoriesList().then((value) {
+        print("you are done");
       });
     }
     // widget._scrollController.addListener(() {
@@ -56,12 +62,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return ListView.builder(
         primary: false,
-
         shrinkWrap: true,
-        itemCount: _homePageProvider.posts.length != 0 ? _homePageProvider.posts.length + 1 : 2,
+        itemCount: _homePageProvider.allPosts.length != 0
+            ? _homePageProvider.allPosts.length + 1
+            : 2,
         itemBuilder: (BuildContext ctx, index) {
           if (index == 0) {
             return _buildCategories(widget.width);
@@ -69,22 +75,21 @@ class _HomeScreenState extends State<HomeScreen> {
           // else if (index == _homePageProvider.posts.length )
           //   return _buildCustomLoadingWidget();
           else {
-
-            return _homePageProvider.posts.length != 0
-                ? _buildSinglePost(index-1, 0.4 * widget.height, widget.width)
+            return _homePageProvider.allPosts.length != 0
+                ? _buildSinglePost(index - 1, 0.4 * widget.height, widget.width)
                 : Center(
-                    child: Container(
-                        child: JumpingDotsProgressIndicator(
-                      fontSize: 60,
-                      color: Colors.lightBlue,
-                    )),
-                  );
+              child: Container(
+                  child: JumpingDotsProgressIndicator(
+                    fontSize: 100,
+                    color: Colors.lightBlue,
+                  )),
+            );
           }
         });
   }
 
   Widget _buildSinglePost(int index, double height, double width) {
-    List<Post> posts = _homePageProvider.posts;
+    List<Post> posts = _homePageProvider.allPosts;
     return PostWidget(height, width, _homePageProvider, posts[index]);
   }
 
@@ -104,31 +109,34 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        if (homeProvider.showSubCategories1) _buildSubCategories(homeProvider),
+        if (homeProvider.showSubCategories1) _buildSubCategories(homeProvider,  activeIndex),
         Container(
           margin: EdgeInsets.all(10),
           child: Row(
             children: [_buildCategoryWidget(homeProvider, radius, 4)],
           ),
         ),
-        if (homeProvider.showSubCategories2) _buildSubCategories(homeProvider)
+        if (homeProvider.showSubCategories2) _buildSubCategories(homeProvider,  activeIndex)
       ]);
     });
   }
 
-  Widget _buildCategoryWidget(PostListsProvider homeProvider, double radius, index) {
+  Widget _buildCategoryWidget(
+      PostListsProvider homeProvider, double radius, index) {
     return InkWell(
       onTap: () {
-        homeProvider.fetchSubCategories(categories[index], index);
-      },
+     setState(() {
+       activeIndex = index;
+     });
+         homeProvider.showCategories(index);
+         },
       child: Column(
         children: [
           CircleAvatar(
             radius: radius,
             backgroundColor: Colors.lightBlueAccent,
             child: CircleAvatar(
-              radius:
-                  homeProvider.activeAcategories[index] ? 0.9 * radius : radius,
+              radius: radius,
               backgroundImage: AssetImage("assets/images/logo.png"),
             ),
           ),
@@ -139,16 +147,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 maxLines: 1,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: homeProvider.activeAcategories[index]
-                        ? Colors.lightBlueAccent
-                        : Colors.black),
+                    color:
+                        Colors.black),
               ))
         ],
       ),
     );
   }
 
-  Widget _buildSubCategories(PostListsProvider homeProvider) {
+  Widget _buildSubCategories(PostListsProvider homeProvider, int i) {
     return Container(
       margin: EdgeInsets.all(10),
       child: GridView.count(
@@ -158,31 +165,18 @@ class _HomeScreenState extends State<HomeScreen> {
           childAspectRatio: 3,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
-          children: List.generate(homeProvider.subCategories.length, (index) {
+          children:
+          List.generate(homeProvider.subCategories(i).length, (index) {
             return MaterialButton(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
               onPressed: () {},
               color: Colors.amberAccent,
               child: Text(
-                homeProvider.subCategories[index],
+                homeProvider.subCategories(i)[index],
                 maxLines: 1,
               ),
             );
           })),
     );
-  }
-
-  Widget _buildCustomLoadingWidget() {
-    if(!_noMoreData)
-      return  JumpingDotsProgressIndicator(
-        color: Colors.blue,
-        fontSize: 50.0,
-      );
-    else  return Center(child: Container(
-        margin: EdgeInsets.all(10),
-        child: Text("No more results:(",  style: TextStyle(
-            fontSize: 18
-        ),)),);
-  }
-}
+  }}
