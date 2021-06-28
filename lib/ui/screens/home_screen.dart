@@ -33,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.didChangeDependencies();
     _homePageProvider = Provider.of<PostListsProvider>(context, listen: true);
 
-
     if (_homePageProvider.postsMessage == "") {
       _homePageProvider
           .fetchPostsList(pageSize + 1, initialPage, orderBy, category)
@@ -78,12 +77,12 @@ class _HomeScreenState extends State<HomeScreen> {
             return _homePageProvider.allPosts.length != 0
                 ? _buildSinglePost(index - 1, 0.4 * widget.height, widget.width)
                 : Center(
-              child: Container(
-                  child: JumpingDotsProgressIndicator(
-                    fontSize: 100,
-                    color: Colors.lightBlue,
-                  )),
-            );
+                    child: Container(
+                        child: JumpingDotsProgressIndicator(
+                      fontSize: 100,
+                      color: Colors.lightBlue,
+                    )),
+                  );
           }
         });
   }
@@ -109,14 +108,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        if (homeProvider.showSubCategories1) _buildSubCategories(homeProvider,  activeIndex),
+        if (homeProvider.showSubCategories1)
+          _buildSubCategories(homeProvider, activeIndex),
         Container(
           margin: EdgeInsets.all(10),
           child: Row(
             children: [_buildCategoryWidget(homeProvider, radius, 4)],
           ),
         ),
-        if (homeProvider.showSubCategories2) _buildSubCategories(homeProvider,  activeIndex)
+        if (homeProvider.showSubCategories2)
+          _buildSubCategories(homeProvider, activeIndex)
       ]);
     });
   }
@@ -125,18 +126,19 @@ class _HomeScreenState extends State<HomeScreen> {
       PostListsProvider homeProvider, double radius, index) {
     return InkWell(
       onTap: () {
-     setState(() {
-       activeIndex = index;
-     });
-         homeProvider.showCategories(index);
-         },
+        setState(() {
+          activeIndex = index;
+        });
+        homeProvider.showCategories(index);
+      },
       child: Column(
         children: [
           CircleAvatar(
             radius: radius,
             backgroundColor: Colors.lightBlueAccent,
             child: CircleAvatar(
-              radius: radius,
+              radius:
+                  homeProvider.activeAcategories[index] ? 0.9 * radius : radius,
               backgroundImage: AssetImage("assets/images/logo.png"),
             ),
           ),
@@ -147,8 +149,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 maxLines: 1,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    color:
-                        Colors.black),
+                    color: homeProvider.activeAcategories[index]
+                        ? Colors.lightBlueAccent
+                        : Colors.black),
               ))
         ],
       ),
@@ -166,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
           children:
-          List.generate(homeProvider.subCategories(i).length, (index) {
+              List.generate(homeProvider.subCategories(i).length, (index) {
             return MaterialButton(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
@@ -179,4 +182,5 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           })),
     );
-  }}
+  }
+}

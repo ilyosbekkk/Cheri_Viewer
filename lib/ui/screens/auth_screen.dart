@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:viewerapp/business_logic/providers/auth_provider.dart';
 
 class AuthScreen extends StatefulWidget {
+  static String route = "/auth_screen";
+
   AuthScreen();
 
   @override

@@ -4,6 +4,8 @@ import 'package:share/share.dart';
 import '../../utils/Strings.dart';
 
 class CheriDetailViewScreen extends StatefulWidget {
+  static String route = "/cheridetail_screen";
+
   const CheriDetailViewScreen();
 
   @override

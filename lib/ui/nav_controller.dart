@@ -8,7 +8,9 @@ import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
 
 class NavCotroller extends StatefulWidget {
+  static String route = "/";
   const NavCotroller();
+
 
   @override
   _NavCotrollerState createState() => _NavCotrollerState();

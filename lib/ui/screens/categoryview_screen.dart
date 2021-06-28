@@ -6,6 +6,8 @@ import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/helper_widgets/singlepost_widget.dart';
 
 class CategoryViewScreen extends StatefulWidget {
+  static String route = "/categoryview_screen";
+
   CategoryViewScreen();
 
   @override

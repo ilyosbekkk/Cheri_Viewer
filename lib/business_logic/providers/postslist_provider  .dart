@@ -143,17 +143,20 @@ class PostListsProvider extends ChangeNotifier {
 
   bool get showSubCategories2 => _showSubCategories2;
 
-
-
   void showCategories(int index) {
-    if(lastButtonIndex == index) {
-      if(index  == 4)
+    if (lastButtonIndex == index) {
+      if (index == 4)
         _showSubCategories2 = false;
       else
         _showSubCategories1 = false;
       lastButtonIndex = -1;
-    }
-    else {
+      _activeCategories[index] = false;
+    } else {
+      for (int i = 0; i < _activeCategories.length; i++) {
+        _activeCategories[i] = false;
+      }
+
+      _activeCategories[index] = true;
       lastButtonIndex = index;
       if (index == 4) {
         _showSubCategories2 = true;
