@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/ui/helper_widgets/singlepost_widget.dart';
+import 'package:viewerapp/ui/screens/categoryview_screen.dart';
 import '../../business_logic/providers/postslist_provider  .dart';
 
 import '../../models/postslist_model.dart';
@@ -173,7 +174,10 @@ class _HomeScreenState extends State<HomeScreen> {
             return MaterialButton(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, CategoryViewScreen.route,
+                    arguments: {"id": homeProvider.categoryIds(i)[index]});
+              },
               color: Colors.amberAccent,
               child: Text(
                 homeProvider.subCategories(i)[index],

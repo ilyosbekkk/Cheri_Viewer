@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
+
 import 'package:http/http.dart';
 import 'package:viewerapp/models/categories_model.dart';
 import 'package:viewerapp/models/postslist_model.dart';
@@ -23,6 +23,12 @@ class PostListsProvider extends ChangeNotifier {
   List<String> subCategories3 = [];
   List<String> subCategories4 = [];
   List<String> subCategories5 = [];
+  List<String> catId1 = [];
+  List<String> catId2 = [];
+  List<String> catId3 = [];
+  List<String> catId4 = [];
+  List<String> catId5 = [];
+
 
   int lastButtonIndex = -1;
   List<bool> _activeCategories = [false, false, false, false, false, false];
@@ -30,6 +36,9 @@ class PostListsProvider extends ChangeNotifier {
   Future<bool> fetchPostsList(
       int pageSize, int nowPage, String orderBy, int category) async {
     try {
+
+      if(categoryPosts.isNotEmpty)
+        categoryPosts.clear();
       Response response =
           await WebServices.fetchPosts(pageSize, nowPage, orderBy, category);
 
@@ -107,18 +116,27 @@ class PostListsProvider extends ChangeNotifier {
         switch (categories.categories![i].menu_id) {
           case "1":
             subCategories1.add(categories.categories![i].category!);
+            catId1.add(categories.categories![i].category_id!);
             break;
           case "2":
             subCategories2.add(categories.categories![i].category!);
+            catId2.add(categories.categories![i].category_id!);
+
             break;
           case "4":
             subCategories3.add(categories.categories![i].category!);
+            catId3.add(categories.categories![i].category_id!);
+
             break;
           case "6":
             subCategories4.add(categories.categories![i].category!);
+            catId4.add(categories.categories![i].category_id!);
+
             break;
           case "7":
             subCategories5.add(categories.categories![i].category!);
+            catId5.add(categories.categories![i].category_id!);
+
             break;
         }
       }
@@ -170,6 +188,7 @@ class PostListsProvider extends ChangeNotifier {
   }
 
   List<String> subCategories(int index) {
+
     switch (index) {
       case 0:
         return subCategories1;
@@ -181,6 +200,22 @@ class PostListsProvider extends ChangeNotifier {
         return subCategories4;
       case 4:
         return subCategories5;
+    }
+    return [];
+  }
+  List<String> categoryIds(int index) {
+
+    switch (index) {
+      case 0:
+        return catId1;
+      case 1:
+        return catId2;
+      case 2:
+        return catId3;
+      case 3:
+        return catId4;
+      case 4:
+        return catId5;
     }
     return [];
   }

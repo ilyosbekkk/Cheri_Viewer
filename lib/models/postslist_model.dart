@@ -101,4 +101,4 @@ class Post {
   }
 }
 
-enum Category { A, B, C, D, E, F }
+

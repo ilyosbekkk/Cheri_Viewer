@@ -26,14 +26,14 @@ class  Categories{
   String? get code => _code;
 }
 
-class  Category{
+class Category{
 
   String? _menu_id;
   String? _top_category;
   String? _category;
   String? _category_id;
 
-  Category(this._menu_id, this._top_category, this._category, this._category_id);
+  Category.create(this._menu_id, this._top_category, this._category, this._category_id);
 
   String? get category_id => _category_id;
 
@@ -44,7 +44,7 @@ class  Category{
   String? get menu_id => _menu_id;
 
   factory Category.fromJson(Map<String, dynamic> parsedJson) {
-    return Category(parsedJson["MENU_ID"],  parsedJson["TOP_CATEGORY"], parsedJson["CATEGORY"], parsedJson["CATEGORY_ID"]);
+    return Category.create(parsedJson["MENU_ID"],  parsedJson["TOP_CATEGORY"], parsedJson["CATEGORY"], parsedJson["CATEGORY_ID"]);
   }
 
 }

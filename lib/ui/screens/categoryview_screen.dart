@@ -27,7 +27,9 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
   Widget build(BuildContext context) {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
+    final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
 
+    print(args["id"]);
     return Scaffold(
       body: SafeArea(
         child: SmartRefresher(
@@ -38,7 +40,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
             child: Consumer<PostListsProvider>(
                 builder: (context, postProvider, widget) {
               if (!_loaded) {
-                postProvider.fetchPostsList(10, 1, "views", 1).then((value) {
+                postProvider.fetchPostsList(10, 1, "views", int.parse(args["id"]!)).then((value) {
 
                     _loaded = true;
 
