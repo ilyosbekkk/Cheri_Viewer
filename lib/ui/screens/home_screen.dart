@@ -176,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(10)),
               onPressed: () {
                 Navigator.pushNamed(context, CategoryViewScreen.route,
-                    arguments: {"id": homeProvider.categoryIds(i)[index]});
+                    arguments: {"id": homeProvider.categoryIds(i)[index], "title":homeProvider.subCategories(i)[index]});
               },
               color: Colors.amberAccent,
               child: Text(

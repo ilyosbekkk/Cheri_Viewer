@@ -48,7 +48,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
               }
               return CustomScrollView(
                 slivers: [
-                  _buildSliverAppBar(_height, "no-title"),
+                  _buildSliverAppBar(_height,args["title"]!),
                   _buildList(
                     postProvider,
                     0.4*_height,
