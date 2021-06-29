@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart';
@@ -94,8 +95,18 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
               if (index == 0) {
                 return _buildSortWidget("searchWord", 5);
               } else {
-                index = index - 1;
-                return _buildSinglePost(index, height, width, postListProvider);
+                if (postListProvider.categoryPosts.length == 0){
+                  print("heyyyyyyyyyyy");
+                  return Center(
+                    child: JumpingDotsProgressIndicator(
+                      color: Theme.of(context).selectedRowColor,
+                      fontSize: 100,
+                    ),
+                  );}
+                else {
+                  index = index - 1;
+                  return _buildSinglePost(index, height, width, postListProvider);
+                }
               }
             }));
   }

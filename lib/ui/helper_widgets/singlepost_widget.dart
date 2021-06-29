@@ -4,6 +4,7 @@ import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/screens/categoryview_screen.dart';
 import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
 import 'package:viewerapp/utils/Strings.dart';
+import 'package:viewerapp/utils/utils.dart';
 
 class PostWidget extends StatelessWidget {
   double height;
@@ -48,7 +49,7 @@ class PostWidget extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                              Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id": post.categoryId, "title": post.category});
+                             // Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id": post.categoryId, "title": post.category});
                             },
                             child: Container(
                               alignment: Alignment.center,
@@ -125,7 +126,7 @@ class PostWidget extends StatelessWidget {
                           size: 5.0,
                         )),
                     Text(
-                      "${post.dateTime}",
+                      "${timeFormatter(post.dateTime)} 전에}",
                       style: TextStyle(fontSize: 12),
                     )
                   ],
