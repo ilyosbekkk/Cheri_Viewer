@@ -16,21 +16,17 @@ class PostWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+
       margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
       height: height,
       width: double.infinity,
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CheriDetailViewScreen()),
-          );
+       Navigator.pushNamed(context, CheriDetailViewScreen.route);
         },
         child: Card(
           elevation: 10.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -42,7 +38,7 @@ class PostWidget extends StatelessWidget {
                     alignment: AlignmentDirectional.bottomStart,
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(15.0),
+
                         child: FadeInImage.assetNetwork(
                           placeholder: 'assets/images/placeholder.png',
                           image:post.imgUrl,

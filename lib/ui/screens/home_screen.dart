@@ -26,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
   static const int pageSize = 10;
   static const int category = 0;
   static const orderBy = "views";
-  int activeIndex = -1;
   bool _noMoreData = false;
 
   @override
@@ -35,21 +34,18 @@ class _HomeScreenState extends State<HomeScreen> {
     _homePageProvider = Provider.of<PostListsProvider>(context, listen: true);
 
     if (_homePageProvider.postsMessage == "") {
-      _homePageProvider
-          .fetchPostsList(pageSize + 1, initialPage, orderBy, category)
-          .then((value) {
+      _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {
         if (value == true) {
           print("list1");
         }
       });
     }
 
-    if(_homePageProvider.categoriesMessage == ""){
+    if (_homePageProvider.categoriesMessage == "") {
       _homePageProvider.fetchCategoriesList().then((value) {
         print("you are done");
       });
     }
-
 
     // widget._scrollController.addListener(() {
     //   if (widget._scrollController.position.pixels == widget._scrollController.position.maxScrollExtent) {
@@ -69,9 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView.builder(
         primary: false,
         shrinkWrap: true,
-        itemCount: _homePageProvider.allPosts.length != 0
-            ? _homePageProvider.allPosts.length + 1
-            : 2,
+        itemCount: _homePageProvider.allPosts.length != 0 ? _homePageProvider.allPosts.length + 1 : 2,
         itemBuilder: (BuildContext ctx, index) {
           if (index == 0) {
             return _buildCategories(widget.width);
@@ -113,16 +107,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        if (homeProvider.showSubCategories1)
-          _buildSubCategories(homeProvider, activeIndex),
+        if (homeProvider.showSubCategories1) _buildSubCategories(homeProvider, homeProvider.activeIndex),
         Container(
           margin: EdgeInsets.all(10),
           child: Row(
             children: [_buildCategoryWidget(homeProvider, radius, 4)],
           ),
         ),
-        if (homeProvider.showSubCategories2)
-          _buildSubCategories(homeProvider, activeIndex)
+        if (homeProvider.showSubCategories2) _buildSubCategories(homeProvider,  homeProvider.activeIndex)
       ]);
     });
   }
@@ -130,9 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildCategoryWidget(PostListsProvider homeProvider, double radius, index) {
     return InkWell(
       onTap: () {
-        setState(() {
-          activeIndex = index;
-        });
         homeProvider.showCategories(index);
       },
       child: Column(
@@ -141,8 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
             radius: radius,
             backgroundColor: Colors.lightBlueAccent,
             child: CircleAvatar(
-              radius:
-                  homeProvider.activeAcategories[index] ? 0.9 * radius : radius,
+              radius: homeProvider.activeAcategories[index] ? 0.9 * radius : radius,
               backgroundImage: AssetImage("assets/images/logo.png"),
             ),
           ),
@@ -152,10 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 categories[korean]![index],
                 maxLines: 1,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: homeProvider.activeAcategories[index]
-                        ? Colors.lightBlueAccent
-                        : Colors.black),
+                style: TextStyle(color: homeProvider.activeAcategories[index] ? Colors.lightBlueAccent : Colors.black),
               ))
         ],
       ),
@@ -163,6 +148,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSubCategories(PostListsProvider homeProvider, int i) {
+
+    print(homeProvider.subCategories(i).length);
     return Container(
       margin: EdgeInsets.all(10),
       child: GridView.count(
@@ -172,14 +159,11 @@ class _HomeScreenState extends State<HomeScreen> {
           childAspectRatio: 3,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
-          children:
-              List.generate(homeProvider.subCategories(i).length, (index) {
+          children: List.generate(homeProvider.subCategories(i).length, (index) {
             return MaterialButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               onPressed: () {
-                Navigator.pushNamed(context, CategoryViewScreen.route,
-                    arguments: {"id": homeProvider.categoryIds(i)[index], "title":homeProvider.subCategories(i)[index]});
+                Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id": homeProvider.categoryIds(i)[index], "title": homeProvider.subCategories(i)[index]});
               },
               color: Colors.amberAccent,
               child: Text(

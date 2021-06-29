@@ -16,6 +16,6 @@
 
 //Api url
 const String baseUrl = "cheri.weeknday.com";
-const String postsList = "/api/native/list";
+const String postsList = "/api/Viewerapi/list";
 const String searchPost = "/api/native/search";
-const String categoryList = "api/Viewerapi/side_category";
+const String categoryList = "/api/Viewerapi/side_category";

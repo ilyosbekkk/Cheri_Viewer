@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'package:http/http.dart';
 import 'package:viewerapp/models/categories_model.dart';
 import 'package:viewerapp/models/postslist_model.dart';
@@ -18,6 +17,7 @@ class PostListsProvider extends ChangeNotifier {
   List<Post> searchResults = [];
   List<Post> bookMarkedPosts = [];
 
+  int activeIndex = -1;
   List<String> subCategories1 = [];
   List<String> subCategories2 = [];
   List<String> subCategories3 = [];
@@ -29,28 +29,24 @@ class PostListsProvider extends ChangeNotifier {
   List<String> catId4 = [];
   List<String> catId5 = [];
 
-
   int lastButtonIndex = -1;
   List<bool> _activeCategories = [false, false, false, false, false, false];
 
-  Future<bool> fetchPostsList(
-      int pageSize, int nowPage, String orderBy, int category) async {
+  Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy, int category) async {
     try {
-
-      if(categoryPosts.isNotEmpty)
-        categoryPosts.clear();
-      Response response =
-          await WebServices.fetchPosts(pageSize, nowPage, orderBy, category);
+      if (categoryPosts.isNotEmpty) categoryPosts.clear();
+      Response response = await WebServices.fetchPosts(pageSize, nowPage, orderBy, category);
 
       if (response.statusCode == 200) {
-        Map<String, dynamic> decodedResponse =
-            json.decode(utf8.decode(response.bodyBytes));
+        print(response.statusCode);
+        Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
 
         postsMessage = postsResponse.message;
-        if (category == 0)
+        if (category == 0) {
+          print(postsResponse.data.length);
           allPosts.addAll(postsResponse.data);
-        else
+        } else
           categoryPosts.addAll(postsResponse.data);
         notifyListeners();
         return true;
@@ -63,15 +59,12 @@ class PostListsProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> searchPostByTitle(
-      int pageSize, int nowPage, String orderBy, String searchWord) async {
+  Future<bool> searchPostByTitle(int pageSize, int nowPage, String orderBy, String searchWord) async {
     if (searchResults.isNotEmpty) searchResults.clear();
     try {
-      Response response = await WebServices.searchPostByTitle(
-          pageSize, nowPage, orderBy, searchWord);
+      Response response = await WebServices.searchPostByTitle(pageSize, nowPage, orderBy, searchWord);
       if (response.statusCode == 200) {
-        Map<String, dynamic> decodedResponse =
-            json.decode(utf8.decode(response.bodyBytes));
+        Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         print(decodedResponse);
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
         print(postsResponse.data);
@@ -101,8 +94,7 @@ class PostListsProvider extends ChangeNotifier {
     Response response = await WebServices.fetchCategoriesList("cheri");
     print(response.body);
     if (response.statusCode == 200) {
-      Map<String, dynamic> decodedResponse =
-          json.decode(utf8.decode(response.bodyBytes));
+      Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       Categories categories = Categories.fromJson(decodedResponse);
       categoriesMessage = categories.msg!;
@@ -163,17 +155,19 @@ class PostListsProvider extends ChangeNotifier {
 
   void showCategories(int index) {
     if (lastButtonIndex == index) {
-      if (index == 4)
+      if (index == 4) {
         _showSubCategories2 = false;
-      else
+      } else {
         _showSubCategories1 = false;
+      }
       lastButtonIndex = -1;
+      activeIndex = -1;
       _activeCategories[index] = false;
     } else {
+      activeIndex = index;
       for (int i = 0; i < _activeCategories.length; i++) {
         _activeCategories[i] = false;
       }
-
       _activeCategories[index] = true;
       lastButtonIndex = index;
       if (index == 4) {
@@ -188,7 +182,6 @@ class PostListsProvider extends ChangeNotifier {
   }
 
   List<String> subCategories(int index) {
-
     switch (index) {
       case 0:
         return subCategories1;
@@ -203,8 +196,8 @@ class PostListsProvider extends ChangeNotifier {
     }
     return [];
   }
-  List<String> categoryIds(int index) {
 
+  List<String> categoryIds(int index) {
     switch (index) {
       case 0:
         return catId1;
