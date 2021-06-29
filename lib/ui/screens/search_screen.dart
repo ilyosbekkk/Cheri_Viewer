@@ -3,7 +3,7 @@ import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart';
 import 'package:viewerapp/models/postslist_model.dart';
-import 'package:viewerapp/ui/helper_widgets/singlepost_widget.dart';
+import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
 
 import '../../utils/Strings.dart';
 
@@ -111,7 +111,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildPostWidget(
       double height, double width, index, PostListsProvider homePageProvider) {
     List<Post> posts = homePageProvider.searchResults;
-    return PostWidget(height, width, homePageProvider, posts[index]);
+    return CardViewWidget(height, width, homePageProvider, posts[index]);
   }
 
   Widget _buildSortWidget(String searchWord, int count) {

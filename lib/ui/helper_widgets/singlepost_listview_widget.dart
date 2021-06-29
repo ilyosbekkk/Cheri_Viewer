@@ -1,0 +1,134 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart';
+import 'package:viewerapp/models/postslist_model.dart';
+import 'package:viewerapp/utils/Strings.dart';
+import 'package:viewerapp/utils/utils.dart';
+
+// ignore: must_be_immutable
+class ListViewWidget extends StatelessWidget {
+
+  double height;
+  double width;
+  PostListsProvider homePageProvider;
+  Post post;
+
+  ListViewWidget(this.height, this.width, this.homePageProvider, this.post);
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+
+      margin: EdgeInsets.only(top: 10.0),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).primaryColorDark,
+        ),
+
+      ),
+      height: 110,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 16, right: 10 , top: 10, bottom: 5.0),
+            width: 101,
+            height: 100,
+
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.fill,
+                image: NetworkImage(post.imgUrl),
+              )
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                alignment: Alignment.center,
+                height: 20,
+                width: 70,
+                margin: EdgeInsets.only(top: 10.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColorDark,
+                ),
+                child: Text(
+                  post.category,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Container(
+                width: width*0.5,
+                margin: EdgeInsets.only( top: 10.0),
+                child: Text(
+                  post.title,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 10.0),
+                child: Text(
+                  post.author,
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+              Row(
+                children: [
+                  Text(
+                    "${cheri_views[korean]}:${post.views}",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(left: 3.0, right: 3.0),
+                      child: Icon(
+                        Icons.circle,
+                        size: 5.0,
+                      )),
+                  Text(
+                    "${timeFormatter(post.dateTime)} 전에",
+                    style: TextStyle(fontSize: 12),
+                  )
+                ],
+              ),
+
+            ],
+          ),
+          Spacer(),
+          Container(
+
+            width: 30,
+            height: 30,
+            margin: EdgeInsets.only( right: 8, top: 10),
+            color: Theme.of(context).primaryColorDark,
+            child: !post.like
+                ? InkWell(
+              onTap: () {
+                homePageProvider.save(post);
+              },
+              child: Icon(
+
+                Icons.bookmark_border,
+                color: Theme.of(context).backgroundColor,
+              ),
+            )
+                : InkWell(
+              onTap: () {
+                homePageProvider.unsave(post);
+              },
+              child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

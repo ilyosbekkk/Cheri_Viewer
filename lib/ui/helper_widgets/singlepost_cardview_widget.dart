@@ -6,13 +6,13 @@ import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
 import 'package:viewerapp/utils/Strings.dart';
 import 'package:viewerapp/utils/utils.dart';
 
-class PostWidget extends StatelessWidget {
+class CardViewWidget extends StatelessWidget {
   double height;
   double width;
   PostListsProvider homePageProvider;
   Post post;
 
-  PostWidget(this.height, this.width, this.homePageProvider, this.post);
+  CardViewWidget(this.height, this.width, this.homePageProvider, this.post);
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +126,7 @@ class PostWidget extends StatelessWidget {
                           size: 5.0,
                         )),
                     Text(
-                      "${timeFormatter(post.dateTime)} 전에}",
+                      "${timeFormatter(post.dateTime)} 전에",
                       style: TextStyle(fontSize: 12),
                     )
                   ],

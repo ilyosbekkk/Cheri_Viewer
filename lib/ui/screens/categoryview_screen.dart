@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart';
 import 'package:viewerapp/models/postslist_model.dart';
-import 'package:viewerapp/ui/helper_widgets/singlepost_widget.dart';
+import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
+import 'package:viewerapp/utils/Strings.dart';
 
 class CategoryViewScreen extends StatefulWidget {
   static String route = "/categoryview_screen";
@@ -95,15 +97,15 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
               if (index == 0) {
                 return _buildSortWidget("searchWord", 5);
               } else {
-                if (postListProvider.categoryPosts.length == 0){
+                if (postListProvider.categoryPosts.length == 0) {
                   print("heyyyyyyyyyyy");
                   return Center(
                     child: JumpingDotsProgressIndicator(
                       color: Theme.of(context).selectedRowColor,
                       fontSize: 100,
                     ),
-                  );}
-                else {
+                  );
+                } else {
                   index = index - 1;
                   return _buildSinglePost(index, height, width, postListProvider);
                 }
@@ -113,7 +115,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
 
   Widget _buildSinglePost(int index, double height, double width, PostListsProvider postListProvider) {
     List<Post> posts = postListProvider.categoryPosts;
-    return PostWidget(height, width, postListProvider, posts[index]);
+    return CardViewWidget(height, width, postListProvider, posts[index]);
   }
 
   void _onRefresh() async {
@@ -144,7 +146,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
           Container(
             margin: EdgeInsets.only(left: 5.0),
             child: PopupMenuButton(
-                child: Icon(Icons.menu),
+                child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/list.svg")),
                 elevation: 10,
                 enabled: true,
                 onSelected: (value) {
@@ -155,12 +157,12 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(
-                        child: Text("First"),
+                        child: Text(menu1[korean]![0]),
                         value: "first1",
                       ),
                       PopupMenuItem(
-                        child: Text("Second"),
-                        value: "second1",
+                        child: Text(menu1[korean]![1]),
+                        value: "first2",
                       )
                     ]),
           ),
@@ -168,9 +170,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
             margin: EdgeInsets.only(left: 10.0, right: 10),
             child: PopupMenuButton(
                 elevation: 10,
-                child: Icon(
-                  Icons.notes_outlined,
-                ),
+                child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/options.svg")),
                 enabled: true,
                 onSelected: (value) {
                   setState(() {
@@ -180,13 +180,18 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(
-                        child: Text("First"),
-                        value: "first2",
+                        child: Text(menu2[korean]![0]),
+                        value: "second1",
                       ),
                       PopupMenuItem(
-                        child: Text("Second"),
+                        child: Text(menu2[korean]![1]),
                         value: "second2",
-                      )
+
+                      ),
+                      PopupMenuItem(
+                        child: Text(menu2[korean]![2]),
+                        value: "second3",
+                      ),
                     ]),
           ),
         ],
