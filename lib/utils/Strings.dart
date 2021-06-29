@@ -1,29 +1,18 @@
-//English
-const String home = "Home";
-const String search = "Search";
-const  String views = "Views";
-const String collections = "Collections";
-const toast_message_like = "You liked this post!";
-const toast_message_unlike = "You unliked this post!";
-const String app_name = "CheriBoard";
-
-const String search_page = "Search";
-const hint_text = "Please enter cheri name...";
-//Korean
-const  String  detail_screen_title ="신차인수 체크리스";
-const String views_kr = "조회수";
-const String home_kr = "홈";
-const String search_kr = "검색";
-const String collections_kr = "보관함";
-const String toast_message_like_kr = "당신은 이 글을 좋아했다!";
-const String toast_message_unlike_kr = "당신은 이 게시물을 싫어했군요!";
-const String app_name_kr = "원팅";
-const String search_page_kr = "검색";
-const String bookmark_tab_kr = "북마크";
-const String opened_tab_kr = "여러본 체리";
-const String hint_text_kr = "체리 이름을 입력하십시오...";
-const List<String> categories = ["건강",  "생활", "교육.학습", "IT.컨텐츠",  "자기개발"];
-
+//languages
+ String english = "en";
+ String korean = "kr";
+ Map<String, String> home_title = {"en": "Home", "kr": "홈"};
+ Map<String, String> search_title = {"en": "Search", "kr": "검색"};
+ Map<String, String> storage_title = {"en": "Storage", "kr": "보관함"};
+ Map<String, String> bookmark_tab = {english: "Bookmarks", korean: "북마크"};
+ Map<String, String> opened_tab = {english: "Opened", korean: "여러본 체리"};
+ Map<String, String> app_name = {english: "CheriViewer", korean: "체리뷰버"};
+ Map<String, String> cheri_views = {english: "Views", korean: "조회수"};
+ Map<String, String> search_hint = {english: "Please enter cheri name...", korean: "체리 이름을 입력하십시오..."};
+ Map<String, List<String>> categories = {
+  english: ["Health", "Life", "Education.Learning", "IT.Content", "Personal Development"],
+  korean: ["건강", "생활", "교육.학습", "IT.컨텐츠", "자기개발"]
+};
 
 //Api url
 const String baseUrl = "cheri.weeknday.com";

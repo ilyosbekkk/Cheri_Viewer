@@ -27,6 +27,7 @@ class _NavCotrollerState extends State<NavCotroller> {
 
 
 
+
   @override
   void initState() {
     // TODO: implement initState
@@ -66,10 +67,10 @@ class _NavCotrollerState extends State<NavCotroller> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: home_kr),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: search_kr),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label:  "홈"),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label:"검색"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.bookmark_border), label: collections_kr),
+              icon: Icon(Icons.bookmark_border), label: "보관함"),
         ],
         onTap: _onItemSelected,
         selectedItemColor: Colors.blueAccent,
@@ -116,7 +117,7 @@ class _NavCotrollerState extends State<NavCotroller> {
       floating: true,
       backgroundColor: Color.fromRGBO(250, 250, 250, 1),
       title: Text(
-        app_name,
+        app_name[korean]!,
         style: TextStyle(fontSize: 23, color: Colors.blue, fontWeight: FontWeight.bold),
       ),
       actions: [

@@ -13,8 +13,6 @@ class PostWidget extends StatelessWidget {
 
   PostWidget(this.height, this.width,  this.homePageProvider, this.post);
 
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -119,7 +117,7 @@ class PostWidget extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      "$views_kr:${post.views}",
+                      "${cheri_views[korean]}:${post.views}",
                       style: TextStyle(fontSize: 15),
                     ),
                     Container(

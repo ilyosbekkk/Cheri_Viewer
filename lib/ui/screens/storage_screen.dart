@@ -81,12 +81,12 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
         tabs: [
           // first tab [you can add an icon using the icon property]
           Tab(
-            text: bookmark_tab_kr,
+            text: bookmark_tab[korean],
           ),
 
           // second tab [you can add an icon using the icon property]
           Tab(
-            text: opened_tab_kr,
+            text: opened_tab[korean],
           ),
         ],
       ),
@@ -215,7 +215,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
                 textAlign: TextAlign.start,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.only(left: 10.0),
-                  hintText: hint_text,
+                  hintText: search_hint[korean],
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),

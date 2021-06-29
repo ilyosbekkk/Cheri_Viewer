@@ -20,8 +20,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
   bool _loaded = false;
   String _popupValue1 = "";
   String _popupValue2 = "";
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
@@ -37,21 +36,18 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
             onRefresh: _onRefresh,
             controller: _refreshController,
             enablePullDown: true,
-            child: Consumer<PostListsProvider>(
-                builder: (context, postProvider, widget) {
+            child: Consumer<PostListsProvider>(builder: (context, postProvider, widget) {
               if (!_loaded) {
                 postProvider.fetchPostsList(10, 1, "views", int.parse(args["id"]!)).then((value) {
-
-                    _loaded = true;
-
+                  _loaded = true;
                 });
               }
               return CustomScrollView(
                 slivers: [
-                  _buildSliverAppBar(_height,args["title"]!),
+                  _buildSliverAppBar(_height, args["title"]!),
                   _buildList(
                     postProvider,
-                    0.4*_height,
+                    0.4 * _height,
                     _width,
                   )
                 ],
@@ -88,26 +84,23 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
     );
   }
 
-  Widget _buildList(
-      PostListsProvider postListProvider, double height, double width) {
+  Widget _buildList(PostListsProvider postListProvider, double height, double width) {
     return SliverToBoxAdapter(
         child: ListView.builder(
             primary: false,
             shrinkWrap: true,
-            itemCount: postListProvider.categoryPosts.length+1,
+            itemCount: postListProvider.categoryPosts.length + 1,
             itemBuilder: (context, index) {
-              if(index == 0){
-                return  _buildSortWidget("searchWord", 5);
-              }
-              else {
-               index  = index  -1;
+              if (index == 0) {
+                return _buildSortWidget("searchWord", 5);
+              } else {
+                index = index - 1;
                 return _buildSinglePost(index, height, width, postListProvider);
               }
             }));
   }
 
-  Widget _buildSinglePost(int index, double height, double width,
-      PostListsProvider postListProvider) {
+  Widget _buildSinglePost(int index, double height, double width, PostListsProvider postListProvider) {
     List<Post> posts = postListProvider.categoryPosts;
     return PostWidget(height, width, postListProvider, posts[index]);
   }
@@ -150,15 +143,15 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                   });
                 },
                 itemBuilder: (context) => [
-                  PopupMenuItem(
-                    child: Text("First"),
-                    value: "first1",
-                  ),
-                  PopupMenuItem(
-                    child: Text("Second"),
-                    value: "second1",
-                  )
-                ]),
+                      PopupMenuItem(
+                        child: Text("First"),
+                        value: "first1",
+                      ),
+                      PopupMenuItem(
+                        child: Text("Second"),
+                        value: "second1",
+                      )
+                    ]),
           ),
           Container(
             margin: EdgeInsets.only(left: 10.0, right: 10),
@@ -175,15 +168,15 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                   });
                 },
                 itemBuilder: (context) => [
-                  PopupMenuItem(
-                    child: Text("First"),
-                    value: "first2",
-                  ),
-                  PopupMenuItem(
-                    child: Text("Second"),
-                    value: "second2",
-                  )
-                ]),
+                      PopupMenuItem(
+                        child: Text("First"),
+                        value: "first2",
+                      ),
+                      PopupMenuItem(
+                        child: Text("Second"),
+                        value: "second2",
+                      )
+                    ]),
           ),
         ],
       ),

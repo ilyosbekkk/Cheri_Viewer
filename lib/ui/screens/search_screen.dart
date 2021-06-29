@@ -45,7 +45,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 itemBuilder: (BuildContext context, index) {
                   if (index == 0)
                     return _buildSearchWidget(homepageProvider);
-                  else if (index == 1 && homepageProvider.searchResults.length > 0) {
+                  else if (index == 1 &&
+                      homepageProvider.searchResults.length > 0) {
                     return _buildSortWidget(_controller.text,
                         homepageProvider.searchResults.length);
                   } else {
@@ -91,7 +92,7 @@ class _SearchScreenState extends State<SearchScreen> {
               textAlign: TextAlign.start,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.only(left: 10.0),
-                hintText: hint_text,
+                hintText: search_hint[korean],
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -133,15 +134,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 });
               },
               itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: Text("First"),
-                  value: "first1",
-                ),
-                PopupMenuItem(
-                  child: Text("Second"),
-                  value: "second1",
-                )
-              ]),
+                    PopupMenuItem(
+                      child: Text("First"),
+                      value: "first1",
+                    ),
+                    PopupMenuItem(
+                      child: Text("Second"),
+                      value: "second1",
+                    )
+                  ]),
         ),
         Container(
           margin: EdgeInsets.only(left: 10.0, right: 10),
@@ -158,15 +159,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 });
               },
               itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: Text("First"),
-                  value: "first2",
-                ),
-                PopupMenuItem(
-                  child: Text("Second"),
-                  value: "second2",
-                )
-              ]),
+                    PopupMenuItem(
+                      child: Text("First"),
+                      value: "first2",
+                    ),
+                    PopupMenuItem(
+                      child: Text("Second"),
+                      value: "second2",
+                    )
+                  ]),
         ),
       ],
     );

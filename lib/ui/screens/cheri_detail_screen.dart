@@ -49,7 +49,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
       floating: true,
       backgroundColor: Color.fromRGBO(250, 250, 250, 1),
       title: Text(
-        detail_screen_title,
+        "TEMP TITLE",
         style: TextStyle(
           fontSize: 18,
           color: Colors.black,

@@ -42,11 +42,15 @@ class _HomeScreenState extends State<HomeScreen> {
           print("list1");
         }
       });
+    }
 
+    if(_homePageProvider.categoriesMessage == ""){
       _homePageProvider.fetchCategoriesList().then((value) {
         print("you are done");
       });
     }
+
+
     // widget._scrollController.addListener(() {
     //   if (widget._scrollController.position.pixels == widget._scrollController.position.maxScrollExtent) {
     //     initialPage = initialPage + 1;
@@ -123,8 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Widget _buildCategoryWidget(
-      PostListsProvider homeProvider, double radius, index) {
+  Widget _buildCategoryWidget(PostListsProvider homeProvider, double radius, index) {
     return InkWell(
       onTap: () {
         setState(() {
@@ -146,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
               width: 2 * radius,
               child: Text(
-                categories[index],
+                categories[korean]![index],
                 maxLines: 1,
                 textAlign: TextAlign.center,
                 style: TextStyle(
