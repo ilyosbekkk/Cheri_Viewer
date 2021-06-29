@@ -36,13 +36,13 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        primaryColor: Colors.blue,
+        primaryColor: Color.fromRGBO(0, 149, 246, 1),
         selectedRowColor: Color.fromRGBO(175, 27, 63, 1),
         buttonColor: Color.fromRGBO(245, 245, 245, 1),
         accentColor: Color.fromRGBO(255, 228, 228, 1),
         shadowColor: Color.fromRGBO(179, 183, 189, 1),
         backgroundColor: Color.fromRGBO(255, 255, 255, 1),
-        primaryColorDark: Color.fromRGBO(0, 0, 0, 1),
+        primaryColorDark: Color.fromRGBO(40, 40, 40, 0.8),
         textTheme: TextTheme(
           headline1: TextStyle(fontSize: 34.0, fontWeight: FontWeight.bold, fontFamily: "RobotoMono"),
           headline6: TextStyle(fontSize: 18.0, fontStyle: FontStyle.normal, fontFamily: "RobotoMono"),

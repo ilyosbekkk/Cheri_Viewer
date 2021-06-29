@@ -5,28 +5,25 @@ import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
 import 'package:viewerapp/utils/Strings.dart';
 
 class PostWidget extends StatelessWidget {
-
   double height;
   double width;
   PostListsProvider homePageProvider;
   Post post;
 
-  PostWidget(this.height, this.width,  this.homePageProvider, this.post);
+  PostWidget(this.height, this.width, this.homePageProvider, this.post);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-
       margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
       height: height,
       width: double.infinity,
       child: InkWell(
         onTap: () {
-       Navigator.pushNamed(context, CheriDetailViewScreen.route);
+          Navigator.pushNamed(context, CheriDetailViewScreen.route);
         },
         child: Card(
           elevation: 10.0,
-
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -38,10 +35,9 @@ class PostWidget extends StatelessWidget {
                     alignment: AlignmentDirectional.bottomStart,
                     children: [
                       ClipRRect(
-
                         child: FadeInImage.assetNetwork(
                           placeholder: 'assets/images/placeholder.png',
-                          image:post.imgUrl,
+                          image: post.imgUrl,
                           fit: BoxFit.fitWidth,
                         ),
                       ),
@@ -50,13 +46,13 @@ class PostWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            width: width * 0.2,
-                            margin: EdgeInsets.only(left: 10.0, top: 10.0),
+                            alignment: Alignment.center,
+                            height: 30,
+                            width: 130,
+                            margin: EdgeInsets.only(top: 16.0),
                             decoration: BoxDecoration(
-                                color: Colors.black54,
-                                border: Border.all(color: Colors.white),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(5.0))),
+                              color: Theme.of(context).primaryColorDark,
+                            ),
                             child: Text(
                               "구매.판매",
                               style: TextStyle(
@@ -66,29 +62,28 @@ class PostWidget extends StatelessWidget {
                             ),
                           ),
                           Container(
+                            alignment: Alignment.center,
+                            width: 30,
+                            height: 30,
+                            margin: EdgeInsets.only(top: 16.0, right: 8),
+                            color: Theme.of(context).primaryColorDark,
                             child: !post.like
-                                ? IconButton(
-                              icon: Icon(
-                                Icons.bookmark_border,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                homePageProvider.save(post);
-                              },
-                            )
-                                : IconButton(
-                              icon: Icon(
-                                Icons.bookmark,
-                                size: 25.0,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                homePageProvider
-                                    .unsave(post);
-                              },
-                            ),
+                                ? InkWell(
+                                    onTap: () {
+                                      homePageProvider.save(post);
+                                    },
+                                    child: Icon(
+                                      Icons.bookmark_border,
+                                      color: Theme.of(context).backgroundColor,
+                                    ),
+                                  )
+                                : InkWell(
+                                    onTap: () {
+                                      homePageProvider.unsave(post);
+                                    },
+                                    child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor),
+                                  ),
                           ),
-
                         ],
                       ),
                     ],
@@ -96,7 +91,7 @@ class PostWidget extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(left: 10.0, top: 5.0),
                 child: Text(
-                 post.title,
+                  post.title,
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   maxLines: 1,
                 ),
@@ -104,7 +99,7 @@ class PostWidget extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(left: 10.0, top: 5.0),
                 child: Text(
-                    post.author,
+                  post.author,
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -133,6 +128,7 @@ class PostWidget extends StatelessWidget {
           ),
         ),
       ),
-    );;
+    );
+    ;
   }
 }

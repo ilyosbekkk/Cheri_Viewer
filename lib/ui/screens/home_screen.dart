@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                         child: JumpingDotsProgressIndicator(
                       fontSize: 100,
-                      color: Colors.lightBlue,
+                      color: Theme.of(context).selectedRowColor,
                     )),
                   );
           }

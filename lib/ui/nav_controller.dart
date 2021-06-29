@@ -73,7 +73,7 @@ class _NavCotrollerState extends State<NavCotroller> {
               icon: Icon(Icons.bookmark_border), label: "보관함"),
         ],
         onTap: _onItemSelected,
-        selectedItemColor: Colors.blueAccent,
+        selectedItemColor: Theme.of(context).selectedRowColor,
         currentIndex: _selectedIndex,
         unselectedItemColor: Colors.black38,
       ) ,
@@ -116,10 +116,10 @@ class _NavCotrollerState extends State<NavCotroller> {
       shape: Border(bottom: BorderSide(color: Colors.black26, width: 0.5)),
       floating: true,
       backgroundColor: Color.fromRGBO(250, 250, 250, 1),
-      title: Text(
-        app_name[korean]!,
-        style: TextStyle(fontSize: 23, color: Colors.blue, fontWeight: FontWeight.bold),
-      ),
+      title: Container(
+         height: 29,
+         width: 130,
+          child: Image.asset("assets/images/logo.png", color: Theme.of(context).selectedRowColor,)),
       actions: [
         IconButton(
             onPressed: () {
