@@ -128,7 +128,7 @@ class _NavCotrollerState extends State<NavCotroller> {
             icon: Icon(
               Icons.account_circle_outlined,
               size: 30,
-              color: Colors.blue,
+              color: Colors.black54,
             )),
       ],
     );

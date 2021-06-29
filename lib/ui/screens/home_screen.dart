@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/ui/helper_widgets/singlepost_widget.dart';
@@ -114,24 +115,38 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [_buildCategoryWidget(homeProvider, radius, 4)],
           ),
         ),
-        if (homeProvider.showSubCategories2) _buildSubCategories(homeProvider,  homeProvider.activeIndex)
+        if (homeProvider.showSubCategories2) _buildSubCategories(homeProvider, homeProvider.activeIndex)
       ]);
     });
   }
 
   Widget _buildCategoryWidget(PostListsProvider homeProvider, double radius, index) {
+    String assetName = "";
+    switch(index) {
+      case 0: assetName = "assets/icons/health.svg";
+      break;
+      case 1: assetName = "assets/icons/life.svg";
+      break;
+      case 2: assetName  ="assets/icons/education.svg";
+      break;
+      case 3: assetName  ="assets/icons/it_content.svg";
+      break;
+      case 4: assetName  ="assets/icons/personal_development.svg";
+      break;
+
+    }
     return InkWell(
       onTap: () {
         homeProvider.showCategories(index);
       },
       child: Column(
         children: [
-          CircleAvatar(
-            radius: radius,
-            backgroundColor: Colors.lightBlueAccent,
-            child: CircleAvatar(
-              radius: homeProvider.activeAcategories[index] ? 0.9 * radius : radius,
-              backgroundImage: AssetImage("assets/images/logo.png"),
+          Container(
+            height: 30,
+            width: 30,
+            child: SvgPicture.asset(
+              assetName,
+              color:homeProvider.activeAcategories[index] ?Theme.of(context).selectedRowColor : Colors.black,
             ),
           ),
           Container(
@@ -140,7 +155,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 categories[korean]![index],
                 maxLines: 1,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: homeProvider.activeAcategories[index] ? Colors.lightBlueAccent : Colors.black),
+                style: TextStyle(
+                    color: homeProvider.activeAcategories[index] ? Theme.of(context).selectedRowColor : Colors.black,
+                    fontSize: 12),
               ))
         ],
       ),
@@ -148,7 +165,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSubCategories(PostListsProvider homeProvider, int i) {
-
     print(homeProvider.subCategories(i).length);
     return Container(
       margin: EdgeInsets.all(10),
@@ -161,14 +177,16 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisSpacing: 10,
           children: List.generate(homeProvider.subCategories(i).length, (index) {
             return MaterialButton(
+              elevation: 5,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               onPressed: () {
                 Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id": homeProvider.categoryIds(i)[index], "title": homeProvider.subCategories(i)[index]});
               },
-              color: Colors.amberAccent,
+              color: Theme.of(context).buttonColor,
               child: Text(
                 homeProvider.subCategories(i)[index],
                 maxLines: 1,
+                style:  Theme.of(context).textTheme.bodyText2,
               ),
             );
           })),

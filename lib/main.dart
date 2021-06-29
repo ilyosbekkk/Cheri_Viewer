@@ -34,7 +34,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(primarySwatch: Colors.blue, primaryColor: Colors.blue),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        primaryColor: Colors.blue,
+        selectedRowColor: Color.fromRGBO(175, 27, 63, 1),
+        buttonColor: Color.fromRGBO(245, 245, 245, 1),
+        accentColor: Color.fromRGBO(255, 228, 228, 1),
+        shadowColor: Color.fromRGBO(179, 183, 189, 1),
+        backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+        primaryColorDark: Color.fromRGBO(0, 0, 0, 1),
+        textTheme: TextTheme(
+          headline1: TextStyle(fontSize: 34.0, fontWeight: FontWeight.bold, fontFamily: "RobotoMono"),
+          headline6: TextStyle(fontSize: 18.0, fontStyle: FontStyle.normal, fontFamily: "RobotoMono"),
+          bodyText2: TextStyle(fontSize: 14.0, fontStyle: FontStyle.normal, fontFamily: "RobotoMono"),
+        ),
+      ),
       initialRoute: "/",
       routes: {
         NavCotroller.route: (_) => NavCotroller(),
