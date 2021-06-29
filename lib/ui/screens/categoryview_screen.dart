@@ -11,6 +11,7 @@ import 'package:viewerapp/utils/Strings.dart';
 class CategoryViewScreen extends StatefulWidget {
   static String route = "/categoryview_screen";
 
+
   CategoryViewScreen();
 
   @override

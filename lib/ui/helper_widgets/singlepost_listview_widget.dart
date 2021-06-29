@@ -22,12 +22,7 @@ class ListViewWidget extends StatelessWidget {
     return Container(
 
       margin: EdgeInsets.only(top: 10.0),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).primaryColorDark,
-        ),
 
-      ),
       height: 110,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
