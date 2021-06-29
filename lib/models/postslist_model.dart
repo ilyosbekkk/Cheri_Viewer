@@ -49,9 +49,10 @@ class Post {
   String _views;
   String _imgUrl;
   String _category;
+  String _categoryId;
   bool _like;
 
-  Post.create(this._title, this._author, this._dateTime, this._views, this._imgUrl, this._category, this._like);
+  Post.create(this._title, this._author, this._dateTime, this._views, this._imgUrl, this._category, this._like, this._categoryId);
 
 
   String get category => _category;
@@ -66,6 +67,8 @@ class Post {
 
   String get title => _title;
 
+  String get  categoryId => _categoryId;
+
   set category(String value) {
     _category = value;
   }
@@ -76,6 +79,10 @@ class Post {
 
   set views(String value) {
     _views = value;
+  }
+
+  set categoryId(String value) {
+    _categoryId = value;
   }
 
   bool get like => _like;
@@ -97,7 +104,7 @@ class Post {
   }
 
   factory Post.fromJson(Map<String, dynamic> parsedJson) {
-    return Post.create(parsedJson["TITLE"], "unknown", parsedJson["REG_DATE"], parsedJson["VIEWS"], 'https://cheri.weeknday.com/' + parsedJson["CHERI_PICTURE_URL"], parsedJson["CATEGORY"], true);
+    return Post.create(parsedJson["TITLE"], "unknown", parsedJson["REG_DATE"], parsedJson["VIEWS"], 'https://cheri.weeknday.com/' + parsedJson["CHERI_PICTURE_URL"], parsedJson["CATEGORY"], true, parsedJson["CATEGORY_ID"]);
   }
 }
 

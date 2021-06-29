@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart';
 import 'package:viewerapp/models/postslist_model.dart';
+import 'package:viewerapp/ui/screens/categoryview_screen.dart';
 import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
 import 'package:viewerapp/utils/Strings.dart';
 
@@ -16,7 +17,7 @@ class PostWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
-      height: height,
+      height: 310,
       width: double.infinity,
       child: InkWell(
         onTap: () {
@@ -28,7 +29,7 @@ class PostWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                  height: height * 0.65,
+                  height: 206,
                   width: width,
                   child: Stack(
                     fit: StackFit.expand,
@@ -45,20 +46,26 @@ class PostWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            alignment: Alignment.center,
-                            height: 30,
-                            width: 130,
-                            margin: EdgeInsets.only(top: 16.0),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColorDark,
-                            ),
-                            child: Text(
-                              "구매.판매",
-                              style: TextStyle(
-                                color: Colors.white,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id": post.categoryId, "title": post.category});
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 30,
+                              width: 130,
+                              margin: EdgeInsets.only(top: 16.0),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColorDark,
                               ),
-                              textAlign: TextAlign.center,
+                              child: Text(
+                                post.category,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
                           Container(
@@ -89,18 +96,18 @@ class PostWidget extends StatelessWidget {
                     ],
                   )),
               Container(
-                margin: EdgeInsets.only(left: 10.0, top: 5.0),
+                margin: EdgeInsets.only(left: 10.0, top: 15.0),
                 child: Text(
                   post.title,
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                   maxLines: 1,
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(left: 10.0, top: 5.0),
+                margin: EdgeInsets.only(left: 10.0, top: 10.0),
                 child: Text(
                   post.author,
-                  style: TextStyle(fontSize: 15),
+                  style: TextStyle(fontSize: 12),
                 ),
               ),
               Container(
@@ -109,7 +116,7 @@ class PostWidget extends StatelessWidget {
                   children: [
                     Text(
                       "${cheri_views[korean]}:${post.views}",
-                      style: TextStyle(fontSize: 15),
+                      style: TextStyle(fontSize: 12),
                     ),
                     Container(
                         margin: EdgeInsets.only(left: 3.0, right: 3.0),
@@ -119,7 +126,7 @@ class PostWidget extends StatelessWidget {
                         )),
                     Text(
                       "${post.dateTime}",
-                      style: TextStyle(fontSize: 14),
+                      style: TextStyle(fontSize: 12),
                     )
                   ],
                 ),
@@ -129,6 +136,5 @@ class PostWidget extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }

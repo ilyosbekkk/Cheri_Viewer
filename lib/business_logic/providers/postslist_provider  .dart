@@ -39,6 +39,7 @@ class PostListsProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         print(response.statusCode);
+        print(response.body);
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
 
