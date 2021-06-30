@@ -32,10 +32,11 @@ class DetailedPost {
   String? _nickName;
   String? _saveCount;
   String? _saveYn;
-  String? _hashTag;
+  String? _hashTag = "";
+  String? _comment;
 
-  DetailedPost(this._cherId, this._title, this._categoryId, this._share, this._regDate, this._pictureId, this._views, this._categoryName, this._picture, this._nickName, this._saveCount, this._saveYn, this._hashTag);
-
+  DetailedPost.create(this._cherId, this._title, this._categoryId, this._share, this._regDate, this._pictureId, this._views, this._categoryName, this._picture, this._nickName, this._saveCount, this._saveYn, this._hashTag, this._comment);
+  DetailedPost();
   String? get hashTag => _hashTag;
 
   String? get saveYn => _saveYn;
@@ -61,8 +62,9 @@ class DetailedPost {
   String? get title => _title;
 
   String? get cherId => _cherId;
+  String?  get comment =>_comment;
 
   factory DetailedPost.fromJson(Map<String, dynamic> parsedJson) {
-    return DetailedPost(parsedJson["CHERI_ID"], parsedJson["TITLE"], parsedJson["CATEGORY_ID"], parsedJson["SHARE"], parsedJson["REG_DAT"], parsedJson["PICTURE_ID"], parsedJson["VIEWS"], parsedJson["CATEGORY"], parsedJson["PICTURE"], parsedJson["NAME"], parsedJson["SAVECOUNT"], parsedJson["SAVE_YN"], parsedJson["Hashtag"]);
+    return DetailedPost.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], parsedJson["CATEGORY_ID"], parsedJson["SHARE"], parsedJson["REG_DATE"], parsedJson["PICTURE_ID"], parsedJson["VIEWS"], parsedJson["CATEGORY"], parsedJson["PICTURE"], parsedJson["NAME"], parsedJson["SAVECOUNT"], parsedJson["SAVE_YN"], parsedJson["hashtag"], parsedJson["COMMENT"]);
   }
 }

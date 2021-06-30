@@ -7,15 +7,20 @@ import 'package:viewerapp/models/detailedpost_model.dart';
 import 'package:viewerapp/models/postitem_model.dart';
 
 class DetailedViewProvider extends ChangeNotifier {
-  late DetailedPost _detailedPost;
-  late List<Item> _items;
+  late DetailedPost _detailedPost = DetailedPost();
+  late List<Item> _items = [];
 
   Future<bool> fetchDetailedViewData(String cheriId, memberId) async {
     Response response = await WebServices.fetchDetailedViewData(cheriId, memberId);
     Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-    DetailedPostResponse postsResponse = DetailedPostResponse.fromJson(decodedResponse);
+    print(decodedResponse);
 
+    DetailedPostResponse postsResponse = DetailedPostResponse.fromJson(decodedResponse);
+      print(postsResponse);
     _detailedPost = postsResponse.detailedPosts!;
+
+    print(_detailedPost.pictureId);
+    print(_detailedPost.picture);
     notifyListeners();
     return true;
   }
