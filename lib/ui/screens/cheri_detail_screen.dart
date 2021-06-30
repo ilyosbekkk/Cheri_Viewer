@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:viewerapp/business_logic/providers/detailedview_provider.dart';
-
+import 'package:viewerapp/utils/utils.dart';
 
 class CheriDetailViewScreen extends StatefulWidget {
   static String route = "/cheridetail_screen";
@@ -15,25 +15,34 @@ class CheriDetailViewScreen extends StatefulWidget {
 
 class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   ScrollController _scrollController = ScrollController();
-  late double _appBarHeight;
   late double height;
   late double width;
   late bool _loaded = false;
-  bool  isChecked = false;
+  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+    final args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
+    String cheriId = args["cheriId"]!;
+    String memberId = args["memberId"]!;
+
     return Scaffold(
-      body: SafeArea(
-        child: Consumer<DetailedViewProvider>(builder: (context, detailedProvider, child) {
-          return  CustomScrollView(
-            controller: _scrollController,
-            slivers: [_buildSliverAppBar(height), _buildList()],
-          );
-        })
-      ),
+      body: SafeArea(child: Consumer<DetailedViewProvider>(builder: (context, detailedProvider, child) {
+        if (!_loaded) {
+          detailedProvider.fetchDetailedViewData(cheriId, memberId).then((value) {});
+          detailedProvider.fetchDetailedViewItemsList(cheriId, memberId).then((value) {});
+          // detailedProvider.fetchDetailedViewItemsList(cheriId, memberId).then((value) {});
+          // detailedProvider.fetchDetailedViewFilesList(cheriId).then((value) {});
+          _loaded = true;
+        }
+
+        return CustomScrollView(
+          controller: _scrollController,
+          slivers: [_buildSliverAppBar(height), _buildList()],
+        );
+      })),
     );
   }
 
@@ -41,9 +50,6 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     AppBar appBar = AppBar(
       title: Text('Demo'),
     );
-    setState(() {
-      _appBarHeight = appBar.preferredSize.height;
-    });
 
     return SliverAppBar(
       shadowColor: Colors.blue,
@@ -83,8 +89,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
           else if (index == 1)
             return _buildAccountWidget();
           else if (index == 2)
-            return  _buildExtraWidgets();
-
+            return _buildExtraWidgets();
           else
             return _buildCheckListWidget(index);
         },
@@ -96,41 +101,55 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
       ),
     );
   }
+
   Widget _buildIntroWidget() {
     return Container();
   }
+
   Widget _buildAccountWidget() {
     return Container();
   }
+
   Widget _buildExtraWidgets() {
     return Container(
-      height: height*0.05,
+      height: height * 0.05,
       child: Row(
-      children: [
-        IconButton(onPressed: () {}, icon: Icon(Icons.bookmark_border),),
-        IconButton(onPressed: () {
-          Share.share('check out my website https://example.com');
-        }, icon: Icon(Icons.share_outlined),),
-      ],
+        children: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.bookmark_border),
+          ),
+          IconButton(
+            onPressed: () {
+              Share.share('check out my website https://example.com');
+            },
+            icon: Icon(Icons.share_outlined),
+          ),
+        ],
       ),
     );
   }
-  Widget _buildCheckListWidget(int index ) {
-   return  Container(
 
-      height: 0.04*height,
+  Widget _buildCheckListWidget(int index) {
+    return Container(
+      height: 0.04 * height,
       child: Row(
         children: [
-          Checkbox(value: isChecked, onChanged: (bool? value) {
-            setState(() {
-              isChecked = value!;
-            });
-          }),
+          Checkbox(
+              value: isChecked,
+              onChanged: (bool? value) {
+                setState(() {
+                  isChecked = value!;
+                });
+              }),
           Text(" 외관 – 와이퍼 위치 확인->${index}"),
           Spacer(),
-          IconButton(onPressed: () {},  icon: Icon(Icons.event_note_sharp),)
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.event_note_sharp),
+          )
         ],
-      ) ,
+      ),
     );
   }
 }

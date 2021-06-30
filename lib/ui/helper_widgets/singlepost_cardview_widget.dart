@@ -22,7 +22,13 @@ class CardViewWidget extends StatelessWidget {
       width: double.infinity,
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(context, CheriDetailViewScreen.route);
+          String? memberId = (preferences!.getString("id") ?? null);
+
+          if(memberId != null)
+          Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": post.cheriId, "memberId":memberId});
+          else {
+            print("Please login");
+          }
         },
         child: Card(
           elevation: 10.0,

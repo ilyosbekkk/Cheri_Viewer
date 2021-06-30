@@ -58,12 +58,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<bool> saveUserData(String id,  String email, String  imgUrl,  String name) async {
-
-    print(id);
-    print(email);
-    print(imgUrl);
-    print(name);
-
     bool setId = await preferences!.setString("id", id);
     bool setEmail = await preferences!.setString("email", email);
     bool setImgUrl = await preferences!.setString("imgUrl", imgUrl);

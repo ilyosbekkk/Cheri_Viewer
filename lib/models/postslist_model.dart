@@ -8,9 +8,7 @@ class PostsResponse {
 
   factory PostsResponse.fromJson(Map<String, dynamic> parsedJson) {
     List<dynamic>? list = [];
-    if(parsedJson["data"] != null)
-       list = parsedJson['data'] as List;
-
+    if (parsedJson["data"] != null) list = parsedJson['data'] as List;
 
     List<Post> postList = list.map((i) => Post.fromJson(i)).toList();
 
@@ -43,6 +41,7 @@ class PostsResponse {
 }
 
 class Post {
+  String _cheriId;
   String _title;
   String _author;
   String _dateTime;
@@ -52,8 +51,7 @@ class Post {
   String _categoryId;
   bool _like;
 
-  Post.create(this._title, this._author, this._dateTime, this._views, this._imgUrl, this._category, this._like, this._categoryId);
-
+  Post.create(this._cheriId, this._title, this._author, this._dateTime, this._views, this._imgUrl, this._category, this._like, this._categoryId);
 
   String get category => _category;
 
@@ -67,10 +65,16 @@ class Post {
 
   String get title => _title;
 
-  String get  categoryId => _categoryId;
+  String get cheriId => _cheriId;
+
+  String get categoryId => _categoryId;
 
   set category(String value) {
     _category = value;
+  }
+
+  set cheriId(String value) {
+    _cheriId = value;
   }
 
   set imgUrl(String value) {
@@ -104,8 +108,6 @@ class Post {
   }
 
   factory Post.fromJson(Map<String, dynamic> parsedJson) {
-    return Post.create(parsedJson["TITLE"], "unknown", parsedJson["REG_DATE"], parsedJson["VIEWS"], 'https://cheri.weeknday.com/' + parsedJson["CHERI_PICTURE_URL"], parsedJson["CATEGORY"], true, parsedJson["CATEGORY_ID"]);
+    return Post.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], "unknown", parsedJson["REG_DATE"], parsedJson["VIEWS"], 'https://cheri.weeknday.com/' + parsedJson["CHERI_PICTURE_URL"], parsedJson["CATEGORY"], true, parsedJson["CATEGORY_ID"]);
   }
 }
-
-
