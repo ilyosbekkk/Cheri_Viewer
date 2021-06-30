@@ -13,7 +13,6 @@ import 'package:viewerapp/utils/utils.dart';
 class CategoryViewScreen extends StatefulWidget {
   static String route = "/categoryview_screen";
 
-
   CategoryViewScreen();
 
   @override
@@ -30,7 +29,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
   Widget build(BuildContext context) {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
-    final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     return Scaffold(
       body: SafeArea(
@@ -45,17 +44,19 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                   _loaded = true;
                 });
               }
-              return CustomScrollView(
-                slivers: [
-                  _buildSliverAppBar(_height, args["title"]!),
-                  _buildList(
-                    postProvider,
-                    0.4 * _height,
-                    _width,
-                    args["title"]!
-                  )
-                ],
-              );
+              if (postProvider.categoryLoading)
+                return Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).selectedRowColor,
+                  ),
+                );
+              else
+                return CustomScrollView(
+                  slivers: [_buildSliverAppBar(_height, args["title"]!),
+
+                    ((preferences!.getString("mode1") ?? "card") == "card")?
+                    _buildList(postProvider, 0.4 * _height, _width, args["id"]!): _buildDividedList(postProvider, 0.4 * _height, _width, args["id"]!)],
+                );
             })),
       ),
     );
@@ -66,7 +67,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
       shadowColor: Colors.blue,
       elevation: 5,
       centerTitle: true,
-      shape: Border(bottom: BorderSide(color: Colors.black, width: 0.5)),
+      shape:((preferences!.getString("mode1") ?? "card") == "card")?  Border(bottom: BorderSide(color: Colors.black, width: 0.5)):Border(bottom: BorderSide(color: Colors.black, width: 0.0)),
       floating: true,
       backgroundColor: Color.fromRGBO(250, 250, 250, 1),
       title: Text(
@@ -88,7 +89,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
     );
   }
 
-  Widget _buildList(PostListsProvider postListProvider, double height, double width,  String title) {
+  Widget _buildList(PostListsProvider postListProvider, double height, double width, String category) {
     return SliverToBoxAdapter(
         child: ListView.builder(
             primary: false,
@@ -96,29 +97,39 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
             itemCount: postListProvider.categoryPosts.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
-                return _buildSortWidget("searchWord", 5, title);
+                return _buildSortWidget("searchWord", 5, postListProvider, category);
               } else {
-                if (postListProvider.categoryPosts.length == 0) {
-                  return Center(
-                    child: JumpingDotsProgressIndicator(
-                      color: Theme.of(context).selectedRowColor,
-                      fontSize: 100,
-                    ),
-                  );
-                } else {
-                  index = index - 1;
-                  return _buildSinglePost(index, height, width, postListProvider, title);
-                }
+                index = index - 1;
+                return _buildSinglePost(index, height, width, postListProvider);
               }
             }));
   }
 
-  Widget _buildSinglePost(int index, double height, double width, PostListsProvider postListProvider, title) {
+  Widget _buildDividedList(PostListsProvider postListProvider, double height, double width, String category) {
+    return SliverToBoxAdapter(
+        child: ListView.separated(
+      primary: false,
+      shrinkWrap: true,
+      itemCount: postListProvider.categoryPosts.length + 1,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return _buildSortWidget("searchWord", 5, postListProvider, category);
+        } else {
+          index = index - 1;
+          return _buildSinglePost(index, height, width, postListProvider);
+        }
+      },
+      separatorBuilder: (BuildContext context, int index) => Divider(height: 1, color: Colors.black,),
+    ));
+  }
+
+  Widget _buildSinglePost(int index, double height, double width, PostListsProvider postListProvider) {
     List<Post> posts = postListProvider.categoryPosts;
-    String mode = preferences!.getString(title) ?? "card";
-    if(mode == "card")
-    return CardViewWidget(height, width, postListProvider, posts[index]);
-    else return ListViewWidget(height, width, postListProvider, posts[index]);
+    String mode = preferences!.getString("mode1") ?? "card";
+    if (mode == "card")
+      return CardViewWidget(height, width, postListProvider, posts[index]);
+    else
+      return ListViewWidget(height, width, postListProvider, posts[index]);
   }
 
   void _onRefresh() async {
@@ -138,7 +149,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
     _refreshController.loadComplete();
   }
 
-  Widget _buildSortWidget(String searchWord, int count, String title) {
+  Widget _buildSortWidget(String searchWord, int count, PostListsProvider postListsProvidert, String category) {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: Row(
@@ -150,18 +161,14 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/list.svg")),
                 elevation: 10,
                 enabled: true,
-                onSelected: (value) async{
-                  if(value == "first1"){
-                    await preferences!.setString(title, "card");
+                onSelected: (value) async {
+                  if (value == "first1") {
+                    await preferences!.setString("mode1", "card");
+                  } else if (value == "first2") {
+                    await preferences!.setString("mode1", "list");
                   }
-                  else if(value == "first2") {
-                    await preferences!.setString(title, "list");
-                  }
-
-                  setState(() {
-
-                  });
-                  },
+                  setState(() {});
+                },
                 itemBuilder: (context) => [
                       PopupMenuItem(
                         child: Text(menu1[korean]![0]),
@@ -179,8 +186,15 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 elevation: 10,
                 child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/options.svg")),
                 enabled: true,
-                onSelected: (value) {
-
+                onSelected: (value) async {
+                  if (value == "second1") {
+                    await postListsProvidert.fetchPostsList(10, 1, "regdate r", int.parse(category));
+                  } else if (value == "second2") {
+                    await postListsProvidert.fetchPostsList(10, 1, "regdate", int.parse(category));
+                  } else if (value == "second3") {
+                    await postListsProvidert.fetchPostsList(10, 1, "views", int.parse(category));
+                  }
+                  setState(() {});
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(
@@ -190,7 +204,6 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                       PopupMenuItem(
                         child: Text(menu2[korean]![1]),
                         value: "second2",
-
                       ),
                       PopupMenuItem(
                         child: Text(menu2[korean]![2]),

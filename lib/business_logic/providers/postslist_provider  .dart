@@ -14,6 +14,7 @@ class PostListsProvider extends ChangeNotifier {
   String categoriesMessage = "";
   List<Post> allPosts = [];
   List<Post> categoryPosts = [];
+  late bool categoryLoading;
   List<Post> searchResults = [];
   List<Post> bookMarkedPosts = [];
 
@@ -34,21 +35,29 @@ class PostListsProvider extends ChangeNotifier {
 
   Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy, int category) async {
     try {
+
+      categoryLoading = true;
       if (categoryPosts.isNotEmpty) categoryPosts.clear();
       Response response = await WebServices.fetchPosts(pageSize, nowPage, orderBy, category);
 
       if (response.statusCode == 200) {
-        print(response.statusCode);
-        print(response.body);
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
 
         postsMessage = postsResponse.message;
         if (category == 0) {
-          print(postsResponse.data.length);
           allPosts.addAll(postsResponse.data);
-        } else
+        } else {
+
+          categoryLoading = false;
           categoryPosts.addAll(postsResponse.data);
+
+
+
+
+
+
+        }
         notifyListeners();
         return true;
       } else {
