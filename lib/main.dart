@@ -13,15 +13,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
+import 'business_logic/providers/detailedview_provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await initPreferences();
   final List<SingleChildWidget> providers = [
-    ChangeNotifierProvider(
-      create: (_) => AuthProvider(),
-    ),
+    ChangeNotifierProvider(create: (_) => AuthProvider(),),
     ChangeNotifierProvider(create: (_) => PostListsProvider()),
+    ChangeNotifierProvider(create: (_) => DetailedViewProvider()),
   ];
 
   runApp(MultiProvider(

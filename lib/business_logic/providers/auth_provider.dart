@@ -9,15 +9,14 @@ class AuthProvider extends ChangeNotifier {
   //google signin
   Future<Map<String, String>> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = (await GoogleSignIn().signIn())!;
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
     await FirebaseAuth.instance.signInWithCredential(credential);
 
-    Map<String,String> credentials = {"access_token":"${googleAuth.accessToken}", "id_token":" ${googleAuth.idToken}", "site_id":"${googleUser.id}", "email": "${googleUser.email}", "name":"${googleUser.displayName}"};
+    Map<String, String> credentials = {"access_token": "${googleAuth.accessToken}", "id_token": " ${googleAuth.idToken}", "site_id": "${googleUser.id}", "email": "${googleUser.email}", "name": "${googleUser.displayName}"};
 
     return credentials;
   }
@@ -58,9 +57,25 @@ class AuthProvider extends ChangeNotifier {
     return credentials;
   }
 
-  //email  sign_up
-  // ignore: missing_return
+  Future<bool> saveUserData(String id,  String email, String  imgUrl,  String name) async {
 
+    print(id);
+    print(email);
+    print(imgUrl);
+    print(name);
 
-  void logout() {}
+    bool setId = await preferences!.setString("id", id);
+    bool setEmail = await preferences!.setString("email", email);
+    bool setImgUrl = await preferences!.setString("imgUrl", imgUrl);
+    bool setName = await preferences!.setString("name", name);
+
+    if (setId && setEmail && setImgUrl && setName) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> logout() async {
+    return await preferences!.clear();
+  }
 }

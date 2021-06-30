@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
+import 'package:viewerapp/business_logic/providers/detailedview_provider.dart';
 
-import '../../utils/strings.dart';
 
 class CheriDetailViewScreen extends StatefulWidget {
   static String route = "/cheridetail_screen";
@@ -17,6 +18,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   late double _appBarHeight;
   late double height;
   late double width;
+  late bool _loaded = false;
   bool  isChecked = false;
 
   @override
@@ -25,10 +27,12 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [_buildSliverAppBar(height), _buildList()],
-        ),
+        child: Consumer<DetailedViewProvider>(builder: (context, detailedProvider, child) {
+          return  CustomScrollView(
+            controller: _scrollController,
+            slivers: [_buildSliverAppBar(height), _buildList()],
+          );
+        })
       ),
     );
   }
@@ -80,10 +84,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
             return _buildAccountWidget();
           else if (index == 2)
             return  _buildExtraWidgets();
-          else if(index == 3)
-            return Center(child: Text("Your checklist:",  style: TextStyle(
-              fontSize: 18
-            ),));
+
           else
             return _buildCheckListWidget(index);
         },
@@ -96,96 +97,10 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     );
   }
   Widget _buildIntroWidget() {
-    return Container(
-
-      margin: EdgeInsets.only(top: 10),
-      height: height * 0.2,
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.only(left: 10),
-            child: Row(
-              children: [
-                Text("2020.09.20 "),
-                Icon(
-                  Icons.circle,
-                  size: 5,
-                ),
-                Text(" 조회수 243 "),
-                Icon(
-                  Icons.circle,
-                  size: 5,
-                ),
-                Text(
-                  " 23",
-                  textAlign: TextAlign.center,
-                ),
-                Icon(Icons.bookmark)
-              ],
-            ),
-          ),
-          Expanded(
-              child: Align(
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "식단관리",
-                  style: TextStyle(fontSize: 18),
-                ),
-                Text(
-                  "신차인수 체크리스트",
-                  style: TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-          )),
-        ],
-      ),
-    );
+    return Container();
   }
   Widget _buildAccountWidget() {
-    return Container(
-        height: height * 0.15,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              margin: EdgeInsets.only(left: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center ,
-
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor:Colors.black38.withOpacity(0),
-                    backgroundImage: AssetImage("assets/images/account.png"),
-                  ),
-                  Text("김승규", style: TextStyle(fontSize: 18),)
-                ],
-              ),
-            ),
-            Container(
-              alignment: Alignment.center,
-              width: width*0.6,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center ,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("신차 구입시, 확인 해봐야하는 꿀팁입니다 신차 구입시, 확인 해봐야하는 꿀팁입니다 신차 구입시, 확인 해봐야하는 꿀팁입니다 ", maxLines: 3, style: TextStyle(
-                    fontSize: 15
-                  ),),
-                  Text("#안녕 #한국 #미국 #호주 #소주", maxLines: 3, style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.lightBlue
-                  ),),
-                ],
-              ),
-            ),
-
-          ],
-        ));
+    return Container();
   }
   Widget _buildExtraWidgets() {
     return Container(

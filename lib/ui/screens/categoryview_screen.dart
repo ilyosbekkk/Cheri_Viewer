@@ -52,10 +52,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 );
               else
                 return CustomScrollView(
-                  slivers: [_buildSliverAppBar(_height, args["title"]!),
-
-                    ((preferences!.getString("mode1") ?? "card") == "card")?
-                    _buildList(postProvider, 0.4 * _height, _width, args["id"]!): _buildDividedList(postProvider, 0.4 * _height, _width, args["id"]!)],
+                  slivers: [_buildSliverAppBar(_height, args["title"]!), ((preferences!.getString("mode1") ?? "card") == "card") ? _buildList(postProvider, 0.4 * _height, _width, args["id"]!) : _buildDividedList(postProvider, 0.4 * _height, _width, args["id"]!)],
                 );
             })),
       ),
@@ -67,7 +64,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
       shadowColor: Colors.blue,
       elevation: 5,
       centerTitle: true,
-      shape:((preferences!.getString("mode1") ?? "card") == "card")?  Border(bottom: BorderSide(color: Colors.black, width: 0.5)):Border(bottom: BorderSide(color: Colors.black, width: 0.0)),
+      shape: ((preferences!.getString("mode1") ?? "card") == "card") ? Border(bottom: BorderSide(color: Colors.black, width: 0.5)) : Border(bottom: BorderSide(color: Colors.black, width: 0.0)),
       floating: true,
       backgroundColor: Color.fromRGBO(250, 250, 250, 1),
       title: Text(
@@ -119,7 +116,10 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
           return _buildSinglePost(index, height, width, postListProvider);
         }
       },
-      separatorBuilder: (BuildContext context, int index) => Divider(height: 1, color: Colors.black,),
+      separatorBuilder: (BuildContext context, int index) => Divider(
+        height: 1,
+        color: Colors.black,
+      ),
     ));
   }
 
