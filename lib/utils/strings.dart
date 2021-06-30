@@ -23,9 +23,10 @@ Map<String, List<String>> menu2 = {
   korean: ["추가된 날짜(최신순)", "추가된 날짜(오래된순)", "조회순"]
 };
 
-
-//Api url
+//api urls
 const String baseUrl = "cheri.weeknday.com";
 const String postsList = "/api/Viewerapi/list";
 const String searchPost = "/api/native/search";
 const String categoryList = "/api/Viewerapi/side_category";
+
+

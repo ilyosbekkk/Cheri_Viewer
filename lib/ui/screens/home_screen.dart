@@ -8,7 +8,7 @@ import 'package:viewerapp/ui/screens/categoryview_screen.dart';
 import '../../business_logic/providers/postslist_provider  .dart';
 
 import '../../models/postslist_model.dart';
-import '../../utils/Strings.dart';
+import '../../utils/strings.dart';
 
 class HomeScreen extends StatefulWidget {
   double height;
@@ -38,14 +38,12 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_homePageProvider.postsMessage == "") {
       _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {
         if (value == true) {
-          print("list1");
         }
       });
     }
 
     if (_homePageProvider.categoriesMessage == "") {
       _homePageProvider.fetchCategoriesList().then((value) {
-        print("you are done");
       });
     }
 
@@ -79,9 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? _buildSinglePost(index - 1, 0.4 * widget.height, widget.width)
                 : Center(
                     child: Container(
-                        child: JumpingDotsProgressIndicator(
-                      fontSize: 100,
-                      color: Theme.of(context).selectedRowColor,
+                        child: CircularProgressIndicator(
+                      backgroundColor: Theme.of(context).selectedRowColor,
                     )),
                   );
           }
@@ -90,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSinglePost(int index, double height, double width) {
     List<Post> posts = _homePageProvider.allPosts;
-    return ListViewWidget(height, width, _homePageProvider, posts[index]);
+    return CardViewWidget(height, width, _homePageProvider, posts[index]);
   }
 
   Widget _buildCategories(double width) {
@@ -166,7 +163,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSubCategories(PostListsProvider homeProvider, int i) {
-    print(homeProvider.subCategories(i).length);
     return Container(
       margin: EdgeInsets.all(10),
       child: GridView.count(

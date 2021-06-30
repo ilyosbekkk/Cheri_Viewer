@@ -66,9 +66,7 @@ class PostListsProvider extends ChangeNotifier {
       Response response = await WebServices.searchPostByTitle(pageSize, nowPage, orderBy, searchWord);
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-        print(decodedResponse);
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
-        print(postsResponse.data);
 
         searchResults.addAll(postsResponse.data);
         notifyListeners();
@@ -93,7 +91,6 @@ class PostListsProvider extends ChangeNotifier {
 
   Future<bool> fetchCategoriesList() async {
     Response response = await WebServices.fetchCategoriesList("cheri");
-    print(response.body);
     if (response.statusCode == 200) {
       Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
@@ -139,13 +136,11 @@ class PostListsProvider extends ChangeNotifier {
   }
 
   void save(Post post) {
-    print("like pressed");
     post.like = true;
     notifyListeners();
   }
 
   void unsave(Post post) {
-    print("unlike pressed");
     post.like = false;
     notifyListeners();
   }

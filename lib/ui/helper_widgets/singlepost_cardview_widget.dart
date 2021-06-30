@@ -3,7 +3,7 @@ import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/screens/categoryview_screen.dart';
 import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
-import 'package:viewerapp/utils/Strings.dart';
+import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
 
 class CardViewWidget extends StatelessWidget {
@@ -126,7 +126,7 @@ class CardViewWidget extends StatelessWidget {
                           size: 5.0,
                         )),
                     Text(
-                      "${timeFormatter(post.dateTime)} 전에",
+                      "${timeFormatter(post.dateTime)} 전",
                       style: TextStyle(fontSize: 12),
                     )
                   ],

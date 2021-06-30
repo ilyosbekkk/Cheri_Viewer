@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 
-import '../../utils/Strings.dart';
+import '../../utils/strings.dart';
 
 class CheriDetailViewScreen extends StatefulWidget {
   static String route = "/cheridetail_screen";

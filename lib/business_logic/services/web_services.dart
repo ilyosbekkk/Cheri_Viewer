@@ -1,5 +1,5 @@
 import 'package:http/http.dart' as http;
-import '../../utils/Strings.dart';
+import 'package:viewerapp/utils/Strings.dart';
 
 
 class WebServices {
@@ -11,13 +11,10 @@ class WebServices {
     Map<String,  String> headers = {'Accept':'application/json;'};
     http.Response response = await http.post(url, headers: headers, body: body);
 
-
     return response;
   }
 
   static Future<http.Response> searchPostByTitle(int pageSize, int nowPage,  String orderBy,  String   searchWord) async{
-
-
     final  url = Uri.https(baseUrl, searchPost);
     final body = {'pagesize': '$pageSize','nowpage': '$nowPage','orderby':'$orderBy','search_word': '$searchWord'};
     Map<String,  String> headers = {'Accept':'application/json;'};
@@ -33,7 +30,6 @@ class WebServices {
     Map<String,  String> headers = {'Accept':'application/json;'};
     http.Response response = await http.post(url, headers: headers, body: body);
 
-    print("response:${response.body}");
     return response;
 
   }

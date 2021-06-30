@@ -1,5 +1,9 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
+SharedPreferences? preferences;
 
 void showToast(String message) {
   Fluttertoast.showToast(msg: message, toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 1, backgroundColor: Colors.blueGrey, textColor: Colors.white, fontSize: 16.0);
@@ -8,7 +12,6 @@ void showToast(String message) {
 String timeFormatter(String formattedString) {
   var nowTime = DateTime.now();
   var postCreationTime = DateTime.parse(formattedString);
-
   int yearDiff = nowTime.year - postCreationTime.year;
   if (yearDiff == 0) {
     int monthDiff = nowTime.month - postCreationTime.month;
@@ -37,4 +40,9 @@ String timeFormatter(String formattedString) {
   } else {
     return "$yearDiff 년";
   }
+}
+
+
+Future<void> initPreferences() async{
+  preferences = await SharedPreferences.getInstance();
 }

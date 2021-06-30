@@ -44,7 +44,6 @@ class _AuthScreenState extends State<AuthScreen> {
               _controller.addJavaScriptHandler(
                   handlerName: "google_user_info",
                   callback: (args) {
-                    print("ewferofgr");
                     print("google info: $args");
                   });
               _controller.addJavaScriptHandler(

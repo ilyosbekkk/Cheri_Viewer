@@ -6,7 +6,9 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
-import 'package:viewerapp/utils/Strings.dart';
+import 'package:viewerapp/ui/helper_widgets/singlepost_listview_widget.dart';
+import 'package:viewerapp/utils/strings.dart';
+import 'package:viewerapp/utils/utils.dart';
 
 class CategoryViewScreen extends StatefulWidget {
   static String route = "/categoryview_screen";
@@ -22,8 +24,6 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
   late double _height;
   late double _width;
   bool _loaded = false;
-  String _popupValue1 = "";
-  String _popupValue2 = "";
   RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   @override
@@ -32,7 +32,6 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
     _width = MediaQuery.of(context).size.width;
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
 
-    print(args["id"]);
     return Scaffold(
       body: SafeArea(
         child: SmartRefresher(
@@ -53,6 +52,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                     postProvider,
                     0.4 * _height,
                     _width,
+                    args["title"]!
                   )
                 ],
               );
@@ -88,7 +88,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
     );
   }
 
-  Widget _buildList(PostListsProvider postListProvider, double height, double width) {
+  Widget _buildList(PostListsProvider postListProvider, double height, double width,  String title) {
     return SliverToBoxAdapter(
         child: ListView.builder(
             primary: false,
@@ -96,10 +96,9 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
             itemCount: postListProvider.categoryPosts.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
-                return _buildSortWidget("searchWord", 5);
+                return _buildSortWidget("searchWord", 5, title);
               } else {
                 if (postListProvider.categoryPosts.length == 0) {
-                  print("heyyyyyyyyyyy");
                   return Center(
                     child: JumpingDotsProgressIndicator(
                       color: Theme.of(context).selectedRowColor,
@@ -108,20 +107,22 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                   );
                 } else {
                   index = index - 1;
-                  return _buildSinglePost(index, height, width, postListProvider);
+                  return _buildSinglePost(index, height, width, postListProvider, title);
                 }
               }
             }));
   }
 
-  Widget _buildSinglePost(int index, double height, double width, PostListsProvider postListProvider) {
+  Widget _buildSinglePost(int index, double height, double width, PostListsProvider postListProvider, title) {
     List<Post> posts = postListProvider.categoryPosts;
+    String mode = preferences!.getString(title) ?? "card";
+    if(mode == "card")
     return CardViewWidget(height, width, postListProvider, posts[index]);
+    else return ListViewWidget(height, width, postListProvider, posts[index]);
   }
 
   void _onRefresh() async {
     // monitor network fetch
-    print("onrefresh");
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use refreshFailed()
     _refreshController.refreshCompleted();
@@ -129,7 +130,6 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
 
   void _onLoading() async {
     // monitor network fetch
-    print("onloading");
 
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
@@ -138,7 +138,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
     _refreshController.loadComplete();
   }
 
-  Widget _buildSortWidget(String searchWord, int count) {
+  Widget _buildSortWidget(String searchWord, int count, String title) {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: Row(
@@ -150,12 +150,18 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/list.svg")),
                 elevation: 10,
                 enabled: true,
-                onSelected: (value) {
+                onSelected: (value) async{
+                  if(value == "first1"){
+                    await preferences!.setString(title, "card");
+                  }
+                  else if(value == "first2") {
+                    await preferences!.setString(title, "list");
+                  }
+
                   setState(() {
-                    _popupValue1 = value.toString();
-                    print(_popupValue1);
+
                   });
-                },
+                  },
                 itemBuilder: (context) => [
                       PopupMenuItem(
                         child: Text(menu1[korean]![0]),
@@ -174,10 +180,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/options.svg")),
                 enabled: true,
                 onSelected: (value) {
-                  setState(() {
-                    _popupValue2 = value.toString();
-                    print(_popupValue1);
-                  });
+
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(

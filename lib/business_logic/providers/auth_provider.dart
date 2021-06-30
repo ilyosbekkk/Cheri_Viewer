@@ -29,9 +29,7 @@ class AuthProvider extends ChangeNotifier {
     KakaoContext.clientId = "818a2baccb86e7432dcdb89f7957110d";
     if (installed) {
       try {
-        print("I am here");
         var code = await AuthCodeClient.instance.request();
-        print("Code $code");
         var token = await AuthApi.instance.issueAccessToken(code);
         AccessTokenStore.instance.toStore(token);
         credentials = "access_token:${token.accessToken}";

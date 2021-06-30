@@ -6,6 +6,7 @@ import 'package:viewerapp/ui/screens/categoryview_screen.dart';
 import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
 import 'package:viewerapp/ui/screens/profile_screen.dart';
 import 'package:viewerapp/ui/screens/settings_screen.dart';
+import 'package:viewerapp/utils/utils.dart';
 import 'business_logic/providers/auth_provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,6 +16,7 @@ import 'package:flutter/material.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await initPreferences();
   final List<SingleChildWidget> providers = [
     ChangeNotifierProvider(
       create: (_) => AuthProvider(),
@@ -44,9 +46,10 @@ class MyApp extends StatelessWidget {
         backgroundColor: Color.fromRGBO(255, 255, 255, 1),
         primaryColorDark: Color.fromRGBO(40, 40, 40, 0.8),
         textTheme: TextTheme(
-          headline1: TextStyle(fontSize: 34.0, fontWeight: FontWeight.bold, fontFamily: "RobotoMono"),
-          headline6: TextStyle(fontSize: 18.0, fontStyle: FontStyle.normal, fontFamily: "RobotoMono"),
-          bodyText2: TextStyle(fontSize: 14.0, fontStyle: FontStyle.normal, fontFamily: "RobotoMono"),
+          headline1: TextStyle(fontSize: 34.0, fontWeight: FontWeight.bold, fontFamily: "NotoSansKR"),
+          headline6: TextStyle(fontSize: 18.0, fontStyle: FontStyle.normal, fontFamily: "NotoSansKR"),
+          bodyText1: TextStyle(fontSize: 15.0, fontStyle: FontStyle.normal, fontFamily: "NotoSansKR"),
+          bodyText2: TextStyle(fontSize: 12.0, fontStyle: FontStyle.normal, fontFamily: "NotoSansKR"),
         ),
       ),
       initialRoute: "/",

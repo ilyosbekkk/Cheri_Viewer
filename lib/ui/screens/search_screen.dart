@@ -5,7 +5,7 @@ import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
 
-import '../../utils/Strings.dart';
+import '../../utils/strings.dart';
 
 class SearchScreen extends StatefulWidget {
   double height;
@@ -39,28 +39,24 @@ class _SearchScreenState extends State<SearchScreen> {
             return ListView.builder(
                 primary: false,
                 shrinkWrap: true,
-                itemCount: homepageProvider.searchResults.length != 0
-                    ? homepageProvider.searchResults.length + 2
-                    : 2,
+                itemCount: homepageProvider.searchResults.length != 0 ? homepageProvider.searchResults.length + 2 : 2,
                 itemBuilder: (BuildContext context, index) {
                   if (index == 0)
                     return _buildSearchWidget(homepageProvider);
-                  else if (index == 1 &&
-                      homepageProvider.searchResults.length > 0) {
-                    return _buildSortWidget(_controller.text,
-                        homepageProvider.searchResults.length);
+                  else if (index == 1 && homepageProvider.searchResults.length > 0) {
+                    return _buildSortWidget(_controller.text, homepageProvider.searchResults.length);
                   } else {
                     index = index - 2;
                     return homepageProvider.searchResults.length > 0
-                        ? _buildPostWidget(0.4 * widget.height, widget.width,
-                            index, homepageProvider)
+                        ? _buildPostWidget(0.4 * widget.height, widget.width, index, homepageProvider)
                         : Center(
                             child: searching
-                                ? JumpingDotsProgressIndicator(
-                                    fontSize: 100,
-                                    color: Colors.blueAccent,
-                                  )
-                                : Text("검색 결과가 없습니다"));
+                                ? Container(
+                                    margin: EdgeInsets.only(top: 16),
+                                    child: CircularProgressIndicator(
+                                      backgroundColor: Theme.of(context).selectedRowColor,
+                                    ))
+                                : Container(margin: EdgeInsets.only(top: 16), child: Text("검색 결과가 없습니다")));
                   }
                 });
           },
@@ -80,9 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 setState(() {
                   searching = true;
                 });
-                homePageProvider
-                    .searchPostByTitle(10, 1, "views", searchWord)
-                    .then((value) {
+                homePageProvider.searchPostByTitle(10, 1, "views", searchWord).then((value) {
                   setState(() {
                     searching = false;
                   });
@@ -108,8 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildPostWidget(
-      double height, double width, index, PostListsProvider homePageProvider) {
+  Widget _buildPostWidget(double height, double width, index, PostListsProvider homePageProvider) {
     List<Post> posts = homePageProvider.searchResults;
     return CardViewWidget(height, width, homePageProvider, posts[index]);
   }
@@ -117,9 +110,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildSortWidget(String searchWord, int count) {
     return Row(
       children: [
-        Container(
-            margin: EdgeInsets.only(left: 10.0),
-            child: Text('${searchWord} 검색 결과 ${count} 건')),
+        Container(margin: EdgeInsets.only(left: 10.0), child: Text('${searchWord} 검색 결과 ${count} 건')),
         Spacer(),
         Container(
           margin: EdgeInsets.only(left: 5.0),
@@ -130,7 +121,6 @@ class _SearchScreenState extends State<SearchScreen> {
               onSelected: (value) {
                 setState(() {
                   _popupValue1 = value.toString();
-                  print(_popupValue1);
                 });
               },
               itemBuilder: (context) => [
@@ -155,7 +145,6 @@ class _SearchScreenState extends State<SearchScreen> {
               onSelected: (value) {
                 setState(() {
                   _popupValue2 = value.toString();
-                  print(_popupValue1);
                 });
               },
               itemBuilder: (context) => [

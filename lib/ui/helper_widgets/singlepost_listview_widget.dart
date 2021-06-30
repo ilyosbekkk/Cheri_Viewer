@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart';
 import 'package:viewerapp/models/postslist_model.dart';
-import 'package:viewerapp/utils/Strings.dart';
+import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
 
 // ignore: must_be_immutable
@@ -89,7 +89,7 @@ class ListViewWidget extends StatelessWidget {
                         size: 5.0,
                       )),
                   Text(
-                    "${timeFormatter(post.dateTime)} 전에",
+                    "${timeFormatter(post.dateTime)} 전",
                     style: TextStyle(fontSize: 12),
                   )
                 ],

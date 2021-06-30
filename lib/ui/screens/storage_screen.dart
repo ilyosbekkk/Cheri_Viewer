@@ -4,7 +4,7 @@ import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
 
-import '../../utils/Strings.dart';
+import '../../utils/strings.dart';
 
 class StorageBoxScreen extends StatefulWidget {
   double height;
