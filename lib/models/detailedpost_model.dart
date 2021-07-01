@@ -2,14 +2,16 @@ class DetailedPostResponse {
   String? _code;
   String? _msg;
   DetailedPost? _detailedPosts;
+  String? _encryptedId;
 
-  DetailedPostResponse(this._code, this._msg, this._detailedPosts);
+
+  DetailedPostResponse(this._code, this._msg, this._detailedPosts, this._encryptedId);
 
   factory DetailedPostResponse.fromJson(Map<String, dynamic> parsedJson) {
 
 
     DetailedPost dataList =DetailedPost.fromJson(parsedJson["data"]);
-    return DetailedPostResponse(parsedJson["code"], parsedJson["msg"],dataList);
+    return DetailedPostResponse(parsedJson["code"], parsedJson["msg"],dataList, parsedJson["encrypt_id"]);
   }
 
   DetailedPost? get detailedPosts => _detailedPosts;
@@ -17,6 +19,8 @@ class DetailedPostResponse {
   String? get msg => _msg;
 
   String? get code => _code;
+
+  String? get encryptedId => _encryptedId;
 }
 
 class DetailedPost {
@@ -34,6 +38,7 @@ class DetailedPost {
   String? _saveYn;
   String? _hashTag = "";
   String? _comment;
+
 
   DetailedPost.create(this._cherId, this._title, this._categoryId, this._share, this._regDate, this._pictureId, this._views, this._categoryName, this._picture, this._nickName, this._saveCount, this._saveYn, this._hashTag, this._comment);
   DetailedPost();

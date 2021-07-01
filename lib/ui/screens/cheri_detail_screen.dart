@@ -238,7 +238,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        Share.share('check out my website https://example.com');
+                        Share.share('https://cheri.weeknday.com/search?id=${detailedViewProvider.postsResponse.encryptedId}');
                       },
                       icon: Icon(
                         Icons.share_outlined,
@@ -287,7 +287,16 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: ()  async{
+
+             await showDialog(context: context, builder: (BuildContext context) {
+                return new AlertDialog(
+                  title: new Text("My Super title"),
+                  content: new Text("Hello World"),
+                );
+              });
+
+             },
             icon: Icon(Icons.article_outlined),
           )
         ],
