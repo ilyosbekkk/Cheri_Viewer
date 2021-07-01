@@ -24,8 +24,10 @@ class CardViewWidget extends StatelessWidget {
         onTap: () {
           String? memberId = (preferences!.getString("id") ?? null);
 
-          if(memberId != null)
-          Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": post.cheriId, "memberId":memberId});
+          if(memberId != null) {
+            Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": post.cheriId, "memberId": memberId});
+             print(post.cheriId);
+          }
           else {
             print("Please login");
           }

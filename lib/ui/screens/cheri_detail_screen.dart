@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:viewerapp/business_logic/providers/detailedview_provider.dart';
+import 'package:viewerapp/models/postitem_model.dart';
 import 'package:viewerapp/utils/strings.dart';
+import 'package:viewerapp/utils/utils.dart';
 
 class CheriDetailViewScreen extends StatefulWidget {
   static String route = "/cheridetail_screen";
@@ -33,14 +35,13 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
         if (!_loaded) {
           detailedProvider.fetchDetailedViewData(cheriId, memberId).then((value) {});
           detailedProvider.fetchDetailedViewItemsList(cheriId, memberId).then((value) {});
-          // detailedProvider.fetchDetailedViewItemsList(cheriId, memberId).then((value) {});
-          // detailedProvider.fetchDetailedViewFilesList(cheriId).then((value) {});
+
           _loaded = true;
         }
 
         return CustomScrollView(
           controller: _scrollController,
-          slivers: [_buildSliverAppBar(height, detailedProvider), _buildList(detailedProvider, width)],
+          slivers: [_buildSliverAppBar(height, detailedProvider), _buildList(detailedProvider, width, memberId, cheriId)],
         );
       })),
     );
@@ -55,9 +56,9 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
       floating: true,
       backgroundColor: Color.fromRGBO(250, 250, 250, 1),
       title: Text(
-        detailedViewProvider.detailedPost.title!,
+        (detailedViewProvider.detailedPost.title != null ? detailedViewProvider.detailedPost.title : "")!,
         style: TextStyle(
-          fontSize: 18,
+          fontSize: 12,
           color: Colors.black,
         ),
       ),
@@ -73,20 +74,22 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     );
   }
 
-  Widget _buildList(DetailedViewProvider detailedViewProvider, double width) {
+  Widget _buildList(DetailedViewProvider detailedViewProvider, double width, String memberId, String cheriId) {
     return SliverToBoxAdapter(
       child: ListView.separated(
         primary: false,
         shrinkWrap: true,
-        itemCount: 15,
+        itemCount: detailedViewProvider.items.length + 2,
         itemBuilder: (BuildContext context, index) {
           if (index == 0)
             return _buildIntroWidget(detailedViewProvider);
-
-          else if(index  == 1)
-            return _buildAccountWidget(detailedViewProvider,  width);
-           else
-            return _buildCheckListWidget(index);
+          else if (index == 1)
+            return _buildAccountWidget(detailedViewProvider, width);
+          else {
+            index = index - 2;
+            print("${index}: ${detailedViewProvider.items[index].checkedYn}");
+            return _buildCheckListWidget(index, detailedViewProvider.items, detailedViewProvider, memberId, cheriId);
+          }
         },
         separatorBuilder: (context, index) {
           return Divider(
@@ -102,10 +105,15 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
       // color: Theme.of(context).primaryColorDark,
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColorDark,
-        image: DecorationImage(
-          image: NetworkImage("https://cheri.weeknday.com${detailedViewProvider.detailedPost.pictureId}"),
-          fit: BoxFit.cover,
-        ),
+        image: detailedViewProvider.detailedPost.pictureId != null
+            ? DecorationImage(
+                image: NetworkImage("https://cheri.weeknday.com${detailedViewProvider.detailedPost.pictureId}"),
+                fit: BoxFit.cover,
+              )
+            : DecorationImage(
+                image: AssetImage("assets/images/placeholder.png"),
+                fit: BoxFit.cover,
+              ),
       ),
       height: 185,
       child: Column(
@@ -115,77 +123,84 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
             height: 25,
             width: 70,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.white),
-              borderRadius: BorderRadius.all(	Radius.circular(5))
-            ),
+            decoration: BoxDecoration(border: Border.all(color: Colors.white), borderRadius: BorderRadius.all(Radius.circular(5))),
             child: Text(
-              detailedViewProvider.detailedPost.categoryName!,
+              (detailedViewProvider.detailedPost.categoryName != null ? detailedViewProvider.detailedPost.categoryName : "")!,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.white),
             ),
-
           ),
           Container(
-            child: Text(detailedViewProvider.detailedPost.title!, style: TextStyle(
-              fontSize: 20,
-              color: Colors.white
-            ),),
+            child: detailedViewProvider.detailedPost.title != null
+                ? Text(
+                    detailedViewProvider.detailedPost.title!,
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  )
+                : CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).selectedRowColor,
+                  ),
           ),
-          Container(child: Text("${detailedViewProvider.detailedPost.regDate}  ${cheri_views[korean]} ${detailedViewProvider.detailedPost.views}", style: TextStyle(
-            fontSize: 12, color: Colors.white
-          ),),)
+          Container(
+            child: Text(
+              "${detailedViewProvider.detailedPost.regDate != null ? detailedViewProvider.detailedPost.regDate : ""}  ${cheri_views[korean]} ${detailedViewProvider.detailedPost.views != null ? detailedViewProvider.detailedPost.views : ""}",
+              style: TextStyle(fontSize: 12, color: Colors.white),
+            ),
+          )
         ],
       ),
     );
   }
 
-  Widget _buildAccountWidget(DetailedViewProvider detailedViewProvider,  double width) {
+  Widget _buildAccountWidget(DetailedViewProvider detailedViewProvider, double width) {
     return Container(
-      height: 220,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
             children: [
-              IconButton(icon: Icon(Icons.account_circle,  size: 30,), onPressed: () {}, ),
-              Text(detailedViewProvider.detailedPost.nickName!, style: TextStyle(
-                fontSize: 15, fontWeight: FontWeight.bold
-              ),)
+              IconButton(
+                icon: Icon(
+                  Icons.account_circle,
+                  size: 30,
+                ),
+                onPressed: () {},
+              ),
+              Text(
+                (detailedViewProvider.detailedPost.nickName != null ? detailedViewProvider.detailedPost.nickName : "")!,
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              )
             ],
           ),
-          Row(
-            children: [
-            Container( width: 50,),
-              Container(
-                width: 0.8*width,
-                child: Text(
-                  detailedViewProvider.detailedPost.comment == null?"내용이 없습니다": detailedViewProvider.detailedPost.comment! ,
-                  style: TextStyle(
-                      fontSize: 15
+          if (detailedViewProvider.detailedPost.comment != null)
+            Row(
+              children: [
+                Container(
+                  width: 50,
+                ),
+                Container(
+                  width: 0.8 * width,
+                  child: Text(
+                    detailedViewProvider.detailedPost.comment!,
+                    style: TextStyle(fontSize: 15),
                   ),
                 ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-            Container( width: 50,),
-              Container(
-                width: 0.8*width,
-                child: Text(
-                  (detailedViewProvider.detailedPost.hashTag == null  ?"내용이 없습니다":detailedViewProvider.detailedPost.hashTag)!,
-                  style: TextStyle(
-                    color: Colors.blue,
-                      fontSize: 15
+              ],
+            ),
+          if (detailedViewProvider.detailedPost.hashTag != null)
+            Row(
+              children: [
+                Container(
+                  width: 50,
+                ),
+                Container(
+                  width: 0.8 * width,
+                  child: Text(
+                    (detailedViewProvider.detailedPost.hashTag)!,
+                    style: TextStyle(color: Colors.blue, fontSize: 15),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
           Container(
             margin: EdgeInsets.only(top: 10),
             child: Row(
@@ -194,9 +209,15 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                   children: [
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.bookmark_border,  size: 30,),
+                      icon: Icon(
+                        Icons.bookmark_border,
+                        size: 30,
+                      ),
                     ),
-                    Text("북마크", style: TextStyle(fontSize: 12),)
+                    Text(
+                      "북마크",
+                      style: TextStyle(fontSize: 12),
+                    )
                   ],
                 ),
                 Column(
@@ -205,40 +226,58 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                       onPressed: () {
                         Share.share('check out my website https://example.com');
                       },
-                      icon: Icon(Icons.share_outlined, size: 30,),
+                      icon: Icon(
+                        Icons.share_outlined,
+                        size: 30,
+                      ),
                     ),
-                    Text("공유", style: TextStyle(fontSize: 12),)
-
+                    Text(
+                      "공유",
+                      style: TextStyle(fontSize: 12),
+                    )
                   ],
                 ),
               ],
             ),
           ),
-
         ],
       ),
     );
   }
 
-
-
-  Widget _buildCheckListWidget(int index) {
+  Widget _buildCheckListWidget(int index, List<Item> items, DetailedViewProvider detailedViewProvider, String memberId, String cheriId) {
     return Container(
-      height: 0.04 * height,
       child: Row(
         children: [
           Checkbox(
-              value: isChecked,
-              onChanged: (bool? value) {
-                setState(() {
-                  isChecked = value!;
-                });
+              value: items[index].checkedYn == "Y" ? true : false,
+              onChanged: (bool? value)  {
+                print(detailedViewProvider.items[index].itemId);
+                String checked = (value == true) ? "Y" : "N";
+                detailedViewProvider.updateCheckListItem(items[index].itemId!, checked, memberId).then((value)  {
+                  if (value) {
+                    print("val: $value");
+                  detailedViewProvider.fetchDetailedViewItemsList(cheriId, memberId).then((value)  {
+                    if(value)
+                      print("dooone");
+                  });
+                  }
+                  });
               }),
-          Text(" 외관 – 와이퍼 위치 확인->$index"),
-          Spacer(),
+          Expanded(
+            flex: 4,
+            child: Container(
+              child: Text(
+                items[index].contents!,
+                maxLines: 5,
+                textAlign: TextAlign.justify,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.event_note_sharp),
+            icon: Icon(Icons.article_outlined),
           )
         ],
       ),

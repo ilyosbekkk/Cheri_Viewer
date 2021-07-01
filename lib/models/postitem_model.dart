@@ -64,6 +64,6 @@ class Item {
   String? get itemId => _itemId;
 
   factory Item.fromJson(Map<String, dynamic> parsedJson) {
-    return Item(parsedJson["ITEM_ID"], parsedJson["CONTENTS"], parsedJson["order"], parsedJson["CHECKED_YN"], parsedJson["IMPORTANT_YN"], parsedJson["REG_DATE"], parsedJson["COMMENT"], parsedJson["FILE_NAME"], parsedJson["FILE_PATH"], parsedJson["FILE_CHECK"], parsedJson["REFERENCE"], parsedJson["SAVE_FILE_NAME"]);
+    return Item(parsedJson["ITEM_ID"], parsedJson["CONTENTS"], parsedJson["order"], parsedJson["CHECK_YN"], parsedJson["IMPORTANT_YN"], parsedJson["REG_DATE"], parsedJson["COMMENT"], parsedJson["FILE_NAME"], parsedJson["FILE_PATH"], parsedJson["FILE_CHECK"], parsedJson["REFERENCE"], parsedJson["SAVE_FILE_NAME"]);
   }
 }

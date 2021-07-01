@@ -1,4 +1,3 @@
-
 //language strings
 String english = "en";
 String korean = "kr";
@@ -24,11 +23,11 @@ Map<String, List<String>> menu2 = {
 };
 
 //api urls
-const String baseUrl = "cheri.weeknday.com";
+const String baseUrl = "192.168.0.8:7300"; //"cheri.weeknday.com";
 const String postsList = "/api/Viewerapi/list";
 const String searchPost = "/api/native/search";
 const String categoryList = "/api/Viewerapi/side_category";
 const String detailedDataList = "/api/viewerapi/view";
 const String detailedViewItemList = "/api/viewerapi/item_list";
 const String detailedViewFileList = "/api/viewerapi/file_list";
-
+const String checkUpdate = "/api/viewerapi/check_update";

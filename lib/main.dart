@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:viewerapp/business_logic/providers/postslist_provider  .dart';
 import 'package:viewerapp/ui/nav_controller.dart';
@@ -16,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'business_logic/providers/detailedview_provider.dart';
 
 void main() async {
+  HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await initPreferences();
@@ -63,5 +66,13 @@ class MyApp extends StatelessWidget {
         ProfileScreen.route: (_) => ProfileScreen(),
       },
     );
+  }
+}
+class MyHttpOverrides extends HttpOverrides{
+
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
   }
 }
