@@ -1,29 +1,26 @@
-import 'dart:io';
-
-import 'package:kakao_flutter_sdk/all.dart';
 import 'package:viewerapp/business_logic/providers/postslist_provider  .dart';
-import 'package:viewerapp/ui/nav_controller.dart';
-import 'package:viewerapp/ui/screens/auth_screen.dart';
-import 'package:viewerapp/ui/screens/categoryview_screen.dart';
 import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
-import 'package:viewerapp/ui/screens/profile_screen.dart';
+import 'package:viewerapp/ui/screens/categoryview_screen.dart';
+import 'business_logic/providers/detailedview_provider.dart';
 import 'package:viewerapp/ui/screens/settings_screen.dart';
-import 'package:viewerapp/utils/utils.dart';
+import 'package:viewerapp/ui/screens/profile_screen.dart';
+import 'package:viewerapp/ui/screens/auth_screen.dart';
 import 'business_logic/providers/auth_provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:viewerapp/ui/nav_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:viewerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
-import 'business_logic/providers/detailedview_provider.dart';
-
 void main() async {
-  HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await initPreferences();
   final List<SingleChildWidget> providers = [
-    ChangeNotifierProvider(create: (_) => AuthProvider(),),
+    ChangeNotifierProvider(
+      create: (_) => AuthProvider(),
+    ),
     ChangeNotifierProvider(create: (_) => PostListsProvider()),
     ChangeNotifierProvider(create: (_) => DetailedViewProvider()),
   ];
@@ -68,11 +65,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-class MyHttpOverrides extends HttpOverrides{
 
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
-  }
-}
+

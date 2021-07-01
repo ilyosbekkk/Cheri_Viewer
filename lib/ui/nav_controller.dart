@@ -80,8 +80,6 @@ class _NavCotrollerState extends State<NavCotroller> {
     );
   }
 
-
-
   Widget _buildHomeScreen(double height,  double width) {
     return SliverToBoxAdapter(
       child: HomeScreen(height,  width, context,  _scrollController),

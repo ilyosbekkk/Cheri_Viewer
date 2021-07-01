@@ -16,15 +16,13 @@ class StorageBoxScreen extends StatefulWidget {
   _StorageBoxScreenState createState() => _StorageBoxScreenState();
 }
 
-class _StorageBoxScreenState extends State<StorageBoxScreen>
-    with SingleTickerProviderStateMixin {
+class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  PostListsProvider _homePageProvider = PostListsProvider();
-
-  TextEditingController _controller = TextEditingController();
   bool _searchMode = false;
   String _popupValue1 = "";
   String _popupValue2 = "";
+  PostListsProvider _homePageProvider = PostListsProvider();
+  TextEditingController _controller = TextEditingController();
 
   @override
   void didChangeDependencies() {
@@ -103,14 +101,12 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
           ListView.builder(
               itemCount: _homePageProvider.allPosts.length,
               itemBuilder: (BuildContext context, index) {
-                return _buildPostWidget(0.4 * widget.height, widget.width,
-                    index, _homePageProvider);
+                return _buildPostWidget(0.4 * widget.height, widget.width, index, _homePageProvider);
               }),
           ListView.builder(
               itemCount: _homePageProvider.allPosts.length,
               itemBuilder: (BuildContext context, index) {
-                return _buildPostWidget(0.4 * widget.height, widget.width,
-                    index, _homePageProvider);
+                return _buildPostWidget(0.4 * widget.height, widget.width, index, _homePageProvider);
               }),
         ],
       ),
@@ -127,9 +123,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
       ),
       child: Row(
         children: [
-          Container(
-              margin: EdgeInsets.only(left: 10.0),
-              child: Text('${count - 1} 건')),
+          Container(margin: EdgeInsets.only(left: 10.0), child: Text('${count - 1} 건')),
           Spacer(),
           IconButton(
               onPressed: () {
@@ -191,8 +185,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen>
     );
   }
 
-  Widget _buildPostWidget(
-      double height, double width, index, PostListsProvider homePageProvider) {
+  Widget _buildPostWidget(double height, double width, index, PostListsProvider homePageProvider) {
     List<Post> posts = homePageProvider.allPosts;
     return CardViewWidget(height, width, homePageProvider, posts[index]);
   }

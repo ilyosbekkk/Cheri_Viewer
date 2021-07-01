@@ -3,6 +3,7 @@ import 'package:viewerapp/utils/strings.dart';
 
 class WebServices {
   static Map<String,  String> headers = {'Accept': 'application/json;'};
+
   static Future<http.Response> fetchPosts(int pageSize, int nowPage, String orderBy, int category) async {
     final url = Uri.http(baseUrl, postsList);
     final body = {'pagesize': '$pageSize', 'nowpage': '$nowPage', 'orderby': '$orderBy', 'category': '$category'};
@@ -59,4 +60,15 @@ class WebServices {
 
       return response;
   }
+
+  static Future<http.Response> saveCheriPost(String cheriId, String memberId,  String state)  async{
+      final url = Uri.http(baseUrl, savePost);
+      final  body = {'cheri_id': cheriId, 'state':state,  'member_id': memberId};
+      http.Response response = await http.post(url, headers: headers, body: body);
+
+      return response;
+  }
+
+
+
 }

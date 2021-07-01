@@ -42,7 +42,6 @@ String timeFormatter(String formattedString) {
   }
 }
 
-
 Future<void> initPreferences() async{
   preferences = await SharedPreferences.getInstance();
 }

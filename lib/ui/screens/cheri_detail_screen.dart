@@ -84,10 +84,9 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
           if (index == 0)
             return _buildIntroWidget(detailedViewProvider);
           else if (index == 1)
-            return _buildAccountWidget(detailedViewProvider, width);
+            return _buildAccountWidget(detailedViewProvider, memberId, cheriId, width);
           else {
             index = index - 2;
-            print("${index}: ${detailedViewProvider.items[index].checkedYn}");
             return _buildCheckListWidget(index, detailedViewProvider.items, detailedViewProvider, memberId, cheriId);
           }
         },
@@ -151,7 +150,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     );
   }
 
-  Widget _buildAccountWidget(DetailedViewProvider detailedViewProvider, double width) {
+  Widget _buildAccountWidget(DetailedViewProvider detailedViewProvider, String memberId, String cheriId, double width) {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -208,11 +207,26 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                 Column(
                   children: [
                     IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.bookmark_border,
-                        size: 30,
-                      ),
+                      onPressed: () {
+                        if (detailedViewProvider.detailedPost.saveYn == "Y") {
+                          detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "N", memberId).then((value) {
+                            if (value) detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {});
+                          });
+                        } else {
+                          detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "Y", memberId).then((value) {
+                            if (value) detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {});
+                          });
+                        }
+                      },
+                      icon: detailedViewProvider.detailedPost.saveYn == "Y"
+                          ? Icon(
+                              Icons.bookmark,
+                              size: 30,
+                            )
+                          : Icon(
+                              Icons.bookmark_border,
+                              size: 30,
+                            ),
                     ),
                     Text(
                       "북마크",
@@ -251,18 +265,15 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
         children: [
           Checkbox(
               value: items[index].checkedYn == "Y" ? true : false,
-              onChanged: (bool? value)  {
-                print(detailedViewProvider.items[index].itemId);
+              onChanged: (bool? value) {
                 String checked = (value == true) ? "Y" : "N";
-                detailedViewProvider.updateCheckListItem(items[index].itemId!, checked, memberId).then((value)  {
+                detailedViewProvider.updateCheckListItem(items[index].itemId!, checked, memberId).then((value) {
                   if (value) {
-                    print("val: $value");
-                  detailedViewProvider.fetchDetailedViewItemsList(cheriId, memberId).then((value)  {
-                    if(value)
-                      print("dooone");
-                  });
+                    detailedViewProvider.fetchDetailedViewItemsList(cheriId, memberId).then((value) {
+                      if (value) print("saved!");
+                    });
                   }
-                  });
+                });
               }),
           Expanded(
             flex: 4,

@@ -37,14 +37,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (_homePageProvider.postsMessage == "") {
       _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {
-        if (value == true) {
-        }
+        if (value == true) {}
       });
     }
 
     if (_homePageProvider.categoriesMessage == "") {
-      _homePageProvider.fetchCategoriesList().then((value) {
-      });
+      _homePageProvider.fetchCategoriesList().then((value) {});
     }
 
     // widget._scrollController.addListener(() {
@@ -120,18 +118,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildCategoryWidget(PostListsProvider homeProvider, double radius, index) {
     String assetName = "";
-    switch(index) {
-      case 0: assetName = "assets/icons/health.svg";
-      break;
-      case 1: assetName = "assets/icons/life.svg";
-      break;
-      case 2: assetName  ="assets/icons/education.svg";
-      break;
-      case 3: assetName  ="assets/icons/it_content.svg";
-      break;
-      case 4: assetName  ="assets/icons/personal_development.svg";
-      break;
-
+    switch (index) {
+      case 0:
+        assetName = "assets/icons/health.svg";
+        break;
+      case 1:
+        assetName = "assets/icons/life.svg";
+        break;
+      case 2:
+        assetName = "assets/icons/education.svg";
+        break;
+      case 3:
+        assetName = "assets/icons/it_content.svg";
+        break;
+      case 4:
+        assetName = "assets/icons/personal_development.svg";
+        break;
     }
     return InkWell(
       onTap: () {
@@ -144,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 30,
             child: SvgPicture.asset(
               assetName,
-              color:homeProvider.activeAcategories[index] ?Theme.of(context).selectedRowColor : Colors.black,
+              color: homeProvider.activeAcategories[index] ? Theme.of(context).selectedRowColor : Colors.black,
             ),
           ),
           Container(
@@ -153,9 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 categories[korean]![index],
                 maxLines: 1,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: homeProvider.activeAcategories[index] ? Theme.of(context).selectedRowColor : Colors.black,
-                    fontSize: 12),
+                style: TextStyle(color: homeProvider.activeAcategories[index] ? Theme.of(context).selectedRowColor : Colors.black, fontSize: 12),
               ))
         ],
       ),
@@ -183,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text(
                 homeProvider.subCategories(i)[index],
                 maxLines: 1,
-                style:  Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText2,
               ),
             );
           })),

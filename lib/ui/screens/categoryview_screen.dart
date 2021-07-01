@@ -132,23 +132,6 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
       return ListViewWidget(height, width, postListProvider, posts[index]);
   }
 
-  void _onRefresh() async {
-    // monitor network fetch
-    await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use refreshFailed()
-    _refreshController.refreshCompleted();
-  }
-
-  void _onLoading() async {
-    // monitor network fetch
-
-    await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-
-    if (mounted) setState(() {});
-    _refreshController.loadComplete();
-  }
-
   Widget _buildSortWidget(String searchWord, int count, PostListsProvider postListsProvidert, String category) {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
@@ -214,5 +197,22 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
         ],
       ),
     );
+  }
+
+  void _onRefresh() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    // monitor network fetch
+
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+
+    if (mounted) setState(() {});
+    _refreshController.loadComplete();
   }
 }

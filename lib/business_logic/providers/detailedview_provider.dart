@@ -18,8 +18,6 @@ class DetailedViewProvider extends ChangeNotifier {
     DetailedPostResponse postsResponse = DetailedPostResponse.fromJson(decodedResponse);
     _detailedPost = postsResponse.detailedPosts!;
 
-
-
     notifyListeners();
     return true;
   }
@@ -38,14 +36,24 @@ class DetailedViewProvider extends ChangeNotifier {
     return true;
   }
 
-  Future<bool> updateCheckListItem(String itemId, String checked, String  memberId) async {
+  Future<bool> updateCheckListItem(String itemId, String checked, String memberId) async {
     try {
       Response response = await WebServices.updateCheckListItem(itemId, checked, memberId);
-
-
-
       if (response.statusCode == 200) {
-        print("done");
+        return true;
+      } else
+        return false;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> saveCheriPost(String? cheriId, String state, String memberId) async {
+    try {
+      Response response = await WebServices.saveCheriPost(cheriId!, memberId,  state);
+       print(response.body);
+      if (response.statusCode == 200) {
         return true;
       } else
         return false;

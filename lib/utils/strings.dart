@@ -31,3 +31,4 @@ const String detailedDataList = "/api/viewerapi/view";
 const String detailedViewItemList = "/api/viewerapi/item_list";
 const String detailedViewFileList = "/api/viewerapi/file_list";
 const String checkUpdate = "/api/viewerapi/check_update";
+const String savePost = "/api/viewerapi/bookmark_update";
