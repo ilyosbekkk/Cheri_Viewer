@@ -288,19 +288,68 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
           ),
           IconButton(
             onPressed: ()  async{
-
-             await showDialog(context: context, builder: (BuildContext context) {
-                return new AlertDialog(
-                  title: new Text("My Super title"),
-                  content: new Text("Hello World"),
-                );
-              });
-
-             },
+               await showdialog();
+              },
             icon: Icon(Icons.article_outlined),
           )
         ],
       ),
     );
   }
+
+
+  Future<void> showdialog() async {
+    await showDialog(context: context, builder: (BuildContext context) {
+      return Dialog(
+         child: Column(
+           mainAxisSize: MainAxisSize.min,
+           crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
+             Row(
+
+               children: [
+                 Spacer(),
+                 Text("상세 설명", style: TextStyle(
+                   fontSize: 21
+                 ),),
+                 Spacer(),
+
+               IconButton(icon:Icon(Icons.clear), onPressed: () {})
+               ],
+             ),
+             Divider(),
+             Row(
+               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+               children: [
+                 Text("체리 항목 설명", style: TextStyle(fontSize: 15),),
+                 IconButton(icon: Icon(Icons.keyboard_arrow_down), onPressed: () {})
+               ],
+             ),
+             Container(child: Text("한국(韓國), 조선(朝鮮), 또는 코리아(영어: Korea)는 동아시아에 위치한 지역 또는 헌법상의 국가로, 현대사에서는 한반도의 대한민국을 이르는 말이다. 근현대사에서")),
+             Divider(),
+             Row(
+               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+               children: [
+                 Text("관련 자료", style: TextStyle(fontSize: 15),),
+                 IconButton(icon: Icon(Icons.keyboard_arrow_down), onPressed: () {})
+
+               ],
+             ),
+             Container(
+                 child: Image.asset("assets/images/placeholder.png"))
+           ],
+         ),
+      );
+    });
+  }
 }
+
+/*
+
+
+
+
+top top: 60 middle: 120  end: 320
+
+
+ */
