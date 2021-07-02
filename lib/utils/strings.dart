@@ -28,7 +28,8 @@ const String postsList = "/api/Viewerapi/list";
 const String searchPost = "/api/native/search";
 const String categoryList = "/api/Viewerapi/side_category";
 const String detailedDataList = "/api/viewerapi/view";
-const String detailedViewItemList = "/api/viewerapi/item_list";
-const String detailedViewFileList = "/api/viewerapi/file_list";
 const String checkUpdate = "/api/viewerapi/check_update";
 const String savePost = "/api/viewerapi/bookmark_update";
+
+//others
+const String placeholdeUrl = "https://www.orcajourney.com/wp-content/uploads/2020/08/placeholder.png";

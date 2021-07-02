@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:share/share.dart';
 import 'package:viewerapp/business_logic/providers/detailedview_provider.dart';
-import 'package:viewerapp/models/postitem_model.dart';
+import 'package:viewerapp/models/detailedpost_model.dart';
 import 'package:viewerapp/utils/strings.dart';
-import 'package:viewerapp/utils/utils.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 class CheriDetailViewScreen extends StatefulWidget {
   static String route = "/cheridetail_screen";
@@ -19,8 +18,9 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   ScrollController _scrollController = ScrollController();
   late double height;
   late double width;
-  late bool _loaded = false;
-  bool isChecked = false;
+  bool isDialogTextOpen = false;
+  bool isDialogPictureOpen = false;
+  bool _loaded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +34,8 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
       body: SafeArea(child: Consumer<DetailedViewProvider>(builder: (context, detailedProvider, child) {
         if (!_loaded) {
           detailedProvider.fetchDetailedViewData(cheriId, memberId).then((value) {});
-          detailedProvider.fetchDetailedViewItemsList(cheriId, memberId).then((value) {});
-
           _loaded = true;
         }
-
         return CustomScrollView(
           controller: _scrollController,
           slivers: [_buildSliverAppBar(height, detailedProvider), _buildList(detailedProvider, width, memberId, cheriId)],
@@ -76,37 +73,38 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
 
   Widget _buildList(DetailedViewProvider detailedViewProvider, double width, String memberId, String cheriId) {
     return SliverToBoxAdapter(
-      child: ListView.separated(
-        primary: false,
-        shrinkWrap: true,
-        itemCount: detailedViewProvider.items.length + 2,
-        itemBuilder: (BuildContext context, index) {
-          if (index == 0)
-            return _buildIntroWidget(detailedViewProvider);
-          else if (index == 1)
-            return _buildAccountWidget(detailedViewProvider, memberId, cheriId, width);
-          else {
-            index = index - 2;
-            return _buildCheckListWidget(index, detailedViewProvider.items, detailedViewProvider, memberId, cheriId);
-          }
-        },
-        separatorBuilder: (context, index) {
-          return Divider(
-            color: Colors.black,
-          );
-        },
-      ),
-    );
+        child: ListView.separated(
+      primary: false,
+      shrinkWrap: true,
+      itemCount: detailedViewProvider.items.length + 2,
+      itemBuilder: (BuildContext context, index) {
+        if (index == 0)
+          return _buildIntroWidget(detailedViewProvider);
+        else if (index == 1)
+          return _buildAccountWidget(detailedViewProvider, memberId, cheriId, width);
+        else {
+          index = index - 2;
+
+          return _buildCheckListWidget(index, detailedViewProvider.items, detailedViewProvider, memberId, cheriId);
+        }
+      },
+      separatorBuilder: (context, index) {
+        return Divider(
+          color: Colors.black,
+        );
+      },
+    ));
   }
 
   Widget _buildIntroWidget(DetailedViewProvider detailedViewProvider) {
     return Container(
-      // color: Theme.of(context).primaryColorDark,
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColorDark,
         image: detailedViewProvider.detailedPost.pictureId != null
             ? DecorationImage(
-                image: NetworkImage("https://cheri.weeknday.com${detailedViewProvider.detailedPost.pictureId}"),
+                image: NetworkImage(
+                  "https://cheri.weeknday.com${detailedViewProvider.detailedPost.pictureId}",
+                ),
                 fit: BoxFit.cover,
               )
             : DecorationImage(
@@ -135,8 +133,10 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                     detailedViewProvider.detailedPost.title!,
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   )
-                : CircularProgressIndicator(
-                    backgroundColor: Theme.of(context).selectedRowColor,
+                : Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Theme.of(context).selectedRowColor,
+                    ),
                   ),
           ),
           Container(
@@ -260,6 +260,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   }
 
   Widget _buildCheckListWidget(int index, List<Item> items, DetailedViewProvider detailedViewProvider, String memberId, String cheriId) {
+    print("build check list");
     return Container(
       child: Row(
         children: [
@@ -269,7 +270,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                 String checked = (value == true) ? "Y" : "N";
                 detailedViewProvider.updateCheckListItem(items[index].itemId!, checked, memberId).then((value) {
                   if (value) {
-                    detailedViewProvider.fetchDetailedViewItemsList(cheriId, memberId).then((value) {
+                    detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
                       if (value) print("saved!");
                     });
                   }
@@ -286,10 +287,22 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
               ),
             ),
           ),
+          // if ((items[index].comment != null && items[index].comment!.isNotEmpty) || (detailedViewProvider.files[index]).isNotEmpty)
           IconButton(
-            onPressed: ()  async{
-               await showdialog();
-              },
+            onPressed: () {
+              // if (items[index].comment == null || items[index].comment!.isEmpty) {
+              //   print("1");
+              //   await showdialog(context, "내용이 없습니다ㅋㅋㅋㅋㅋㅋ", detailedViewProvider.files[index][0].saveFileName);
+              // } else if (detailedViewProvider.files[index].isEmpty) {
+              //   print("2");
+              //
+              //   await showdialog(context, items[index].comment!, placeholdeUrl);
+              // } else {
+              //   print("3");
+              //
+              //   await showdialog(context, items[index].comment!, detailedViewProvider.files[index][0].saveFileName);
+              // }
+            },
             icon: Icon(Icons.article_outlined),
           )
         ],
@@ -297,59 +310,91 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     );
   }
 
-
-  Future<void> showdialog() async {
-    await showDialog(context: context, builder: (BuildContext context) {
-      return Dialog(
-         child: Column(
-           mainAxisSize: MainAxisSize.min,
-           crossAxisAlignment: CrossAxisAlignment.start,
-           children: [
-             Row(
-
-               children: [
-                 Spacer(),
-                 Text("상세 설명", style: TextStyle(
-                   fontSize: 21
-                 ),),
-                 Spacer(),
-
-               IconButton(icon:Icon(Icons.clear), onPressed: () {})
-               ],
-             ),
-             Divider(),
-             Row(
-               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-               children: [
-                 Text("체리 항목 설명", style: TextStyle(fontSize: 15),),
-                 IconButton(icon: Icon(Icons.keyboard_arrow_down), onPressed: () {})
-               ],
-             ),
-             Container(child: Text("한국(韓國), 조선(朝鮮), 또는 코리아(영어: Korea)는 동아시아에 위치한 지역 또는 헌법상의 국가로, 현대사에서는 한반도의 대한민국을 이르는 말이다. 근현대사에서")),
-             Divider(),
-             Row(
-               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-               children: [
-                 Text("관련 자료", style: TextStyle(fontSize: 15),),
-                 IconButton(icon: Icon(Icons.keyboard_arrow_down), onPressed: () {})
-
-               ],
-             ),
-             Container(
-                 child: Image.asset("assets/images/placeholder.png"))
-           ],
-         ),
-      );
-    });
+  Future<void> showdialog(BuildContext context, String contents, String saveFileName) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            insetPadding: EdgeInsets.all(10),
+            child: Container(
+              height: 500,
+              child: Scrollbar(
+                thickness: 5,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "상세 설명",
+                                style: TextStyle(fontSize: 21),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                  icon: Icon(Icons.clear),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  }),
+                            )
+                          ],
+                        ),
+                      ),
+                      Divider(),
+                      Container(
+                        margin: EdgeInsets.only(left: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "체리 항목 설명",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            IconButton(
+                                icon: isDialogTextOpen ? Icon(Icons.keyboard_arrow_up) : Icon(Icons.keyboard_arrow_down),
+                                onPressed: () {
+                                  setState(() {
+                                    isDialogTextOpen = !isDialogTextOpen;
+                                  });
+                                })
+                          ],
+                        ),
+                      ),
+                      Container(decoration: BoxDecoration(color: Color.fromRGBO(245, 245, 245, 1), borderRadius: BorderRadius.all(Radius.circular(8))), padding: EdgeInsets.all(10), margin: EdgeInsets.only(left: 10, right: 10), child: Text(contents)),
+                      Divider(),
+                      Container(
+                        margin: EdgeInsets.only(left: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "관련 자료",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            IconButton(
+                                icon: isDialogPictureOpen ? Icon(Icons.keyboard_arrow_up) : Icon(Icons.keyboard_arrow_down),
+                                onPressed: () {
+                                  setState(() {
+                                    isDialogPictureOpen = !isDialogPictureOpen;
+                                  });
+                                })
+                          ],
+                        ),
+                      ),
+                      Container(margin: EdgeInsets.all(10), child: saveFileName != placeholdeUrl ? Image.network("https://cheri.weeknday.com/upload/detailfile/${saveFileName}") : Image.network(placeholdeUrl)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
   }
 }
-
-/*
-
-
-
-
-top top: 60 middle: 120  end: 320
-
-
- */

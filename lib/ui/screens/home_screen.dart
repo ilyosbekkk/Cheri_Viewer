@@ -35,6 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.didChangeDependencies();
     _homePageProvider = Provider.of<PostListsProvider>(context, listen: true);
 
+
+    print("did change dependency");
+
     if (_homePageProvider.postsMessage == "") {
       _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {
         if (value == true) {}

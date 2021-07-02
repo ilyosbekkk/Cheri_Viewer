@@ -1,43 +1,62 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
-
 import 'package:viewerapp/business_logic/services/web_services.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
-import 'package:viewerapp/models/postitem_model.dart';
 
 class DetailedViewProvider extends ChangeNotifier {
-  late DetailedPost _detailedPost;
+  late Intro _detailedPost;
+  List<Item> _items = [];
+  List<File> _files = [];
   late DetailedPostResponse postsResponse;
-  late List<Item> _items = [];
+
+  late bool _loaded;
 
   Future<bool> fetchDetailedViewData(String cheriId, memberId) async {
-    _detailedPost = DetailedPost();
-    Response response = await WebServices.fetchDetailedViewData(cheriId, memberId);
-    Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+    _loaded = false;
 
-     postsResponse = DetailedPostResponse.fromJson(decodedResponse);
-    print("Jellloooo:   ${postsResponse.encryptedId}");
-    _detailedPost = postsResponse.detailedPosts!;
+    try {
+      _detailedPost = Intro();
+      if (_items.isNotEmpty) _items.clear();
+      if (_files.isNotEmpty) _files.clear();
 
-    notifyListeners();
-    return true;
+      Response response = await WebServices.fetchDetailedViewData(cheriId, memberId);
+      Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+      postsResponse = DetailedPostResponse.fromJson(decodedResponse);
+
+      if (postsResponse.msg == "success") {
+        _loaded = true;
+        _detailedPost = postsResponse.detailedPosts!;
+        _items.addAll(postsResponse.items);
+        _files.addAll(postsResponse.files);
+
+        print("detailed post");
+        print(_detailedPost.title);
+        print(_detailedPost.comment);
+        print(_detailedPost.nickName);
+        print("items");
+        for (int i = 0; i < _items.length; i++) {
+          print(_items[i].contents);
+          print(_items[i].itemId);
+        }
+
+        print("files");
+        for (int i = 0; i < _files.length; i++) {
+          print(_files[i].itemId);
+          print(_files[i].saveFileName);
+        }
+
+        notifyListeners();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 
-  Future<bool> fetchDetailedViewItemsList(String cheriId, String memberId) async {
-    Response response = await WebServices.fetchDetailedViewItemsList(cheriId, memberId);
-    Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-
-    if (_items.isNotEmpty) _items.clear();
-
-    ItemsResponse itemsResponse = ItemsResponse.fromJson(decodedResponse);
-    _items.addAll(itemsResponse.items!);
-
-    notifyListeners();
-
-    return true;
-  }
-
+  //save/update
   Future<bool> updateCheckListItem(String itemId, String checked, String memberId) async {
     try {
       Response response = await WebServices.updateCheckListItem(itemId, checked, memberId);
@@ -53,8 +72,7 @@ class DetailedViewProvider extends ChangeNotifier {
 
   Future<bool> saveCheriPost(String? cheriId, String state, String memberId) async {
     try {
-      Response response = await WebServices.saveCheriPost(cheriId!, memberId,  state);
-       print(response.body);
+      Response response = await WebServices.saveCheriPost(cheriId!, memberId, state);
       if (response.statusCode == 200) {
         return true;
       } else
@@ -65,14 +83,10 @@ class DetailedViewProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> fetchDetailedViewFilesList(String cheriId) async {
-    Response response = await WebServices.fetchDetailedViewFilesList(cheriId);
-    Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-
-    return true;
-  }
+  //getters
+  List<File> get files => _files;
 
   List<Item> get items => _items;
 
-  DetailedPost get detailedPost => _detailedPost;
+  Intro get detailedPost => _detailedPost;
 }
