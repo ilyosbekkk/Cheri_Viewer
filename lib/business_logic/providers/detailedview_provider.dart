@@ -14,7 +14,6 @@ class DetailedViewProvider extends ChangeNotifier {
 
   Future<bool> fetchDetailedViewData(String cheriId, memberId) async {
     _loaded = false;
-
     try {
       _detailedPost = Intro();
       if (_items.isNotEmpty) _items.clear();
@@ -29,23 +28,6 @@ class DetailedViewProvider extends ChangeNotifier {
         _detailedPost = postsResponse.detailedPosts!;
         _items.addAll(postsResponse.items);
         _files.addAll(postsResponse.files);
-
-        print("detailed post");
-        print(_detailedPost.title);
-        print(_detailedPost.comment);
-        print(_detailedPost.nickName);
-        print("items");
-        for (int i = 0; i < _items.length; i++) {
-          print(_items[i].contents);
-          print(_items[i].itemId);
-        }
-
-        print("files");
-        for (int i = 0; i < _files.length; i++) {
-          print(_files[i].itemId);
-          print(_files[i].saveFileName);
-        }
-
         notifyListeners();
         return true;
       }
@@ -82,11 +64,23 @@ class DetailedViewProvider extends ChangeNotifier {
       return false;
     }
   }
+  
 
   //getters
-  List<File> get files => _files;
+  List<Item> get items => _items ;
 
-  List<Item> get items => _items;
+  List<File>  itemFiles(String itemId) {
+     List<File> files = [];
+     
+     for(int i = 0; i<_files.length; i++) {
+       if(_files[i].itemId == itemId) {
+         files.add(_files[i]);
+       }
+     }
+     return files;
+  }
 
   Intro get detailedPost => _detailedPost;
+
+  bool get loaded => _loaded;
 }
