@@ -5,7 +5,7 @@ import 'business_logic/providers/detailedview_provider.dart';
 import 'package:viewerapp/ui/screens/settings_screen.dart';
 import 'package:viewerapp/ui/screens/profile_screen.dart';
 import 'package:viewerapp/ui/screens/auth_screen.dart';
-import 'business_logic/providers/auth_provider.dart';
+import 'business_logic/providers/user management provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:viewerapp/ui/nav_controller.dart';
 import 'package:firebase_core/firebase_core.dart';

@@ -33,3 +33,4 @@ const String savePost = "/api/viewerapi/bookmark_update";
 
 //others
 const String placeholdeUrl = "https://www.orcajourney.com/wp-content/uploads/2020/08/placeholder.png";
+String profileUrl = "https://cheri.weeknday.com/member/profile?m=";

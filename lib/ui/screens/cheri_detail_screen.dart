@@ -260,11 +260,11 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   }
 
   Widget _buildCheckListWidget(int index, List<Item> items, DetailedViewProvider detailedViewProvider, String memberId, String cheriId) {
-    print("build check list");
     return Container(
       child: Row(
         children: [
           Checkbox(
+            checkColor: Colors.blue,
               value: items[index].checkedYn == "Y" ? true : false,
               onChanged: (bool? value) {
                 String checked = (value == true) ? "Y" : "N";
@@ -287,21 +287,21 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
               ),
             ),
           ),
-          // if ((items[index].comment != null && items[index].comment!.isNotEmpty) || (detailedViewProvider.files[index]).isNotEmpty)
-          IconButton(
-            onPressed: () {
-              // if (items[index].comment == null || items[index].comment!.isEmpty) {
-              //   print("1");
-              //   await showdialog(context, "내용이 없습니다ㅋㅋㅋㅋㅋㅋ", detailedViewProvider.files[index][0].saveFileName);
-              // } else if (detailedViewProvider.files[index].isEmpty) {
-              //   print("2");
-              //
-              //   await showdialog(context, items[index].comment!, placeholdeUrl);
-              // } else {
-              //   print("3");
-              //
-              //   await showdialog(context, items[index].comment!, detailedViewProvider.files[index][0].saveFileName);
-              // }
+          if ((items[index].comment != null && items[index].comment!.isNotEmpty) || (detailedViewProvider.itemFiles(items[index].itemId!).isNotEmpty))
+            IconButton(
+            onPressed: () async  {
+              if (items[index].comment == null || items[index].comment!.isEmpty) {
+                print("1");
+                await showdialog(context, "내용이 없습니다ㅋㅋㅋㅋㅋㅋ", detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName);
+              } else if (detailedViewProvider.itemFiles(items[index].itemId!).isEmpty) {
+                print("2");
+
+                await showdialog(context, items[index].comment!, placeholdeUrl);
+              } else {
+                print("3");
+
+                await showdialog(context, items[index].comment!, detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName);
+              }
             },
             icon: Icon(Icons.article_outlined),
           )

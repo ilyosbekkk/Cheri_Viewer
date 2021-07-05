@@ -38,6 +38,8 @@ dependencies:
   progress_indicators: ^1.0.0
   share: ^2.0.4
   flutter_svg: ^0.22.0
+  image_picker: ^0.8.0+1
+  modal_bottom_sheet: ^2.0.0
 
 
 

@@ -16,6 +16,7 @@ class AuthProvider extends ChangeNotifier {
     );
     await FirebaseAuth.instance.signInWithCredential(credential);
 
+
     Map<String, String> credentials = {"access_token": "${googleAuth.accessToken}", "id_token": " ${googleAuth.idToken}", "site_id": "${googleUser.id}", "email": "${googleUser.email}", "name": "${googleUser.displayName}"};
 
     return credentials;
@@ -57,13 +58,15 @@ class AuthProvider extends ChangeNotifier {
     return credentials;
   }
 
-  Future<bool> saveUserData(String id,  String email, String  imgUrl,  String name) async {
+  Future<bool> saveUserData(String id,  String email, String  imgUrl,  String name,  String encryptedId) async {
     bool setId = await preferences!.setString("id", id);
     bool setEmail = await preferences!.setString("email", email);
     bool setImgUrl = await preferences!.setString("imgUrl", imgUrl);
     bool setName = await preferences!.setString("name", name);
+    bool  setEncryptedId = await  preferences!.setString("encrypt_id", encryptedId);
 
-    if (setId && setEmail && setImgUrl && setName) {
+    if (setId && setEmail && setImgUrl && setName && setEncryptedId  ) {
+      print("Hey I've done");
       return true;
     }
     return false;

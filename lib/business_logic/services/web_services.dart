@@ -30,7 +30,6 @@ class WebServices {
 
   static Future<http.Response> fetchDetailedViewData(String cheriId, String memberId) async {
     final url = Uri.http(baseUrl, detailedDataList);
-    print("mom is calling...");
     final body = {'cheri_id': '$cheriId', 'member_id': '$memberId'};
     http.Response response = await http.post(url, headers: headers, body: body);
 

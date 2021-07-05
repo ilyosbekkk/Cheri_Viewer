@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
-import 'package:viewerapp/business_logic/providers/auth_provider.dart';
+import 'package:viewerapp/business_logic/providers/user management provider.dart';
+import 'package:viewerapp/utils/strings.dart';
 
 class AuthScreen extends StatefulWidget {
   static String route = "/auth_screen";
@@ -19,11 +20,11 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Consumer<AuthProvider>(builder: (context, auth_provider, child) {
+        child: Consumer<AuthProvider>(builder: (context, authProvider, child) {
           return Container(
             child: InAppWebView(
               initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/login")),
-              // initialData: InAppWebViewInitialData(data: initial_data),
+
               initialOptions: InAppWebViewGroupOptions(
                 crossPlatform: InAppWebViewOptions(
                   javaScriptEnabled: true,
@@ -39,12 +40,14 @@ class _AuthScreenState extends State<AuthScreen> {
                 _controller.addJavaScriptHandler(
                     handlerName: "google",
                     callback: (args) async {
-                      return await auth_provider.signInWithGoogle();
+                      return await authProvider.signInWithGoogle();
                     });
                 _controller.addJavaScriptHandler(
                     handlerName: "google_user_info",
                     callback: (args) {
-                      auth_provider.saveUserData(args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"], args[0]["NAME"]).then((value) {
+                      print("args:$args");
+                      authProvider.saveUserData(args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"], args[0]["NAME"], args[0]["encrypt_id"]).then((value) {
+
                         if (value == true) {
                           Navigator.pop(context);
                           print("구글 로그인이 성공 되었습니다");
@@ -55,7 +58,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 _controller.addJavaScriptHandler(
                     handlerName: "kakao",
                     callback: (args) async {
-                      return await auth_provider.signInWithKakao();
+                      return await authProvider.signInWithKakao();
                     });
                 _controller.addJavaScriptHandler(
                     handlerName: "kakao_user_info",
@@ -65,7 +68,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 _controller.addJavaScriptHandler(
                     handlerName: "naver",
                     callback: (args) async {
-                      return await auth_provider.signInWithNaver();
+                      return await authProvider.signInWithNaver();
                     });
                 _controller.addJavaScriptHandler(
                     handlerName: "naver_user_info",
