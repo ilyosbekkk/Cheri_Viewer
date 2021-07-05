@@ -4,10 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:viewerapp/utils/strings.dart';
-import 'package:viewerapp/utils/utils.dart';
 
-import 'auth_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   static String route = "/profile_screen";
@@ -29,24 +26,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Color.fromRGBO(250, 250, 250, 1),
 
-        title:  Container(
-            height: 29,
-            width: 130,
-            child: Image.asset("assets/images/logo.png", color: Theme.of(context).selectedRowColor,)),
-        actions: [IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.settings,
-                size: 30,
-                color: Colors.black54,
-              )),],
-
-      ),
-      body: Container(
+      body: SafeArea(
         child: InAppWebView(
                 initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/member/profile?m=${args["encrypt_id"]}")),
                 initialOptions: InAppWebViewGroupOptions(

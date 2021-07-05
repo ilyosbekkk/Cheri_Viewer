@@ -5,7 +5,6 @@ import 'package:viewerapp/ui/screens/search_screen.dart';
 import 'package:viewerapp/ui/screens/storage_screen.dart';
 import 'package:viewerapp/utils/utils.dart';
 
-import '../utils/strings.dart';
 import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
 

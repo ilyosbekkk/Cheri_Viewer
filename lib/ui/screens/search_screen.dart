@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart';
 import 'package:viewerapp/models/postslist_model.dart';

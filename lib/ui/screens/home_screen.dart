@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
-import 'package:viewerapp/ui/helper_widgets/singlepost_listview_widget.dart';
 import 'package:viewerapp/ui/screens/categoryview_screen.dart';
 import '../../business_logic/providers/postslist_provider  .dart';
 
@@ -28,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static const int pageSize = 10;
   static const int category = 0;
   static const orderBy = "views";
-  bool _noMoreData = false;
+
 
   @override
   void didChangeDependencies() {

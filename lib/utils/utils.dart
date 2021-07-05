@@ -2,7 +2,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 SharedPreferences? preferences;
 
 void showToast(String message) {
@@ -10,6 +9,7 @@ void showToast(String message) {
 }
 
 String timeFormatter(String formattedString) {
+
   var nowTime = DateTime.now();
   var postCreationTime = DateTime.parse(formattedString);
   int yearDiff = nowTime.year - postCreationTime.year;
@@ -42,6 +42,6 @@ String timeFormatter(String formattedString) {
   }
 }
 
-Future<void> initPreferences() async{
+Future<void> initPreferences() async {
   preferences = await SharedPreferences.getInstance();
 }
