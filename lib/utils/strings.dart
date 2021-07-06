@@ -25,12 +25,13 @@ Map<String, List<String>> menu2 = {
 //api urls
 const String baseUrl = "192.168.0.8:7300"; //"cheri.weeknday.com";
 const String postsList = "/api/Viewerapi/list";
-const String searchPost = "/api/native/search";
+const String searchPost = "/api/Viewerapi/list";
 const String categoryList = "/api/Viewerapi/side_category";
 const String detailedDataList = "/api/viewerapi/view";
 const String checkUpdate = "/api/viewerapi/check_update";
 const String savePost = "/api/viewerapi/bookmark_update";
-
+const String recentSearches = "/api/viewerapi/my_search_log_list";
+const String relatedSearches = "/api/viewerapi/relation_search_log_list";
 //others
 const String placeholdeUrl = "https://www.orcajourney.com/wp-content/uploads/2020/08/placeholder.png";
 String profileUrl = "https://cheri.weeknday.com/member/profile?m=";

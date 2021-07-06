@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:viewerapp/business_logic/providers/postslist_provider%20%20.dart';
+import 'package:viewerapp/business_logic/providers/collections provider.dart';
+import 'package:viewerapp/business_logic/providers/home provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
 
@@ -21,14 +22,14 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
   bool _searchMode = false;
   String _popupValue1 = "";
   String _popupValue2 = "";
-  PostListsProvider _homePageProvider = PostListsProvider();
+  HomeProvider _homePageProvider = HomeProvider();
   TextEditingController _controller = TextEditingController();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _homePageProvider = Provider.of<PostListsProvider>(context, listen: true);
+    _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
   }
 
   @override
@@ -185,9 +186,9 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
     );
   }
 
-  Widget _buildPostWidget(double height, double width, index, PostListsProvider homePageProvider) {
+  Widget _buildPostWidget(double height, double width, index, HomeProvider homePageProvider) {
     List<Post> posts = homePageProvider.allPosts;
-    return CardViewWidget(height, width, homePageProvider, posts[index]);
+    return CardViewWidget(height, width, posts[index]);
   }
 
   Widget _buildSearchWidget() {

@@ -5,7 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:viewerapp/utils/utils.dart';
 
-class AuthProvider extends ChangeNotifier {
+class UserManagementProvider extends ChangeNotifier {
   //google signin
   Future<Map<String, String>> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = (await GoogleSignIn().signIn())!;

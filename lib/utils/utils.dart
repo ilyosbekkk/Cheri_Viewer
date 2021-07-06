@@ -45,3 +45,10 @@ String timeFormatter(String formattedString) {
 Future<void> initPreferences() async {
   preferences = await SharedPreferences.getInstance();
 }
+enum Screen {
+  Home,
+  Search,
+  Collections,
+  Categories
+
+}

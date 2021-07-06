@@ -1,4 +1,4 @@
-import 'package:viewerapp/business_logic/providers/detailedview_provider.dart';
+import 'package:viewerapp/business_logic/providers/detailedview provider.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
 import 'package:viewerapp/utils/strings.dart';
 import 'package:provider/provider.dart';

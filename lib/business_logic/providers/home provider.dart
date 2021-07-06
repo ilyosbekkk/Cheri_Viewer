@@ -5,18 +5,14 @@ import 'package:viewerapp/models/categories_model.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:flutter/foundation.dart';
 
-import '../services/web_services.dart';
+import '../services/web services.dart';
 
-class PostListsProvider extends ChangeNotifier {
+class HomeProvider extends ChangeNotifier {
   bool _showSubCategories1 = false;
   bool _showSubCategories2 = false;
   String postsMessage = "";
   String categoriesMessage = "";
   List<Post> allPosts = [];
-  List<Post> categoryPosts = [];
-  late bool categoryLoading;
-  List<Post> searchResults = [];
-  List<Post> bookMarkedPosts = [];
 
   int activeIndex = -1;
   List<String> subCategories1 = [];
@@ -35,9 +31,6 @@ class PostListsProvider extends ChangeNotifier {
 
   Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy, int category) async {
     try {
-
-      categoryLoading = true;
-      if (categoryPosts.isNotEmpty) categoryPosts.clear();
       Response response = await WebServices.fetchPosts(pageSize, nowPage, orderBy, category);
 
       if (response.statusCode == 200) {
@@ -46,16 +39,9 @@ class PostListsProvider extends ChangeNotifier {
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
 
         postsMessage = postsResponse.message;
-        if (category == 0) {
-          print(postsResponse.data[0]);
-          allPosts.addAll(postsResponse.data);
-        } else {
 
-          categoryLoading = false;
-          categoryPosts.addAll(postsResponse.data);
+        allPosts.addAll(postsResponse.data);
 
-
-        }
         notifyListeners();
         return true;
       } else {
@@ -65,35 +51,6 @@ class PostListsProvider extends ChangeNotifier {
       notifyListeners();
       return false;
     }
-  }
-
-  Future<bool> searchPostByTitle(int pageSize, int nowPage, String orderBy, String searchWord) async {
-    if (searchResults.isNotEmpty) searchResults.clear();
-    try {
-      Response response = await WebServices.searchPostByTitle(pageSize, nowPage, orderBy, searchWord);
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-        PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
-
-        searchResults.addAll(postsResponse.data);
-        notifyListeners();
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      print(e.toString());
-      notifyListeners();
-      return false;
-    }
-  }
-
-  Future<bool> fetchSavedPostsList() async {
-    return true;
-  }
-
-  Future<bool> fetchOpenedPostsList() async {
-    return true;
   }
 
   Future<bool> fetchCategoriesList() async {
@@ -141,20 +98,6 @@ class PostListsProvider extends ChangeNotifier {
 
     return true;
   }
-
-  void save(Post post) {
-    post.like = true;
-    notifyListeners();
-  }
-
-  void unsave(Post post) {
-    post.like = false;
-    notifyListeners();
-  }
-
-  bool get showSubCategories1 => _showSubCategories1;
-
-  bool get showSubCategories2 => _showSubCategories2;
 
   void showCategories(int index) {
     if (lastButtonIndex == index) {
@@ -215,6 +158,10 @@ class PostListsProvider extends ChangeNotifier {
     }
     return [];
   }
+
+  bool get showSubCategories1 => _showSubCategories1;
+
+  bool get showSubCategories2 => _showSubCategories2;
 
   List<bool> get activeAcategories => _activeCategories;
 }

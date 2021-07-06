@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/screens/categoryview_screen.dart';
-import '../../business_logic/providers/postslist_provider  .dart';
+import '../../business_logic/providers/home provider.dart';
 
 import '../../models/postslist_model.dart';
 import '../../utils/strings.dart';
@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  PostListsProvider _homePageProvider = PostListsProvider();
+  HomeProvider _homePageProvider = HomeProvider();
   int initialPage = 1;
   static const int pageSize = 10;
   static const int category = 0;
@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _homePageProvider = Provider.of<PostListsProvider>(context, listen: true);
+    _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
 
 
     print("did change dependency");
@@ -86,12 +86,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSinglePost(int index, double height, double width) {
     List<Post> posts = _homePageProvider.allPosts;
-    return CardViewWidget(height, width, _homePageProvider, posts[index]);
+    return CardViewWidget(height, width, posts[index]);
   }
 
   Widget _buildCategories(double width) {
     var radius = width / 14;
-    return Consumer<PostListsProvider>(builder: (context, homeProvider, child) {
+    return Consumer<HomeProvider>(builder: (context, homeProvider, child) {
       return Column(children: [
         Container(
           margin: EdgeInsets.only(left: 10, right: 10, top: 10.0),
@@ -117,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Widget _buildCategoryWidget(PostListsProvider homeProvider, double radius, index) {
+  Widget _buildCategoryWidget(HomeProvider homeProvider, double radius, index) {
     String assetName = "";
     switch (index) {
       case 0:
@@ -163,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSubCategories(PostListsProvider homeProvider, int i) {
+  Widget _buildSubCategories(HomeProvider homeProvider, int i) {
     return Container(
       margin: EdgeInsets.all(10),
       child: GridView.count(

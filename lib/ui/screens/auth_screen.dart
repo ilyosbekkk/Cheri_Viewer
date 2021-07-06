@@ -20,7 +20,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Consumer<AuthProvider>(builder: (context, authProvider, child) {
+        child: Consumer<UserManagementProvider>(builder: (context, authProvider, child) {
           return Container(
             child: InAppWebView(
               initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/login")),

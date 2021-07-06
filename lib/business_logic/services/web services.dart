@@ -12,9 +12,9 @@ class WebServices {
     return response;
   }
 
-  static Future<http.Response> searchPostByTitle(int pageSize, int nowPage, String orderBy, String searchWord) async {
+  static Future<http.Response> searchPostByTitle(int pageSize, int nowPage, String orderBy, String searchWord, String memberId) async {
     final url = Uri.http(baseUrl, searchPost);
-    final body = {'pagesize': '$pageSize', 'nowpage': '$nowPage', 'orderby': '$orderBy', 'search_word': '$searchWord'};
+    final body = {'pagesize': '$pageSize', 'nowpage': '$nowPage', 'orderby': '$orderBy', 'search_word': '$searchWord', 'member_id' :'$memberId', 'category' : '0'};
     http.Response response = await http.post(url, headers: headers, body: body);
 
     return response;
@@ -47,6 +47,22 @@ class WebServices {
   static Future<http.Response> saveCheriPost(String cheriId, String memberId, String state) async {
     final url = Uri.http(baseUrl, savePost);
     final body = {'cheri_id': cheriId, 'state': state, 'member_id': memberId};
+    http.Response response = await http.post(url, headers: headers, body: body);
+
+    return response;
+  }
+
+  static Future<http.Response> fetchRecentSearches(String memberId) async {
+    final url = Uri.http(baseUrl, recentSearches);
+    final body = {'member_id': memberId};
+    http.Response response = await http.post(url, headers: headers, body: body);
+
+    return response;
+  }
+
+  static Future<http.Response> fetchRelatedSearches(String memberId, String searchWord) async {
+    final url = Uri.http(baseUrl, relatedSearches);
+    final body = {'member_id': memberId, 'search_word': searchWord};
     http.Response response = await http.post(url, headers: headers, body: body);
 
     return response;

@@ -1,10 +1,14 @@
-import 'package:viewerapp/business_logic/providers/postslist_provider  .dart';
+import 'package:viewerapp/business_logic/providers/categories provider.dart';
+import 'package:viewerapp/business_logic/providers/collections provider.dart';
+import 'package:viewerapp/business_logic/providers/home provider.dart';
 import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
 import 'package:viewerapp/ui/screens/categoryview_screen.dart';
-import 'business_logic/providers/detailedview_provider.dart';
+import 'business_logic/providers/cheri provider.dart';
+import 'business_logic/providers/detailedview provider.dart';
 import 'package:viewerapp/ui/screens/settings_screen.dart';
 import 'package:viewerapp/ui/screens/profile_screen.dart';
 import 'package:viewerapp/ui/screens/auth_screen.dart';
+import 'business_logic/providers/search provider.dart';
 import 'business_logic/providers/user management provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:viewerapp/ui/nav_controller.dart';
@@ -18,11 +22,13 @@ void main() async {
   await Firebase.initializeApp();
   await initPreferences();
   final List<SingleChildWidget> providers = [
-    ChangeNotifierProvider(
-      create: (_) => AuthProvider(),
-    ),
-    ChangeNotifierProvider(create: (_) => PostListsProvider()),
+    ChangeNotifierProvider(create: (_) => UserManagementProvider(),),
+    ChangeNotifierProvider(create: (_) => HomeProvider()),
     ChangeNotifierProvider(create: (_) => DetailedViewProvider()),
+    ChangeNotifierProvider(create: (_) =>SearchProvider()),
+    ChangeNotifierProvider(create: (_) =>CategoriesProvider()),
+    ChangeNotifierProvider(create: (_) =>CollectionsProvider()),
+    ChangeNotifierProvider(create: (_) =>CheriProvider()),
   ];
 
   runApp(MultiProvider(

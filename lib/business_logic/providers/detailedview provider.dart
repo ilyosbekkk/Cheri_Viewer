@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
-import 'package:viewerapp/business_logic/services/web_services.dart';
+import 'package:viewerapp/business_logic/services/web services.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
 
 class DetailedViewProvider extends ChangeNotifier {
@@ -38,7 +38,6 @@ class DetailedViewProvider extends ChangeNotifier {
     }
   }
 
-  //save/update
   Future<bool> updateCheckListItem(String itemId, String checked, String memberId) async {
     try {
       Response response = await WebServices.updateCheckListItem(itemId, checked, memberId);
@@ -66,7 +65,7 @@ class DetailedViewProvider extends ChangeNotifier {
   }
   
 
-  //getters
+
   List<Item> get items => _items ;
 
   List<File>  itemFiles(String itemId) {
