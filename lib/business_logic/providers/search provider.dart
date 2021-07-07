@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -129,7 +130,7 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void startListening() {
+  void startListening(BuildContext context) {
     lastWords = '';
     lastError = '';
     speech.listen(
@@ -137,11 +138,13 @@ class SearchProvider extends ChangeNotifier {
       listenFor: Duration(seconds: 30),
       pauseFor: Duration(seconds: 5),
       partialResults: true,
-      localeId: currentLocaleId,
+      localeId: "ko_KR",
       onSoundLevelChange: soundLevelListener,
       cancelOnError: true,
       listenMode: ListenMode.confirmation
-    );
+    ).then((value) {
+      print("Listening   has been  stopped");
+    });
     notifyListeners();
   }
 
@@ -159,8 +162,6 @@ class SearchProvider extends ChangeNotifier {
 
   void resultListener(SpeechRecognitionResult result) {
     ++resultListened;
-    print("Result listened $resultListened");
-    print("Results");
     word1 = result.recognizedWords;
     word2  = result.finalResult;
     print(result.recognizedWords);
@@ -171,11 +172,6 @@ class SearchProvider extends ChangeNotifier {
   void soundLevelListener(double level) {
     minSoundLevel = min(minSoundLevel, level);
     maxSoundLevel = max(maxSoundLevel, level);
-    notifyListeners();
-  }
-
-  void switchLang(selectedVal) {
-    currentLocaleId = selectedVal;
     notifyListeners();
   }
   //endregion

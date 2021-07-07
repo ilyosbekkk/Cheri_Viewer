@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -221,12 +220,12 @@ class _SearchScreenState extends State<SearchScreen> {
                 flex: 1,
                 child: IconButton(
                   icon: Icon(Icons.mic),
-                  onPressed: ()  {
+                  onPressed: () {
                     setState(() {
                       _searchActive = true;
                     });
 
-                     _showModalBottomSheet();
+                    _showModalBottomSheet(_controller.text);
                   },
                 ))
       ],
@@ -378,15 +377,17 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  void _showModalBottomSheet() {
-
-      showMaterialModalBottomSheet(
-       context: context,
-       builder: (context) => VoiceRecorderModalBottomSheet(widget.height -MediaQueryData.fromWindow(window).padding.top ),
-     ).then((value) {
-       setState(() {
-         _searchActive = false;
-       });
+  void _showModalBottomSheet(String searchWord) {
+    showMaterialModalBottomSheet(
+      context: context,
+      builder: (context) => VoiceRecorderModalBottomSheet((widget.height - MediaQueryData.fromWindow(window).padding.top), searchWord),
+    ).then((value) {
+      print("Hey guyssss im calling u");
+      print(value);
+      setState(() {
+        if (value != null) _controller.text = value;
+        _searchActive = false;
       });
+    });
   }
 }

@@ -4,12 +4,25 @@ import 'package:viewerapp/business_logic/providers/search%20provider.dart';
 
 class VoiceRecorderModalBottomSheet extends StatelessWidget {
   double height;
+  bool _initialized = false;
+  String _searchWord;
 
-  VoiceRecorderModalBottomSheet(this.height);
+  VoiceRecorderModalBottomSheet(this.height, this._searchWord);
 
   @override
   Widget build(BuildContext context) {
     return Consumer<SearchProvider>(builder: (context, search, child) {
+      if (!_initialized) {
+        search.initSpeechState().then((value) {
+          if (search.has_speech || !search.speech.isListening) search.startListening(context);
+        });
+        _initialized = true;
+      }
+
+      if (search.word1.isNotEmpty && search.word1 != "") {
+        Navigator.pop(context, search.word1);
+      }
+
       return Container(
         height: height,
         child: Column(
@@ -27,7 +40,8 @@ class VoiceRecorderModalBottomSheet extends StatelessWidget {
                   }),
             ),
             Container(
-              child: Text("Recognized words:  ${search.word1}"),),
+              child: Text("Recognized words:  ${search.word1}"),
+            ),
             Container(
               margin: EdgeInsets.only(top: 30),
               child: Text(
@@ -39,11 +53,6 @@ class VoiceRecorderModalBottomSheet extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  TextButton(
-                      onPressed: () {
-                        if (search.has_speech || !search.speech.isListening) search.startListening();
-                      },
-                      child: Text("Start")),
                   TextButton(
                       onPressed: () {
                         if (search.speech.isListening) search.stopListening();
@@ -58,16 +67,6 @@ class VoiceRecorderModalBottomSheet extends StatelessWidget {
               ),
             ),
             Container(
-              child: Row(
-              children: [
-                DropdownButton(
-                    onChanged: (selectedValue) => search.switchLang(selectedValue),
-                    value: search.currentLocaleId,
-                    items: search.localeNames.map((e) => DropdownMenuItem(child: Text(e.name),  value: e.localeId,)).toList())
-              ],
-            ),),
-
-            Container(
                 decoration: BoxDecoration(color: Colors.red, border: Border.all(color: Colors.red), borderRadius: BorderRadius.all(Radius.circular(30))),
                 margin: EdgeInsets.only(bottom: 30),
                 child: IconButton(
@@ -76,9 +75,7 @@ class VoiceRecorderModalBottomSheet extends StatelessWidget {
                       color: Colors.white,
                       size: 30,
                     ),
-                    onPressed: () async {
-                      if (!search.has_speech) await search.initSpeechState();
-                    }))
+                    onPressed: () {}))
           ],
         ),
       );
