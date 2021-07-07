@@ -1,10 +1,14 @@
+
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/business_logic/providers/search provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
+import 'package:viewerapp/ui/helper_widgets/voice%20recorder%20modal%20bottom%20sheet.dart';
 import 'package:viewerapp/utils/utils.dart';
-
 import '../../utils/strings.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -20,17 +24,18 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController _controller = TextEditingController();
-  bool searching = false;
   String _popupValue1 = "";
   String _popupValue2 = "";
-  late String memberId;
-  bool searchActive = true;
+  late String? _memberId;
+  bool _searchActive = false;
+  bool _searching = false;
   bool _loaded = false;
+  bool _noSearchResult = false;
 
   @override
   void initState() {
     super.initState();
-    memberId = (preferences!.getString("id") ?? null)!;
+    _memberId = preferences!.getString("id") ?? null;
   }
 
   @override
@@ -39,90 +44,115 @@ class _SearchScreenState extends State<SearchScreen> {
         margin: EdgeInsets.only(left: widget.width * 0.025, top: 10),
         child: Consumer<SearchProvider>(
           builder: (context, searchProvider, child) {
-            int count = 2;
-
-            if(searchProvider.searchResults.length  > 0){
-              count = searchProvider.searchResults.length + count;
-            }
-            else {
-              if(_controller.text.isEmpty) {
-                count = searchProvider.recentSearches.length + count;
-              }
-              else{
-                count = searchProvider.relatedSearches.length + count;
-              }
-            }
-
-
-            if (!_loaded) {
-              searchProvider.fetchRecentSearches(memberId).then((value) {
-                print("Hey done!!!");
-              });
+            if (!_loaded && _memberId != null) {
+              searchProvider.fetchRecentSearches(_memberId!).then((value) {});
               _loaded = true;
             }
-            return ListView.builder(
-                primary: false,
-                shrinkWrap: true,
-                itemCount: searchProvider.searchResults.length != 0
-                    ? searchProvider.searchResults.length + 2
-                    : searchProvider.recentSearches.length != 0
-                        ? searchProvider.recentSearches.length + 2
-                        : 2,
-                itemBuilder: (BuildContext context, index) {
-                  if (index == 0) {
-                    return _buildSearchWidget(searchProvider);
-                  }
-                  else if (index == 1) {
-                    if (searchProvider.searchResults.length > 0) {
-                      return _buildSortWidget(_controller.text, searchProvider.searchResults.length);
-                    }
-                    else {
-                      if (_controller.text.isEmpty) {
-                        return Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(10),
-                          color: Color.fromRGBO(245, 245, 245, 1),
-                          margin: EdgeInsets.only(top: 10.0),
-                          child: Text(
-                            "최근검색",
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                          ),
-                        );
-                      }
-                      else return Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(10),
-                          color: Color.fromRGBO(245, 245, 245, 1),
-                          margin: EdgeInsets.only(top: 10.0),
-                          child: Text(
-                            "관련된 검색어",
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                          ),
-                        );
-                    }
-                  }
-                  else {
-                    index = index - 2;
-                    if (_controller.text.isEmpty) {
-                      if (searchProvider.recentSearches.isEmpty)
-                        return Center(
-                          child: Text("결과 없다"),
-                        );
-                      else
-                        return _buildRecentSearchResultWidget(searchProvider.recentSearches[index].word!);
-                    } else {
-                      if (searchProvider.searchResults.isEmpty) {
-                        print("relates searches");
-                        return _buildRelatedSearchesWidget(searchProvider.relatedSearches[index].word!);
-                      }
-                      else
-                        return _buildPostWidget(0.4 * widget.height, widget.width, index, searchProvider);
-                    }
-
-                  }
-                });
+            return _buildWidgetsList(searchProvider);
           },
         ));
+  }
+
+  Widget _buildWidgetsList(SearchProvider searchProvider) {
+    int count = 2;
+    if (searchProvider.searchResults.length > 0 && !_searching) {
+      count = searchProvider.searchResults.length + count;
+    } else if (searchProvider.searchResults.length == 0 && _noSearchResult) {
+      count++;
+    } else {
+      if (!_searching) {
+        if (_controller.text.isEmpty) {
+          if (searchProvider.recentSearches.isEmpty)
+            count++;
+          else
+            count = searchProvider.recentSearches.length + count;
+        } else {
+          if (searchProvider.relatedSearches.isEmpty)
+            count++;
+          else
+            count = searchProvider.relatedSearches.length + count;
+        }
+      } else {
+        count++;
+      }
+    }
+    return _memberId != null
+        ? ListView.builder(
+            primary: false,
+            shrinkWrap: true,
+            itemCount: count,
+            itemBuilder: (BuildContext context, index) {
+              if (index == 0) {
+                return _buildSearchWidget(searchProvider);
+              } else if (index == 1) {
+                if (searchProvider.searchResults.length > 0) {
+                  return _buildSortWidget(_controller.text, searchProvider.searchResults.length);
+                } else {
+                  if (_controller.text.isEmpty) {
+                    return Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(10),
+                      color: Color.fromRGBO(245, 245, 245, 1),
+                      margin: EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        "최근검색",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  } else
+                    return Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(10),
+                      color: Color.fromRGBO(245, 245, 245, 1),
+                      margin: EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        "관련된 검색어",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                    );
+                }
+              } else {
+                index = index - 2;
+                if (_searching) {
+                  return Center(
+                    child: Container(
+                        child: CircularProgressIndicator(
+                      backgroundColor: Theme.of(context).selectedRowColor,
+                    )),
+                  );
+                } else if (searchProvider.searchResults.length > 0) {
+                  return _buildPostWidget(0.4 * widget.height, widget.width, index, searchProvider);
+                } else if (searchProvider.searchResults.isEmpty && _noSearchResult) {
+                  return Center(
+                    child: Text(
+                      "검색 결과가  없습니다",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  );
+                } else if (_controller.text.isEmpty) {
+                  if (searchProvider.recentSearches.isEmpty)
+                    return Center(
+                      child: Text(
+                        "최근 검색 결과가 없습니다",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    );
+                  else
+                    return _buildRecentSearchResultWidget(searchProvider.recentSearches[index].word!, searchProvider);
+                } else {
+                  if (searchProvider.relatedSearches.isEmpty)
+                    return Center(
+                        child: Text(
+                      "관련된 검색 결과가 없습니다!",
+                      style: TextStyle(fontSize: 15),
+                    ));
+                  return _buildRelatedSearchesWidget(searchProvider.relatedSearches[index].word!, searchProvider);
+                }
+              }
+            })
+        : Center(
+            child: Text("Please sign in first!!!"),
+          );
   }
 
   Widget _buildSearchWidget(SearchProvider homePageProvider) {
@@ -135,20 +165,26 @@ class _SearchScreenState extends State<SearchScreen> {
             child: TextField(
               onChanged: (searchWord) {
                 homePageProvider.cleanList();
-                homePageProvider.fetchRelatedSearches(memberId, searchWord).then((value) {});
-                setState(() {});
+                homePageProvider.fetchRelatedSearches(_memberId!, searchWord).then((value) {});
+                setState(() {
+                  _noSearchResult = false;
+                });
               },
               onTap: () {
-                searchActive = true;
+                _searchActive = true;
               },
               controller: _controller,
               onSubmitted: (searchWord) {
                 setState(() {
-                  searching = true;
+                  _searching = true;
                 });
-                homePageProvider.searchPostByTitle(10, 1, "views", searchWord, memberId).then((value) {
+                homePageProvider.searchPostByTitle(10, 1, "views", searchWord, _memberId!).then((value) {
                   setState(() {
-                    searching = false;
+                    _searching = false;
+                    if (homePageProvider.searchResults.isEmpty)
+                      _noSearchResult = true;
+                    else
+                      _noSearchResult = false;
                   });
                 });
               },
@@ -164,7 +200,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
         ),
-        searchActive
+        _searchActive
             ? Expanded(
                 flex: 1,
                 child: IconButton(
@@ -174,7 +210,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   onPressed: () {
                     setState(() {
-                      searchActive = false;
+                      _searchActive = false;
                     });
                     _controller.text = "";
                     FocusScope.of(context).requestFocus(FocusNode());
@@ -185,10 +221,12 @@ class _SearchScreenState extends State<SearchScreen> {
                 flex: 1,
                 child: IconButton(
                   icon: Icon(Icons.mic),
-                  onPressed: () {
+                  onPressed: ()  {
                     setState(() {
-                      searchActive = true;
+                      _searchActive = true;
                     });
+
+                     _showModalBottomSheet();
                   },
                 ))
       ],
@@ -255,7 +293,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildRecentSearchResultWidget(String recentSearchWord) {
+  Widget _buildRecentSearchResultWidget(String recentSearchWord, SearchProvider searchProvider) {
     return Container(
       margin: EdgeInsets.only(top: 10),
       child: Row(
@@ -267,7 +305,21 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Container(
                 alignment: Alignment.bottomLeft,
                 child: MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      _controller.text = recentSearchWord;
+                      _searching = true;
+                    });
+                    searchProvider.searchPostByTitle(10, 1, "views", recentSearchWord, _memberId!).then((value) {
+                      setState(() {
+                        _searching = false;
+                        if (searchProvider.searchResults.isEmpty)
+                          _noSearchResult = true;
+                        else
+                          _noSearchResult = false;
+                      });
+                    });
+                  },
                   child: Text(
                     recentSearchWord,
                     maxLines: 1,
@@ -290,22 +342,51 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildRelatedSearchesWidget(String relatedSearchWidget) {
+  Widget _buildRelatedSearchesWidget(String relatedSearchWord, SearchProvider searchProvider) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        setState(() {
+          _controller.text = relatedSearchWord;
+
+          _searching = true;
+        });
+        searchProvider.searchPostByTitle(10, 1, "views", relatedSearchWord, _memberId!).then((value) {
+          setState(() {
+            _searching = false;
+            if (searchProvider.searchResults.isEmpty)
+              _noSearchResult = true;
+            else
+              _noSearchResult = false;
+          });
+        });
+      },
       child: Container(
         margin: EdgeInsets.only(top: 10),
-
         child: Row(
           children: [
-            Icon(Icons.search),
-            Text(
-              relatedSearchWidget,
-              style: TextStyle(fontSize: 15),
+            Expanded(flex: 1, child: Icon(Icons.search)),
+            Expanded(
+              flex: 9,
+              child: Text(
+                relatedSearchWord,
+                style: TextStyle(fontSize: 15),
+              ),
             )
           ],
         ),
       ),
     );
+  }
+
+  void _showModalBottomSheet() {
+
+      showMaterialModalBottomSheet(
+       context: context,
+       builder: (context) => VoiceRecorderModalBottomSheet(widget.height -MediaQueryData.fromWindow(window).padding.top ),
+     ).then((value) {
+       setState(() {
+         _searchActive = false;
+       });
+      });
   }
 }

@@ -19,6 +19,7 @@ class SearchProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
+        print("result");
         print(decodedResponse);
         _searchResults.addAll(postsResponse.data);
         notifyListeners();
@@ -55,12 +56,14 @@ class SearchProvider extends ChangeNotifier {
 
   Future<bool> fetchRelatedSearches(String memberId, String searchWord) async {
     bool result = false;
-    if (_relatedSearches.isEmpty) _relatedSearches.clear();
+    if (_relatedSearches.isNotEmpty) _relatedSearches.clear();
     try {
       Response response = await WebServices.fetchRelatedSearches(memberId, searchWord);
       Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
       if (response.statusCode == 200) {
         Search search = Search.fromJson(decodedResponse);
+        print("related searches:");
+        print(decodedResponse);
         _relatedSearches.addAll(search.searchWords!);
         result = true;
         notifyListeners();
