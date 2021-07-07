@@ -41,6 +41,7 @@ dependencies:
   image_picker: ^0.8.0+1
   modal_bottom_sheet: ^2.0.0
   animated_background: ^1.0.5
+  speech_to_text: ^4.2.1
 
 
 

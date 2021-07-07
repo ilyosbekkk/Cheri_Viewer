@@ -22,6 +22,43 @@
           }
         },
         {
+          "client_id": "1049194575299-up3barub3db4v0satjuilukhmtakj6he.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cheristoryboard.viewerapp",
+            "certificate_hash": "146366f1b299aa92f09329900c7d41b669a925d5"
+          }
+        },
+        {
+          "client_id": "1049194575299-j28uld610f8dgjeoajgelavmt9n5b0v4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJf7SkM3T6SubAQVY6Apb_4LE_BlGDirM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1049194575299-j28uld610f8dgjeoajgelavmt9n5b0v4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1049194575299:android:a5ef73f29c386a1d46b976",
+        "android_client_info": {
+          "package_name": "com.i"
+        }
+      },
+      "oauth_client": [
+        {
           "client_id": "1049194575299-j28uld610f8dgjeoajgelavmt9n5b0v4.apps.googleusercontent.com",
           "client_type": 3
         }
