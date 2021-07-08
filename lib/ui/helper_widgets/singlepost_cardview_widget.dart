@@ -17,6 +17,7 @@ class CardViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String? memberId = (preferences!.getString("id") ?? null);
     return Consumer<CheriProvider>(builder: (context,  cheriProvider,  child) {
       return  Container(
         margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
@@ -24,8 +25,6 @@ class CardViewWidget extends StatelessWidget {
         width: double.infinity,
         child: InkWell(
           onTap: () {
-            String? memberId = (preferences!.getString("id") ?? null);
-
             if(memberId != null) {
               Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": post.cheriId, "memberId": memberId});
               print(post.cheriId);
@@ -50,7 +49,7 @@ class CardViewWidget extends StatelessWidget {
                           child: FadeInImage.assetNetwork(
                             placeholder: 'assets/images/placeholder.png',
                             image: post.imgUrl,
-                            fit: BoxFit.fitWidth,
+                            fit: BoxFit.fill,
                           ),
                         ),
                         Row(
@@ -85,10 +84,10 @@ class CardViewWidget extends StatelessWidget {
                               height: 30,
                               margin: EdgeInsets.only(top: 16.0, right: 8),
                               color: Theme.of(context).primaryColorDark,
-                              child: !post.like
+                              child: post.shareYN == "N"
                                   ? InkWell(
-                                onTap: () {
-                                  cheriProvider.save(post);
+                                onTap: ()  async{
+                                  cheriProvider.saveCheriPost(post.cheriId, "Y", memberId!);
                                 },
                                 child: Icon(
                                   Icons.bookmark_border,
@@ -96,9 +95,9 @@ class CardViewWidget extends StatelessWidget {
                                 ),
                               )
                                   : InkWell(
-                                onTap: () {
-                                  cheriProvider.unsave(post);
-                                },
+                                onTap: () async {
+                                  cheriProvider.saveCheriPost(post.cheriId, "N", memberId!);
+                                  },
                                 child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor),
                               ),
                             ),

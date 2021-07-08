@@ -151,6 +151,8 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   }
 
   Widget _buildAccountWidget(DetailedViewProvider detailedViewProvider, String memberId, String cheriId, double width) {
+
+    print(detailedViewProvider.detailedPost.saveYn);
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

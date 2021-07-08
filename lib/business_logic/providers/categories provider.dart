@@ -30,15 +30,7 @@ class CategoriesProvider extends ChangeNotifier {
       return false;
     }
   }
-  void save(Post post) {
-    post.like = true;
-    notifyListeners();
-  }
 
-  void unsave(Post post) {
-    post.like = false;
-    notifyListeners();
-  }
 
   List<Post> get categories => _categories;
 }

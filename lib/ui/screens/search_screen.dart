@@ -11,8 +11,8 @@ import 'package:viewerapp/utils/utils.dart';
 import '../../utils/strings.dart';
 
 class SearchScreen extends StatefulWidget {
-  double height;
-  double width;
+  final height;
+  final width;
   ScrollController _scrollController;
 
   SearchScreen(this.height, this.width, this._scrollController);
@@ -39,6 +39,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final modalHeight = (widget.height - MediaQueryData.fromWindow(window).padding.top);
     return Container(
         margin: EdgeInsets.only(left: widget.width * 0.025, top: 10),
         child: Consumer<SearchProvider>(
@@ -47,12 +48,12 @@ class _SearchScreenState extends State<SearchScreen> {
               searchProvider.fetchRecentSearches(_memberId!).then((value) {});
               _loaded = true;
             }
-            return _buildWidgetsList(searchProvider);
+            return _buildWidgetsList(searchProvider, modalHeight);
           },
         ));
   }
 
-  Widget _buildWidgetsList(SearchProvider searchProvider) {
+  Widget _buildWidgetsList(SearchProvider searchProvider, double modalHeight) {
     int count = 2;
     if (searchProvider.searchResults.length > 0 && !_searching) {
       count = searchProvider.searchResults.length + count;
@@ -82,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen> {
             itemCount: count,
             itemBuilder: (BuildContext context, index) {
               if (index == 0) {
-                return _buildSearchWidget(searchProvider);
+                return _buildSearchWidget(searchProvider,  modalHeight);
               } else if (index == 1) {
                 if (searchProvider.searchResults.length > 0) {
                   return _buildSortWidget(_controller.text, searchProvider.searchResults.length);
@@ -154,7 +155,7 @@ class _SearchScreenState extends State<SearchScreen> {
           );
   }
 
-  Widget _buildSearchWidget(SearchProvider homePageProvider) {
+  Widget _buildSearchWidget(SearchProvider homePageProvider,  double modalHeight){
     return Row(
       children: [
         Expanded(
@@ -225,7 +226,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       _searchActive = true;
                     });
 
-                    _showModalBottomSheet(_controller.text);
+                    _showModalBottomSheet(homePageProvider, modalHeight);
                   },
                 ))
       ],
@@ -377,17 +378,26 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  void _showModalBottomSheet(String searchWord) {
+  void _showModalBottomSheet( SearchProvider provider, double modalHeight) {
     showMaterialModalBottomSheet(
       context: context,
-      builder: (context) => VoiceRecorderModalBottomSheet((widget.height - MediaQueryData.fromWindow(window).padding.top), searchWord),
+      builder: (context) => VoiceRecorderModalBottomSheet(modalHeight),
     ).then((value) {
-      print("Hey guyssss im calling u");
-      print(value);
-      setState(() {
-        if (value != null) _controller.text = value;
-        _searchActive = false;
-      });
+      if (value != null) {
+        setState(() {
+          _searchActive = true;
+          _controller.text = value;
+          _searching = true;
+        });
+        provider.searchPostByTitle(10, 1, "views", value, _memberId!).then((value) {
+          _searching = false;
+          if (provider.searchResults.isEmpty)
+            _noSearchResult = true;
+          else
+            _noSearchResult = false;
+
+        });
+      }
     });
   }
 }

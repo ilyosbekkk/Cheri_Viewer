@@ -104,7 +104,7 @@ class ListViewWidget extends StatelessWidget {
               height: 30,
               margin: EdgeInsets.only( right: 8, top: 10),
               color: Theme.of(context).primaryColorDark,
-              child: !post.like
+              child: post.shareYN == "N"
                   ? InkWell(
                 onTap: () {
                   cheriProvider.save(post);

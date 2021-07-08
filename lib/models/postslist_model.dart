@@ -49,9 +49,9 @@ class Post {
   String _imgUrl;
   String _category;
   String _categoryId;
-  bool _like;
+  String _shareYN;
 
-  Post.create(this._cheriId, this._title, this._author, this._dateTime, this._views, this._imgUrl, this._category, this._like, this._categoryId);
+  Post.create(this._cheriId, this._title, this._author, this._dateTime, this._views, this._imgUrl, this._category, this._shareYN, this._categoryId);
 
   String get category => _category;
 
@@ -89,10 +89,10 @@ class Post {
     _categoryId = value;
   }
 
-  bool get like => _like;
+  String  get shareYN => _shareYN;
 
-  set like(bool value) {
-    _like = value;
+  set like(String   value) {
+    _shareYN = value;
   }
 
   set dateTime(String value) {
@@ -108,6 +108,6 @@ class Post {
   }
 
   factory Post.fromJson(Map<String, dynamic> parsedJson) {
-    return Post.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], "unknown", parsedJson["REG_DATE"], parsedJson["VIEWS"], 'https://cheri.weeknday.com/' + parsedJson["CHERI_PICTURE_URL"], parsedJson["CATEGORY"], true, parsedJson["CATEGORY_ID"]);
+    return Post.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], "unknown", parsedJson["REG_DATE"], parsedJson["VIEWS"], 'https://cheri.weeknday.com/' + parsedJson["CHERI_PICTURE_URL"], parsedJson["CATEGORY"], parsedJson["SHARE_YN"], parsedJson["CATEGORY_ID"]);
   }
 }

@@ -35,7 +35,6 @@ class HomeProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-        print(decodedResponse);
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
 
         postsMessage = postsResponse.message;
