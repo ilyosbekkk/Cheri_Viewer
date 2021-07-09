@@ -1,158 +1,177 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/business_logic/providers/collections provider.dart';
-import 'package:viewerapp/business_logic/providers/home provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
+import 'package:viewerapp/ui/helper_widgets/singlepost_listview_widget.dart';
+import 'package:viewerapp/utils/utils.dart';
 
 import '../../utils/strings.dart';
 
 class StorageBoxScreen extends StatefulWidget {
-  double height;
-  double width;
+  final height;
+  final width;
+  final memberId;
 
-  StorageBoxScreen(this.height, this.width);
+  StorageBoxScreen(this.height, this.width, this.memberId);
 
   @override
   _StorageBoxScreenState createState() => _StorageBoxScreenState();
 }
 
 class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
   bool _searchMode = false;
-  String _popupValue1 = "";
-  String _popupValue2 = "";
-  HomeProvider _homePageProvider = HomeProvider();
+  Button mode = Button.BOOKMARK;
+  CollectionsProvider _collectionsProvider = CollectionsProvider();
   TextEditingController _controller = TextEditingController();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
+    if (_collectionsProvider.sMessage == "" && widget.memberId != null) {
+      print("Hello1");
+      _collectionsProvider.fetchSavedPostsList(widget.memberId, "8", "1", "views").then((value) {});
+    }
+    if (_collectionsProvider.oMessage == "" && widget.memberId != null) {
+      print("Hello2");
+      _collectionsProvider.fetchOpenedPostsList(widget.memberId, "8", "1", "views").then((value) {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    int count = 2;
+    if (_searchMode) count = count + 1;
+    if (mode == Button.BOOKMARK && _collectionsProvider.savedPosts.isNotEmpty)
+      count = count + _collectionsProvider.savedPosts.length;
+    else if (mode == Button.OPEN_CHERI && _collectionsProvider.savedPosts.isNotEmpty) count = count + _collectionsProvider.openedPosts.length;
+
     return ListView.builder(
         primary: false,
         shrinkWrap: true,
-        itemCount: _searchMode ? 4 : 3,
+        itemCount: count,
         itemBuilder: (BuildContext context, index) {
-          if (index == 0)
+          if (index == 0) {
             return _buildCustomTabBar();
-          else if (index == 1)
-            return _buildSortWidget(_homePageProvider.allPosts.length);
-          else if (_searchMode == true && index == 2)
+          } else if (index == 1) {
+            return _buildSortWidget(widget.memberId, _collectionsProvider);
+          } else if (index == 2 && _searchMode) {
             return _buildSearchWidget();
-          else
-            return _buildCustomTabView();
+          } else {
+            if (_searchMode)
+              index = index - 3;
+            else
+              index = index - 2;
+            return _buildPostWidget(widget.height, widget.width, index, _collectionsProvider);
+          }
         });
   }
 
   Widget _buildCustomTabBar() {
     return Container(
-      margin: EdgeInsets.only(top: 10, left: 5.0, right: 5.0),
-      height: widget.height * 0.05,
+      height: 60,
       decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(
-          10.0,
-        ),
-      ),
-      child: TabBar(
-        controller: _tabController,
-        // give the indicator a decoration (color and border radius)
-        indicator: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            10.0,
-          ),
-          color: Colors.blueAccent,
-        ),
-        labelColor: Colors.white,
-        unselectedLabelColor: Colors.black,
-        tabs: [
-          // first tab [you can add an icon using the icon property]
-          Tab(
-            text: bookmark_tab[korean],
-          ),
-
-          // second tab [you can add an icon using the icon property]
-          Tab(
-            text: opened_tab[korean],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCustomTabView() {
-    return Container(
-      margin: EdgeInsets.only(top: 10, bottom: 10),
-      height: widget.height * 0.75,
-      child: TabBarView(
-        controller: _tabController,
-        children: [
-          ListView.builder(
-              itemCount: _homePageProvider.allPosts.length,
-              itemBuilder: (BuildContext context, index) {
-                return _buildPostWidget(0.4 * widget.height, widget.width, index, _homePageProvider);
-              }),
-          ListView.builder(
-              itemCount: _homePageProvider.allPosts.length,
-              itemBuilder: (BuildContext context, index) {
-                return _buildPostWidget(0.4 * widget.height, widget.width, index, _homePageProvider);
-              }),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSortWidget(int count) {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.black26, // red as border color
-        ),
+        color: Colors.white,
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Container(margin: EdgeInsets.only(left: 10.0), child: Text('${count - 1} 건')),
-          Spacer(),
-          IconButton(
-              onPressed: () {
+          InkWell(
+            onTap: () {
+              setState(() {
+                mode = Button.BOOKMARK;
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.grey),
+                  left: BorderSide(color: Colors.grey),
+                  right: BorderSide(color: Colors.white),
+                  bottom: mode == Button.BOOKMARK ? BorderSide(width: 4, color: Theme.of(context).selectedRowColor) : BorderSide(color: Colors.grey),
+                ),
+              ),
+              alignment: Alignment.center,
+              height: 60,
+              width: widget.width / 2,
+              child: Text(
+                "북마크",
+                style: TextStyle(fontSize: 15),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              setState(() {
+                mode = Button.OPEN_CHERI;
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.grey),
+                  left: BorderSide(color: Colors.grey),
+                  right: BorderSide(color: Colors.grey),
+                  bottom: mode == Button.OPEN_CHERI ? BorderSide(width: 4, color: Theme.of(context).selectedRowColor) : BorderSide(color: Colors.grey),
+                ),
+              ),
+              alignment: Alignment.center,
+              height: 60,
+              width: widget.width / 2,
+              child: Text("여러본 체리", style: TextStyle(fontSize: 15)),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSortWidget(String memberId, CollectionsProvider postListsProvidert) {
+    return Container(
+      margin: EdgeInsets.only(top: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          InkWell(
+              onTap: () {
                 setState(() {
                   _searchMode = !_searchMode;
                 });
               },
-              icon: Icon(Icons.search)),
+              child: Container(
+                  margin: EdgeInsets.only(right: 10),
+                  width: 25,
+                  height: 25,
+                  child: SvgPicture.asset(
+                    "assets/icons/search.svg",
+                    color: _searchMode ? Theme.of(context).selectedRowColor : Colors.black,
+                  ))),
           Container(
             margin: EdgeInsets.only(left: 5.0),
             child: PopupMenuButton(
-                child: Icon(Icons.menu),
+                child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/list.svg")),
                 elevation: 10,
                 enabled: true,
-                onSelected: (value) {
-                  setState(() {
-                    _popupValue1 = value.toString();
-                    print(_popupValue1);
-                  });
+                onSelected: (value) async {
+                  if (value == "first1") {
+                    await preferences!.setString("mode2", "card");
+                  } else if (value == "first2") {
+                    await preferences!.setString("mode2", "list");
+                  }
+                  setState(() {});
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(
-                        child: Text("First"),
+                        child: Text(menu1[korean]![0]),
                         value: "first1",
                       ),
                       PopupMenuItem(
-                        child: Text("Second"),
-                        value: "second1",
+                        child: Text(menu1[korean]![1]),
+                        value: "first2",
                       )
                     ]),
           ),
@@ -160,25 +179,31 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
             margin: EdgeInsets.only(left: 10.0, right: 10),
             child: PopupMenuButton(
                 elevation: 10,
-                child: Icon(
-                  Icons.notes_outlined,
-                ),
+                child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/options.svg")),
                 enabled: true,
-                onSelected: (value) {
-                  setState(() {
-                    _popupValue2 = value.toString();
-                    print(_popupValue1);
-                  });
+                onSelected: (value) async {
+                  if (value == "second1") {
+                    await postListsProvidert.fetchSavedPostsList(memberId, "8", "1", "regdate r");
+                  } else if (value == "second2") {
+                    await postListsProvidert.fetchSavedPostsList(memberId, "8", "1", "regdate");
+                  } else if (value == "second3") {
+                    await postListsProvidert.fetchSavedPostsList(memberId, "8", "1", "views");
+                  }
+                  setState(() {});
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(
-                        child: Text("First"),
-                        value: "first2",
+                        child: Text(menu2[korean]![0]),
+                        value: "second1",
                       ),
                       PopupMenuItem(
-                        child: Text("Second"),
+                        child: Text(menu2[korean]![1]),
                         value: "second2",
-                      )
+                      ),
+                      PopupMenuItem(
+                        child: Text(menu2[korean]![2]),
+                        value: "second3",
+                      ),
                     ]),
           ),
         ],
@@ -186,9 +211,18 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
     );
   }
 
-  Widget _buildPostWidget(double height, double width, index, HomeProvider homePageProvider) {
-    List<Post> posts = homePageProvider.allPosts;
-    return CardViewWidget(height, width, posts[index]);
+  Widget _buildPostWidget(double height, double width, index, CollectionsProvider collectionsProvider) {
+    List<Post> posts = [];
+    if (mode == Button.BOOKMARK)
+      posts.addAll(collectionsProvider.savedPosts);
+    else
+      posts.addAll(collectionsProvider.openedPosts);
+
+    String sortMode = preferences!.getString("mode2") ?? "card";
+    if (sortMode == "card")
+      return CardViewWidget(height, width, posts[index]);
+    else
+      return ListViewWidget(height, width, posts[index]);
   }
 
   Widget _buildSearchWidget() {
@@ -203,7 +237,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
               child: TextField(
                 controller: _controller,
                 onSubmitted: (searchWord) {
-                  print("${searchWord} submitted");
+                  print("$searchWord submitted");
                 },
                 autofocus: true,
                 textAlign: TextAlign.start,
@@ -233,3 +267,5 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
     );
   }
 }
+
+enum Button { BOOKMARK, OPEN_CHERI }

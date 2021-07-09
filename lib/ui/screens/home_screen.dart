@@ -27,12 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
   static const int category = 0;
   static const orderBy = "views";
 
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
-
 
     print("did change dependency");
 
@@ -105,14 +103,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        if (homeProvider.showSubCategories1) _buildSubCategories(homeProvider, homeProvider.activeIndex),
+        if (homeProvider.showSubCategories1) _buildSubCategoriesB(homeProvider, homeProvider.activeIndex),
         Container(
           margin: EdgeInsets.all(10),
           child: Row(
             children: [_buildCategoryWidget(homeProvider, radius, 4)],
           ),
         ),
-        if (homeProvider.showSubCategories2) _buildSubCategories(homeProvider, homeProvider.activeIndex)
+        if (homeProvider.showSubCategories2) _buildSubCategoriesB(homeProvider, homeProvider.activeIndex)
       ]);
     });
   }
@@ -163,31 +161,28 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSubCategories(HomeProvider homeProvider, int i) {
+  Widget _buildSubCategoriesB(HomeProvider homeProvider, int i) {
     return Container(
-      margin: EdgeInsets.all(10),
-      child: GridView.count(
-          shrinkWrap: true,
-          padding: EdgeInsets.all(5.0),
-          crossAxisCount: 4,
-          childAspectRatio: 3,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
+      child: Wrap(
+          alignment: WrapAlignment.start,
+          direction: Axis.horizontal,
+          spacing: 10.0,
           children: List.generate(homeProvider.subCategories(i).length, (index) {
-            return MaterialButton(
-              elevation: 5,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              onPressed: () {
+            return InkWell(
+              onTap: () {
                 Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id": homeProvider.categoryIds(i)[index], "title": homeProvider.subCategories(i)[index]});
-              },
-              color: Theme.of(context).buttonColor,
-              child: Text(
-                homeProvider.subCategories(i)[index],
-                maxLines: 1,
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
+                },
+              child: Chip(
+                  elevation: 5.0,
+                  backgroundColor: Theme.of(context).buttonColor,
+                  label: Text(
+                    homeProvider.subCategories(i)[index],
+                    style: Theme.of(context).textTheme.bodyText2,
+                  )),
             );
           })),
     );
   }
+
+
 }

@@ -149,9 +149,13 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
   void resultListener(SpeechRecognitionResult result) {
     ++resultListened;
 
+
     word1 = result.recognizedWords;
 
     word2 = result.finalResult;
+    setState(() {
+
+    });
     print(result.recognizedWords);
     print(result.finalResult);
   }

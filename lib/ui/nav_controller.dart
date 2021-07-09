@@ -26,7 +26,7 @@ class _NavCotrollerState extends State<NavCotroller> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
   }
 
@@ -34,7 +34,8 @@ class _NavCotrollerState extends State<NavCotroller> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    _screens = [_buildHomeScreen(height, width), _buildSearchScreen(height, width), _buildStorageBoxScreen(height, width)];
+    String? memberId = preferences!.getString("id")??null;
+    _screens = [_buildHomeScreen(height, width), _buildSearchScreen(height, width), _buildStorageBoxScreen(height, width, memberId)];
 
     return Scaffold(
       body: SafeArea(
@@ -75,9 +76,10 @@ class _NavCotrollerState extends State<NavCotroller> {
     );
   }
 
-  Widget _buildStorageBoxScreen(double height, double width) {
+  Widget _buildStorageBoxScreen(double height, double width, String? memberId) {
+
     return SliverToBoxAdapter(
-      child: StorageBoxScreen(height, width),
+      child: StorageBoxScreen(height, width, memberId),
     );
   }
 

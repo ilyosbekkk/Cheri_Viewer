@@ -14,7 +14,7 @@ class WebServices {
 
   static Future<http.Response> searchPostByTitle(int pageSize, int nowPage, String orderBy, String searchWord, String memberId) async {
     final url = Uri.http(baseUrl, searchPost);
-    final body = {'pagesize': '$pageSize', 'nowpage': '$nowPage', 'orderby': '$orderBy', 'search_word': '$searchWord', 'member_id' :'$memberId', 'category' : '0'};
+    final body = {'pagesize': '$pageSize', 'nowpage': '$nowPage', 'orderby': '$orderBy', 'search_word': '$searchWord', 'member_id': '$memberId', 'category': '0'};
     http.Response response = await http.post(url, headers: headers, body: body);
 
     return response;
@@ -63,6 +63,23 @@ class WebServices {
   static Future<http.Response> fetchRelatedSearches(String memberId, String searchWord) async {
     final url = Uri.http(baseUrl, relatedSearches);
     final body = {'member_id': memberId, 'search_word': searchWord};
+    http.Response response = await http.post(url, headers: headers, body: body);
+
+    return response;
+  }
+
+  static Future<http.Response> fetchBookmarkList(String memberId, String pageSize, String nowPage, String orderBy) async {
+    final url = Uri.http(baseUrl, bookMarkList);
+    final body = {'member_id': memberId, 'pagesize': pageSize, 'nowpage' :nowPage, 'orderby':orderBy};
+
+    http.Response response = await http.post(url, headers: headers, body: body);
+
+    return response;
+  }
+
+  static Future<http.Response> fetchOpenedCheriList(String memberId, String pageSize, String nowPage, String orderBy) async {
+    final url = Uri.http(baseUrl,openCheriList);
+    final body = {'member_id': memberId, 'pagesize': pageSize, 'nowpage' :nowPage, 'orderby':orderBy};
     http.Response response = await http.post(url, headers: headers, body: body);
 
     return response;
