@@ -44,6 +44,7 @@ dependencies:
   speech_to_text: ^4.2.1
   avatar_glow: ^2.0.1
   dio: ^4.0.0
+  connectivity: ^3.0.6
 
 
 

@@ -1,8 +1,10 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viewerapp/ui/screens/profile_screen.dart';
 import 'package:viewerapp/ui/screens/search_screen.dart';
 import 'package:viewerapp/ui/screens/storage_screen.dart';
+import 'package:viewerapp/utils/internet_connectivity.dart';
 import 'package:viewerapp/utils/utils.dart';
 
 import 'screens/auth_screen.dart';
@@ -24,19 +26,45 @@ class _NavCotrollerState extends State<NavCotroller> {
   ScrollController _scrollController2 = ScrollController();
   ScrollController _scrollController3 = ScrollController();
   double appBarHeight = 0;
+  Map _source = {ConnectivityResult.none: false};
+  MyConnectivity _connectivity = MyConnectivity.instance;
 
   @override
   void initState() {
 
     super.initState();
+    _connectivity.initialise();
+    _connectivity.myStream.listen((source) {
+      setState(() => _source = source);
+    });
   }
-
+  @override
+  void dispose() {
+    _connectivity.disposeStream();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     String? memberId = preferences!.getString("id")??null;
     _screens = [_buildHomeScreen(height, width), _buildSearchScreen(height, width), _buildStorageBoxScreen(height, width, memberId)];
+    String string;
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        string = "Offline";
+        showToast("Please turn on the internet!");
+        print(string);
+        break;
+      case ConnectivityResult.mobile:
+        string = "Mobile: Online";
+        print(string);
+        break;
+      case ConnectivityResult.wifi:
+        string = "WiFi: Online";
+        print(string);
+         break;
+    }
 
 
     return Scaffold(

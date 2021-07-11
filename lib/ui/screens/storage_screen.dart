@@ -39,11 +39,10 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
 
     _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
     if (_collectionsProvider.statusCode1 == 0 || _collectionsProvider.statusCode1 == -2) {
-      print("Hello1");
-      _collectionsProvider.fetchSavedPostsList(widget.memberId, "8", "1", "views").then((value) {});
+      _collectionsProvider.fetchSavedPostsList(widget.memberId, "10", "1", "views").then((value) {});
     }
-    if (_collectionsProvider.statusCode2 == 0 && _collectionsProvider.statusCode2 == -2) {
-      _collectionsProvider.fetchOpenedPostsList(widget.memberId, "8", "1", "views").then((value) {});
+    if (_collectionsProvider.statusCode2 == 0 || _collectionsProvider.statusCode2 == -2) {
+      _collectionsProvider.fetchOpenedPostsList(widget.memberId, "10", "1", "views").then((value) {});
     }
   }
 
