@@ -3,8 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/business_logic/providers/collections provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
-import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
-import 'package:viewerapp/ui/helper_widgets/singlepost_listview_widget.dart';
+import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
+import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
 import 'package:viewerapp/utils/utils.dart';
 
 import '../../utils/strings.dart';
@@ -12,9 +12,9 @@ import '../../utils/strings.dart';
 class StorageBoxScreen extends StatefulWidget {
   final height;
   final width;
-  final memberId;
+   final  memberId = "10468" ;
 
-  StorageBoxScreen(this.height, this.width, this.memberId);
+  StorageBoxScreen(this.height, this.width);
 
   @override
   _StorageBoxScreenState createState() => _StorageBoxScreenState();
@@ -26,17 +26,23 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
   CollectionsProvider _collectionsProvider = CollectionsProvider();
   TextEditingController _controller = TextEditingController();
 
+   @override
+  void initState() {
+    super.initState();
+
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
+
     _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
-    if (_collectionsProvider.sMessage == "" && widget.memberId != null) {
+    if (_collectionsProvider.statusCode1 == 0 || _collectionsProvider.statusCode1 == -2) {
       print("Hello1");
       _collectionsProvider.fetchSavedPostsList(widget.memberId, "8", "1", "views").then((value) {});
     }
-    if (_collectionsProvider.oMessage == "" && widget.memberId != null) {
-      print("Hello2");
+    if (_collectionsProvider.statusCode2 == 0 && _collectionsProvider.statusCode2 == -2) {
       _collectionsProvider.fetchOpenedPostsList(widget.memberId, "8", "1", "views").then((value) {});
     }
   }
@@ -49,6 +55,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
       count = count + _collectionsProvider.savedPosts.length;
     else if (mode == Button.OPEN_CHERI && _collectionsProvider.savedPosts.isNotEmpty) count = count + _collectionsProvider.openedPosts.length;
 
+    if(_collectionsProvider.statusCode1 == 200 && _collectionsProvider.statusCode2 == 200)
     return ListView.builder(
         primary: false,
         shrinkWrap: true,
@@ -68,6 +75,70 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
             return _buildPostWidget(widget.height, widget.width, index, _collectionsProvider);
           }
         });
+    else if (_collectionsProvider.statusCode1 == -1 || _collectionsProvider.statusCode2 ==-1)
+      return Center(
+        child: Column(
+          children: [
+            Text("TimeOut happened:("),
+            MaterialButton(
+              onPressed: () {
+                _collectionsProvider.fetchSavedPostsList(widget.memberId, "10", "1", "views").then((value) {});
+                _collectionsProvider.fetchOpenedPostsList(widget.memberId, "10", "1", "views").then((value) {});
+
+
+              },
+              child: Text("try again"),
+            )
+          ],
+        ),
+      );
+    else if (_collectionsProvider.statusCode1 == -2 || _collectionsProvider.statusCode2 ==-2) {
+      return Center(
+        child: Container(
+          margin: EdgeInsets.only(top: widget.width * 0.5),
+          child: Column(
+            children: [
+              Icon(Icons.wifi_off,  size: 30,),
+              Text("Please check your internet connectivity!",  style: TextStyle(
+                  fontSize: 15
+              ),),
+              MaterialButton(
+                color: Theme.of(context).selectedRowColor,
+                textColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                onPressed: () {},
+                child: Text("Reload Page"),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+    else if (_collectionsProvider.statusCode1 == -3|| _collectionsProvider.statusCode2 ==-3) {
+      return Center(
+        child: Container(
+          margin: EdgeInsets.only(top: widget.width * 0.5),
+          child: Column(
+            children: [
+              Text("Unexpected error happened"),
+              MaterialButton(
+                onPressed: () {},
+                child: Text("Try again"),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+    else
+      return Center(
+        child: Container(
+            margin: EdgeInsets.only(top: widget.width * 0.5),
+            child: CircularProgressIndicator(
+              backgroundColor: Theme.of(context).selectedRowColor,
+            )),
+      );
   }
 
   Widget _buildCustomTabBar() {

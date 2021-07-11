@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:viewerapp/business_logic/services/web%20services.dart';
@@ -6,9 +8,10 @@ import 'package:viewerapp/models/postslist_model.dart';
 
 class CollectionsProvider extends ChangeNotifier {
   List<Post> savedPosts = [];
-  String _sMessage = "";
+  int  statusCode1 = 0;
+  int statusCode2 = 0;
   List<Post> openedPosts = [];
-  String _oMessage = "";
+
 
   Future<bool> fetchSavedPostsList(String memberId, String pageSize, String nowPage, String orderBy) async {
     try {
@@ -17,19 +20,32 @@ class CollectionsProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
-        print("bookmark post list");
-        print(decodedResponse);
-        _sMessage = postsResponse.message;
-        print(_sMessage);
         savedPosts.addAll(postsResponse.data);
+        statusCode1 = response.statusCode;
         notifyListeners();
         return true;
       } else {
+        statusCode1 = response.statusCode;
+        notifyListeners();
         return false;
       }
-    } catch (e) {
+    }
+    on TimeoutException catch (e) {
+      statusCode1 = -1;
       notifyListeners();
+      print("Timeout exception $e");
       return false;
+    } on SocketException catch (e) {
+      statusCode1 = -2;
+      notifyListeners();
+      print("SocketException $e");
+      return false;
+    } on Error catch (e) {
+      statusCode1 = -3;
+      notifyListeners();
+      print("General Error: $e");
+      return false;
+
     }
   }
 
@@ -40,23 +56,30 @@ class CollectionsProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
-        print("opened post list");
-        print(decodedResponse);
-        _oMessage = postsResponse.message;
-        print(_oMessage);
         openedPosts.addAll(postsResponse.data);
+         statusCode2 = response.statusCode;
         notifyListeners();
         return true;
       } else {
         return false;
       }
-    } catch (e) {
+    }     on TimeoutException catch (e) {
+      statusCode2 = -1;
       notifyListeners();
+      print("Timeout exception $e");
       return false;
+    } on SocketException catch (e) {
+      statusCode2 = -2;
+      notifyListeners();
+      print("SocketException $e");
+      return false;
+    } on Error catch (e) {
+      statusCode2 = -3;
+      notifyListeners();
+      print("General Error: $e");
+      return false;
+
     }
   }
 
-  String get oMessage => _oMessage;
-
-  String get sMessage => _sMessage;
 }

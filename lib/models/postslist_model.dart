@@ -49,15 +49,16 @@ class Post {
   String _imgUrl;
   String _category;
   String _categoryId;
-  String _shareYN;
-
-  Post.create(this._cheriId, this._title, this._author, this._dateTime, this._views, this._imgUrl, this._category, this._shareYN, this._categoryId);
+  String? _saved;
+  Post.create(this._cheriId, this._title, this._author, this._dateTime, this._views, this._imgUrl, this._category, this._categoryId,  this._saved);
 
   String get category => _category;
 
   String get imgUrl => _imgUrl;
 
   String get views => _views;
+
+  String? get saved => _saved;
 
   String get dateTime => _dateTime;
 
@@ -89,11 +90,6 @@ class Post {
     _categoryId = value;
   }
 
-  String  get shareYN => _shareYN;
-
-  set like(String   value) {
-    _shareYN = value;
-  }
 
   set dateTime(String value) {
     _dateTime = value;
@@ -108,6 +104,7 @@ class Post {
   }
 
   factory Post.fromJson(Map<String, dynamic> parsedJson) {
-    return Post.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], "unknown", parsedJson["REG_DATE"], parsedJson["VIEWS"], 'https://cheri.weeknday.com/' + parsedJson["CHERI_PICTURE_URL"], parsedJson["CATEGORY"], parsedJson["SHARE_YN"], parsedJson["CATEGORY_ID"]);
+    String isSaved = parsedJson["SAVE_C"] == null?"N":parsedJson["SAVE_C"];
+    return Post.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], "unknown", parsedJson["REG_DATE"], parsedJson["VIEWS"], 'https://cheri.weeknday.com/' + parsedJson["CHERI_PICTURE_URL"], parsedJson["CATEGORY"],  parsedJson["CATEGORY_ID"], isSaved);
   }
 }

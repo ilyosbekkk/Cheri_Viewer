@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/screens/categoryview_screen.dart';
 import '../../business_logic/providers/home provider.dart';
 
@@ -26,60 +27,125 @@ class _HomeScreenState extends State<HomeScreen> {
   static const int pageSize = 10;
   static const int category = 0;
   static const orderBy = "views";
+  bool  isListenerRegistered = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+
     _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
-
-    print("did change dependency");
-
-    if (_homePageProvider.postsMessage == "") {
-      _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {
-        if (value == true) {}
-      });
-    }
-
-    if (_homePageProvider.categoriesMessage == "") {
+    if (_homePageProvider.reponseCode1 == 0 || _homePageProvider.reponseCode1 == -2) {
+      _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {});}
+    if (_homePageProvider.reponseCode2 == 0 || _homePageProvider.reponseCode2 == -2) {
       _homePageProvider.fetchCategoriesList().then((value) {});
     }
+    if(!isListenerRegistered) {
+      widget._scrollController.addListener(() {
+        if (widget._scrollController.position.pixels == widget._scrollController.position.maxScrollExtent) {
+          initialPage = initialPage  + 1;
+          _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {});
+        }
+      });
+      isListenerRegistered  = true;
+    }
 
-    // widget._scrollController.addListener(() {
-    //   if (widget._scrollController.position.pixels == widget._scrollController.position.maxScrollExtent) {
-    //     initialPage = initialPage + 1;
-    //     _homePageProvider.fetchPostsList(pageSize+1, initialPage, "views", 0).then((value) {
-    //       if(value == true){
-    //         print("list2");
-    //
-    //       }
-    //     });
-    //   }
-    // });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    widget._scrollController.removeListener(() {
+      print("Hello");});
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        primary: false,
-        shrinkWrap: true,
-        itemCount: _homePageProvider.allPosts.length != 0 ? _homePageProvider.allPosts.length + 1 : 2,
-        itemBuilder: (BuildContext ctx, index) {
-          if (index == 0) {
-            return _buildCategories(widget.width);
-          }
-          // else if (index == _homePageProvider.posts.length )
-          //   return _buildCustomLoadingWidget();
-          else {
-            return _homePageProvider.allPosts.length != 0
-                ? _buildSinglePost(index - 1, 0.4 * widget.height, widget.width)
-                : Center(
-                    child: Container(
-                        child: CircularProgressIndicator(
-                      backgroundColor: Theme.of(context).selectedRowColor,
-                    )),
-                  );
-          }
-        });
+    if (_homePageProvider.reponseCode1 == 200 &&_homePageProvider.reponseCode2 == 200)
+      return  ListView.builder(
+            primary: false,
+            shrinkWrap: true,
+            itemCount: _homePageProvider.allPosts.length != 0 ? _homePageProvider.allPosts.length + 1 : 2,
+            itemBuilder: (BuildContext ctx, index) {
+              if (index == 0) {
+                return _buildCategories(widget.width);
+              } else {
+                return _homePageProvider.allPosts.length != 0 ? _buildSinglePost(index - 1, 0.4 * widget.height, widget.width) : Center(child: Container(margin: EdgeInsets.only(top: widget.width * 0.5), child: Text("List is empty:(")));
+              }
+            },
+        );
+    else if (_homePageProvider.reponseCode1 == -1 || _homePageProvider.reponseCode2 == -1)
+      return Center(
+        child: Column(
+          children: [
+            Text("TimeOut happened:("),
+            MaterialButton(
+              onPressed: () {
+                if(_homePageProvider.reponseCode1 == -1)
+                _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {});
+                if(_homePageProvider.reponseCode2 == -1)
+                _homePageProvider.fetchCategoriesList().then((value) {});
+
+              },
+              child: Text("try again"),
+            )
+          ],
+        ),
+      );
+    else if (_homePageProvider.reponseCode1 == -2 || _homePageProvider.reponseCode2 == -2) {
+      return Center(
+        child: Container(
+          margin: EdgeInsets.only(top: widget.width * 0.5),
+          child: Column(
+            children: [
+              Icon(Icons.wifi_off,  size: 30,),
+              Text("Please check your internet connectivity!",  style: TextStyle(
+                fontSize: 15
+              ),),
+              MaterialButton(
+                color: Theme.of(context).selectedRowColor,
+                textColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                onPressed: () {
+                  if(_homePageProvider.reponseCode1 == -2)
+                    _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {});
+                  if(_homePageProvider.reponseCode2 == -2)
+                    _homePageProvider.fetchCategoriesList().then((value) {});
+                  },
+                child: Text("Reload Page"),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+    else if (_homePageProvider.reponseCode1 == -3 || _homePageProvider.reponseCode2 == -3) {
+      return Center(
+        child: Container(
+          margin: EdgeInsets.only(top: widget.width * 0.5),
+          child: Column(
+            children: [
+              Text("Unexpected error happened"),
+              MaterialButton(
+                onPressed: () {},
+                child: Text("Try again"),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+    else
+      return Center(
+        child: Container(
+            margin: EdgeInsets.only(top: widget.width * 0.5),
+            child: CircularProgressIndicator(
+              backgroundColor: Theme.of(context).selectedRowColor,
+            )),
+      );
   }
 
   Widget _buildSinglePost(int index, double height, double width) {
@@ -171,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return InkWell(
               onTap: () {
                 Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id": homeProvider.categoryIds(i)[index], "title": homeProvider.subCategories(i)[index]});
-                },
+              },
               child: Chip(
                   elevation: 5.0,
                   backgroundColor: Theme.of(context).buttonColor,
@@ -183,6 +249,5 @@ class _HomeScreenState extends State<HomeScreen> {
           })),
     );
   }
-
 
 }

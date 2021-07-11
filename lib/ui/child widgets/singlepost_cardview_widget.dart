@@ -17,7 +17,7 @@ class CardViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? memberId = (preferences!.getString("id") ?? null);
+    String? memberId = preferences!.getString("id") ?? null;
     return Consumer<CheriProvider>(builder: (context,  cheriProvider,  child) {
       return  Container(
         margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
@@ -29,9 +29,7 @@ class CardViewWidget extends StatelessWidget {
               Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": post.cheriId, "memberId": memberId});
               print(post.cheriId);
             }
-            else {
-              print("Please login");
-            }
+            else showToast(toastSignIn[korean]!);
           },
           child: Card(
             elevation: 10.0,
@@ -84,10 +82,12 @@ class CardViewWidget extends StatelessWidget {
                               height: 30,
                               margin: EdgeInsets.only(top: 16.0, right: 8),
                               color: Theme.of(context).primaryColorDark,
-                              child: post.shareYN == "N"
+                              child: post.saved == "N"
                                   ? InkWell(
                                 onTap: ()  async{
-                                  cheriProvider.saveCheriPost(post.cheriId, "Y", memberId!);
+                                  if(memberId != null)
+                                  cheriProvider.saveCheriPost(post.cheriId, "Y", memberId);
+                                  else showToast(toastSignIn[korean]!);
                                 },
                                 child: Icon(
                                   Icons.bookmark_border,
@@ -96,7 +96,9 @@ class CardViewWidget extends StatelessWidget {
                               )
                                   : InkWell(
                                 onTap: () async {
-                                  cheriProvider.saveCheriPost(post.cheriId, "N", memberId!);
+                                  if(memberId != null)
+                                  cheriProvider.saveCheriPost(post.cheriId, "N", memberId);
+                                   else showToast(toastSignIn[korean]!);
                                   },
                                 child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor),
                               ),

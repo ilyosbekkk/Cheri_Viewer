@@ -1,13 +1,12 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/business_logic/providers/search provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
-import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
-import 'package:viewerapp/ui/helper_widgets/voice%20recorder%20modal%20bottom%20sheet.dart';
-import 'package:viewerapp/utils/utils.dart';
+import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
+import 'package:viewerapp/ui/child%20widgets/voice%20recorder%20modal%20bottom%20sheet.dart';
+import 'package:viewerapp/ui/screens/auth_screen.dart';
 import '../../utils/strings.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -34,7 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _memberId = preferences!.getString("id") ?? null;
+    _memberId = "10468";
   }
 
   @override
@@ -151,7 +150,18 @@ class _SearchScreenState extends State<SearchScreen> {
               }
             })
         : Center(
-            child: Text("Please sign in first!!!"),
+      child: Container(
+                margin: EdgeInsets.only(top: widget.width*0.5),
+                child: Column(
+                  children: [
+                    Text("Please sign in first!!!",  style: TextStyle(
+                      fontSize: 18
+                    ),),
+                    MaterialButton(color: Theme.of(context).selectedRowColor, textColor: Colors.white,  onPressed: () {
+                      Navigator.pushNamed(context, AuthScreen.route);
+                    }, child: Text("Sign in"),)
+                  ],
+                )),
           );
   }
 

@@ -22,6 +22,8 @@ Map<String, List<String>> menu2 = {
   korean: ["추가된 날짜(최신순)", "추가된 날짜(오래된순)", "조회순"]
 };
 
+Map<String, String> toastSignIn =  {english:"Please, Sign in first!", korean: "먼저 로그인 하십시오!"};
+
 //api urls
 const String baseUrl = "192.168.0.8:7300"; //"cheri.weeknday.com";
 const String postsList = "/api/Viewerapi/list";
@@ -30,7 +32,7 @@ const String categoryList = "/api/Viewerapi/side_category";
 const String detailedDataList = "/api/viewerapi/view";
 const String checkUpdate = "/api/viewerapi/check_update";
 const String savePost = "/api/viewerapi/bookmark_update";
-const String recentSearches = "/api/viewerapi/my_search_log_list";
+const String recentSearches = "/api/viewerapi/my_search_plog_list";
 const String relatedSearches = "/api/viewerapi/relation_search_log_list";
 const String bookMarkList = "/api/viewerapi/book_mark_list";
 const String openCheriList = "/api//viewerapi/open_cheri_list";

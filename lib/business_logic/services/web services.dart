@@ -8,7 +8,6 @@ class WebServices {
     final url = Uri.http(baseUrl, postsList);
     final body = {'pagesize': '$pageSize', 'nowpage': '$nowPage', 'orderby': '$orderBy', 'category': '$category'};
     http.Response response = await http.post(url, headers: headers, body: body);
-
     return response;
   }
 

@@ -21,7 +21,8 @@ class _NavCotrollerState extends State<NavCotroller> {
   int _selectedIndex = 0;
   var _screens = [];
   ScrollController _scrollController = ScrollController();
-  RefreshController _refreshController = RefreshController(initialRefresh: false);
+  ScrollController _scrollController2 = ScrollController();
+  ScrollController _scrollController3 = ScrollController();
   double appBarHeight = 0;
 
   @override
@@ -37,18 +38,14 @@ class _NavCotrollerState extends State<NavCotroller> {
     String? memberId = preferences!.getString("id")??null;
     _screens = [_buildHomeScreen(height, width), _buildSearchScreen(height, width), _buildStorageBoxScreen(height, width, memberId)];
 
+
     return Scaffold(
       body: SafeArea(
-        child: SmartRefresher(
-          onLoading: _onLoading,
-          onRefresh: _onRefresh,
-          controller: _refreshController,
-          enablePullDown: true,
-          child: CustomScrollView(
-            controller: _scrollController,
+        child: CustomScrollView(
+            controller: _selectedIndex == 0?  _scrollController:_selectedIndex == 1?_scrollController2:_scrollController3,
             slivers: [_buildSliverAppBar(height), _screens[_selectedIndex]],
           ),
-        ),
+
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -79,7 +76,7 @@ class _NavCotrollerState extends State<NavCotroller> {
   Widget _buildStorageBoxScreen(double height, double width, String? memberId) {
 
     return SliverToBoxAdapter(
-      child: StorageBoxScreen(height, width, memberId),
+      child: StorageBoxScreen(height, width ),
     );
   }
 
@@ -132,22 +129,4 @@ class _NavCotrollerState extends State<NavCotroller> {
     });
   }
 
-  void _onRefresh() async {
-    // monitor network fetch
-    print("onrefresh");
-    await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use refreshFailed()
-    _refreshController.refreshCompleted();
-  }
-
-  void _onLoading() async {
-    // monitor network fetch
-    print("onloading");
-
-    await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-
-    if (mounted) setState(() {});
-    _refreshController.loadComplete();
-  }
 }

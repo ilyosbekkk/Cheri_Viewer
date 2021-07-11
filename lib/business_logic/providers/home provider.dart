@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:viewerapp/models/categories_model.dart';
@@ -10,7 +12,8 @@ import '../services/web services.dart';
 class HomeProvider extends ChangeNotifier {
   bool _showSubCategories1 = false;
   bool _showSubCategories2 = false;
-  String postsMessage = "";
+  int reponseCode1 = 0;
+  int reponseCode2 = 0;
   String categoriesMessage = "";
   List<Post> allPosts = [];
 
@@ -32,70 +35,102 @@ class HomeProvider extends ChangeNotifier {
   Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy, int category) async {
     try {
       Response response = await WebServices.fetchPosts(pageSize, nowPage, orderBy, category);
-
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
-
-        postsMessage = postsResponse.message;
-
         allPosts.addAll(postsResponse.data);
-
+        print(allPosts.length);
+        print("I am here  man");
+        reponseCode1 = response.statusCode;
         notifyListeners();
         return true;
       } else {
+        reponseCode1 = response.statusCode;
+        notifyListeners();
         return false;
       }
-    } catch (e) {
+    } on TimeoutException catch (e) {
+      reponseCode1 = -1;
       notifyListeners();
+      print("Timeout exception $e");
+      return false;
+    } on SocketException catch (e) {
+      reponseCode1 = -2;
+      notifyListeners();
+      print("SocketException $e");
+      return false;
+    } on Error catch (e) {
+      reponseCode1 = -3;
+      notifyListeners();
+      print("General Error: $e");
       return false;
     }
   }
 
   Future<bool> fetchCategoriesList() async {
-    Response response = await WebServices.fetchCategoriesList("cheri");
-    if (response.statusCode == 200) {
-      Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+    try {
+      Response response = await WebServices.fetchCategoriesList("cheri");
+      if (response.statusCode == 200) {
+        Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
-      Categories categories = Categories.fromJson(decodedResponse);
-      categoriesMessage = categories.msg!;
+        Categories categories = Categories.fromJson(decodedResponse);
+        reponseCode2 = response.statusCode;
+        subCategories1.clear();
+        subCategories2.clear();
+        subCategories3.clear();
+        subCategories4.clear();
+        subCategories5.clear();
+        for (int i = 0; i < categories.categories!.length; i++) {
+          switch (categories.categories![i].menu_id) {
+            case "1":
+              subCategories1.add(categories.categories![i].category!);
+              catId1.add(categories.categories![i].category_id!);
+              break;
+            case "2":
+              subCategories2.add(categories.categories![i].category!);
+              catId2.add(categories.categories![i].category_id!);
 
-      subCategories1.clear();
-      subCategories2.clear();
-      subCategories3.clear();
-      subCategories4.clear();
-      subCategories5.clear();
-      for (int i = 0; i < categories.categories!.length; i++) {
-        switch (categories.categories![i].menu_id) {
-          case "1":
-            subCategories1.add(categories.categories![i].category!);
-            catId1.add(categories.categories![i].category_id!);
-            break;
-          case "2":
-            subCategories2.add(categories.categories![i].category!);
-            catId2.add(categories.categories![i].category_id!);
+              break;
+            case "4":
+              subCategories3.add(categories.categories![i].category!);
+              catId3.add(categories.categories![i].category_id!);
 
-            break;
-          case "4":
-            subCategories3.add(categories.categories![i].category!);
-            catId3.add(categories.categories![i].category_id!);
+              break;
+            case "6":
+              subCategories4.add(categories.categories![i].category!);
+              catId4.add(categories.categories![i].category_id!);
 
-            break;
-          case "6":
-            subCategories4.add(categories.categories![i].category!);
-            catId4.add(categories.categories![i].category_id!);
+              break;
+            case "7":
+              subCategories5.add(categories.categories![i].category!);
+              catId5.add(categories.categories![i].category_id!);
 
-            break;
-          case "7":
-            subCategories5.add(categories.categories![i].category!);
-            catId5.add(categories.categories![i].category_id!);
-
-            break;
+              break;
+          }
         }
-      }
-    }
 
-    return true;
+        return true;
+      } else {
+        reponseCode2 = response.statusCode;
+        notifyListeners();
+        return false;
+      }
+    } on TimeoutException catch (e) {
+      reponseCode2 = -1;
+      notifyListeners();
+      print("Timeout exception $e");
+      return false;
+    } on SocketException catch (e) {
+      reponseCode2 = -2;
+      notifyListeners();
+      print("SocketException $e");
+      return false;
+    } on Error catch (e) {
+      reponseCode2 = -3;
+      notifyListeners();
+      print("General Error: $e");
+      return false;
+    }
   }
 
   void showCategories(int index) {

@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viewerapp/business_logic/providers/categories provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
-import 'package:viewerapp/ui/helper_widgets/singlepost_cardview_widget.dart';
-import 'package:viewerapp/ui/helper_widgets/singlepost_listview_widget.dart';
+import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
+import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
 import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
 
