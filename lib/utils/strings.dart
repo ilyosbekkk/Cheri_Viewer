@@ -25,8 +25,8 @@ Map<String, List<String>> menu2 = {
 Map<String, String> toastSignIn =  {english:"Please, Sign in first!", korean: "먼저 로그인 하십시오!"};
 
 //api urls
-const String baseUrl = "192.168.0.8:7300"; //"cheri.weeknday.com";
-const String postsList = "/api/Viewerapi/list";
+const String baseUrl = "cheri.weeknday.com"; //"cheri.weeknday.com";
+const String postsList = "/api/viewerapi/list";
 const String searchPost = "/api/Viewerapi/list";
 const String categoryList = "/api/Viewerapi/side_category";
 const String detailedDataList = "/api/viewerapi/view";

@@ -105,6 +105,6 @@ class Post {
 
   factory Post.fromJson(Map<String, dynamic> parsedJson) {
     String isSaved = parsedJson["SAVE_C"] == null?"N":parsedJson["SAVE_C"];
-    return Post.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], "unknown", parsedJson["REG_DATE"], parsedJson["VIEWS"], 'https://cheri.weeknday.com/' + parsedJson["CHERI_PICTURE_URL"], parsedJson["CATEGORY"],  parsedJson["CATEGORY_ID"], isSaved);
+    return Post.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], parsedJson["NAME"], parsedJson["REG_DATE"], parsedJson["VIEWS"], 'https://cheri.weeknday.com/' + parsedJson["CHERI_PICTURE_URL"], parsedJson["CATEGORY"],  parsedJson["CATEGORY_ID"], isSaved);
   }
 }

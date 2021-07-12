@@ -39,7 +39,7 @@ class HomeProvider extends ChangeNotifier {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
         allPosts.addAll(postsResponse.data);
-        print(allPosts.length);
+        print(decodedResponse);
         print("I am here  man");
         reponseCode1 = response.statusCode;
         notifyListeners();

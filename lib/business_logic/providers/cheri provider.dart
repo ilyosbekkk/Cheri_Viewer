@@ -2,7 +2,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:viewerapp/business_logic/services/web%20services.dart';
-import 'package:viewerapp/models/postslist_model.dart';
 
 class CheriProvider extends ChangeNotifier {
 

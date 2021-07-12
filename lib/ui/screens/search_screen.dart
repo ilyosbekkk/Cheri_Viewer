@@ -7,6 +7,7 @@ import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/child%20widgets/voice%20recorder%20modal%20bottom%20sheet.dart';
 import 'package:viewerapp/ui/screens/auth_screen.dart';
+import 'package:viewerapp/utils/utils.dart';
 import '../../utils/strings.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -33,9 +34,15 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _memberId = "10468";
   }
 
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    _memberId = preferences!.getString("id")??null;
+
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
     final modalHeight = (widget.height - MediaQueryData.fromWindow(window).padding.top);
@@ -154,12 +161,12 @@ class _SearchScreenState extends State<SearchScreen> {
                 margin: EdgeInsets.only(top: widget.width*0.5),
                 child: Column(
                   children: [
-                    Text("Please sign in first!!!",  style: TextStyle(
+                    Text("먼저 로그인 하십시오!",  style: TextStyle(
                       fontSize: 18
                     ),),
                     MaterialButton(color: Theme.of(context).selectedRowColor, textColor: Colors.white,  onPressed: () {
                       Navigator.pushNamed(context, AuthScreen.route);
-                    }, child: Text("Sign in"),)
+                    }, child: Text("로그인"),)
                   ],
                 )),
           );

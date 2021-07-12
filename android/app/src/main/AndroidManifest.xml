@@ -16,8 +16,8 @@
     </queries>
     <application
         android:usesCleartextTraffic="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="viewerapp">
+        android:icon="@mipmap/appicon"
+        android:label="체리 뷰어">
 
         <meta-data
             android:name="com.naver.sdk.clientId"

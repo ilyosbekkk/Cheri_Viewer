@@ -8,11 +8,12 @@ import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
 import 'package:viewerapp/utils/utils.dart';
 
 import '../../utils/strings.dart';
+import 'auth_screen.dart';
 
 class StorageBoxScreen extends StatefulWidget {
   final height;
   final width;
-   final  memberId = "10468" ;
+  late String memberId= "";
 
   StorageBoxScreen(this.height, this.width);
 
@@ -26,22 +27,21 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
   CollectionsProvider _collectionsProvider = CollectionsProvider();
   TextEditingController _controller = TextEditingController();
 
-   @override
+  @override
   void initState() {
     super.initState();
-
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
+    widget.memberId = (preferences!.getString("id") ?? null)!;
 
     _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
-    if (_collectionsProvider.statusCode1 == 0 || _collectionsProvider.statusCode1 == -2) {
+    if ((_collectionsProvider.statusCode1 == 0 || _collectionsProvider.statusCode1 == -2) && widget.memberId != "") {
       _collectionsProvider.fetchSavedPostsList(widget.memberId, "10", "1", "views").then((value) {});
     }
-    if (_collectionsProvider.statusCode2 == 0 || _collectionsProvider.statusCode2 == -2) {
+    if ((_collectionsProvider.statusCode2 == 0 || _collectionsProvider.statusCode2 == -2) && widget.memberId != "") {
       _collectionsProvider.fetchOpenedPostsList(widget.memberId, "10", "1", "views").then((value) {});
     }
   }
@@ -54,90 +54,110 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
       count = count + _collectionsProvider.savedPosts.length;
     else if (mode == Button.OPEN_CHERI && _collectionsProvider.savedPosts.isNotEmpty) count = count + _collectionsProvider.openedPosts.length;
 
-    if(_collectionsProvider.statusCode1 == 200 && _collectionsProvider.statusCode2 == 200)
-    return ListView.builder(
-        primary: false,
-        shrinkWrap: true,
-        itemCount: count,
-        itemBuilder: (BuildContext context, index) {
-          if (index == 0) {
-            return _buildCustomTabBar();
-          } else if (index == 1) {
-            return _buildSortWidget(widget.memberId, _collectionsProvider);
-          } else if (index == 2 && _searchMode) {
-            return _buildSearchWidget();
-          } else {
-            if (_searchMode)
-              index = index - 3;
-            else
-              index = index - 2;
-            return _buildPostWidget(widget.height, widget.width, index, _collectionsProvider);
-          }
-        });
-    else if (_collectionsProvider.statusCode1 == -1 || _collectionsProvider.statusCode2 ==-1)
-      return Center(
-        child: Column(
-          children: [
-            Text("TimeOut happened:("),
-            MaterialButton(
-              onPressed: () {
-                _collectionsProvider.fetchSavedPostsList(widget.memberId, "10", "1", "views").then((value) {});
-                _collectionsProvider.fetchOpenedPostsList(widget.memberId, "10", "1", "views").then((value) {});
-
-
-              },
-              child: Text("try again"),
-            )
-          ],
-        ),
-      );
-    else if (_collectionsProvider.statusCode1 == -2 || _collectionsProvider.statusCode2 ==-2) {
-      return Center(
-        child: Container(
+    if (widget.memberId == "") {
+      return Container(
           margin: EdgeInsets.only(top: widget.width * 0.5),
           child: Column(
             children: [
-              Icon(Icons.wifi_off,  size: 30,),
-              Text("Please check your internet connectivity!",  style: TextStyle(
-                  fontSize: 15
-              ),),
+              Text(
+                "먼저 로그인 하십시오!",
+                style: TextStyle(fontSize: 18),
+              ),
               MaterialButton(
                 color: Theme.of(context).selectedRowColor,
                 textColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                onPressed: () {},
-                child: Text("Reload Page"),
+                onPressed: () {
+                  Navigator.pushNamed(context, AuthScreen.route);
+                },
+                child: Text("로그인"),
               )
             ],
-          ),
-        ),
-      );
-    }
-    else if (_collectionsProvider.statusCode1 == -3|| _collectionsProvider.statusCode2 ==-3) {
-      return Center(
-        child: Container(
-          margin: EdgeInsets.only(top: widget.width * 0.5),
+          ));
+    } else {
+      if (_collectionsProvider.statusCode1 == 200 && _collectionsProvider.statusCode2 == 200)
+        return ListView.builder(
+            primary: false,
+            shrinkWrap: true,
+            itemCount: count,
+            itemBuilder: (BuildContext context, index) {
+              if (index == 0) {
+                return _buildCustomTabBar();
+              } else if (index == 1) {
+                return _buildSortWidget(widget.memberId, _collectionsProvider);
+              } else if (index == 2 && _searchMode) {
+                return _buildSearchWidget();
+              } else {
+                if (_searchMode)
+                  index = index - 3;
+                else
+                  index = index - 2;
+                return _buildPostWidget(widget.height, widget.width, index, _collectionsProvider);
+              }
+            });
+      else if (_collectionsProvider.statusCode1 == -1 || _collectionsProvider.statusCode2 == -1)
+        return Center(
           child: Column(
             children: [
-              Text("Unexpected error happened"),
+              Text("TimeOut happened:("),
               MaterialButton(
-                onPressed: () {},
-                child: Text("Try again"),
+                onPressed: () {
+                  _collectionsProvider.fetchSavedPostsList(widget.memberId, "10", "1", "views").then((value) {});
+                  _collectionsProvider.fetchOpenedPostsList(widget.memberId, "10", "1", "views").then((value) {});
+                },
+                child: Text("try again"),
               )
             ],
           ),
-        ),
-      );
-    }
-    else
-      return Center(
-        child: Container(
+        );
+      else if (_collectionsProvider.statusCode1 == -2 || _collectionsProvider.statusCode2 == -2) {
+        return Center(
+          child: Container(
             margin: EdgeInsets.only(top: widget.width * 0.5),
-            child: CircularProgressIndicator(
-              backgroundColor: Theme.of(context).selectedRowColor,
-            )),
-      );
+            child: Column(
+              children: [
+                Icon(
+                  Icons.wifi_off,
+                  size: 30,
+                ),
+                Text(
+                  "Please check your internet connectivity!",
+                  style: TextStyle(fontSize: 15),
+                ),
+                MaterialButton(
+                  color: Theme.of(context).selectedRowColor,
+                  textColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  onPressed: () {},
+                  child: Text("Reload Page"),
+                )
+              ],
+            ),
+          ),
+        );
+      } else if (_collectionsProvider.statusCode1 == -3 || _collectionsProvider.statusCode2 == -3) {
+        return Center(
+          child: Container(
+            margin: EdgeInsets.only(top: widget.width * 0.5),
+            child: Column(
+              children: [
+                Text("Unexpected error happened"),
+                MaterialButton(
+                  onPressed: () {},
+                  child: Text("Try again"),
+                )
+              ],
+            ),
+          ),
+        );
+      } else
+        return Center(
+          child: Container(
+              margin: EdgeInsets.only(top: widget.width * 0.5),
+              child: CircularProgressIndicator(
+                backgroundColor: Theme.of(context).selectedRowColor,
+              )),
+        );
+    }
   }
 
   Widget _buildCustomTabBar() {
