@@ -30,31 +30,36 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    widget.memberId = (preferences!.getString("id") ?? null)!;
 
     _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
-    if ((_collectionsProvider.statusCode1 == 0 || _collectionsProvider.statusCode1 == -2) && widget.memberId != "") {
+    if ((_collectionsProvider.statusCode1 == 0 || _collectionsProvider.statusCode1 == -2) && preferences!.getString("id")  != null) {
+      widget.memberId = preferences!.getString("id")!;
       _collectionsProvider.fetchSavedPostsList(widget.memberId, "10", "1", "views").then((value) {});
     }
-    if ((_collectionsProvider.statusCode2 == 0 || _collectionsProvider.statusCode2 == -2) && widget.memberId != "") {
+    if ((_collectionsProvider.statusCode2 == 0 || _collectionsProvider.statusCode2 == -2) && preferences!.getString("id")  != null) {
+      widget.memberId = preferences!.getString("id")!;
       _collectionsProvider.fetchOpenedPostsList(widget.memberId, "10", "1", "views").then((value) {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    print("ewqrihgiwhpwirhgpwrtpwirhrpo");
     int count = 2;
+
+
     if (_searchMode) count = count + 1;
     if (mode == Button.BOOKMARK && _collectionsProvider.savedPosts.isNotEmpty)
       count = count + _collectionsProvider.savedPosts.length;
     else if (mode == Button.OPEN_CHERI && _collectionsProvider.savedPosts.isNotEmpty) count = count + _collectionsProvider.openedPosts.length;
 
-    if (widget.memberId == "") {
+    if (preferences!.getString("id") == null) {
       return Container(
           margin: EdgeInsets.only(top: widget.width * 0.5),
           child: Column(
@@ -149,7 +154,9 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
             ),
           ),
         );
-      } else
+      } else{
+        print(_collectionsProvider.statusCode1);
+        print(_collectionsProvider.statusCode2);
         return Center(
           child: Container(
               margin: EdgeInsets.only(top: widget.width * 0.5),
@@ -157,7 +164,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                 backgroundColor: Theme.of(context).selectedRowColor,
               )),
         );
-    }
+    }}
   }
 
   Widget _buildCustomTabBar() {

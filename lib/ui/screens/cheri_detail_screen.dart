@@ -151,7 +151,6 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   }
 
   Widget _buildAccountWidget(DetailedViewProvider detailedViewProvider, String memberId, String cheriId, double width) {
-
     print(detailedViewProvider.detailedPost.saveYn);
     return Container(
       child: Column(
@@ -266,10 +265,13 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
       child: Row(
         children: [
           Checkbox(
-            checkColor: Colors.blue,
+              checkColor: Colors.blue,
               value: items[index].checkedYn == "Y" ? true : false,
               onChanged: (bool? value) {
+                print("value: $value");
                 String checked = (value == true) ? "Y" : "N";
+
+                print("vvvv: $checked");
                 detailedViewProvider.updateCheckListItem(items[index].itemId!, checked, memberId).then((value) {
                   if (value) {
                     detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
@@ -291,22 +293,22 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
           ),
           if ((items[index].comment != null && items[index].comment!.isNotEmpty) || (detailedViewProvider.itemFiles(items[index].itemId!).isNotEmpty))
             IconButton(
-            onPressed: () async  {
-              if (items[index].comment == null || items[index].comment!.isEmpty) {
-                print("1");
-                await showdialog(context, "내용이 없습니다ㅋㅋㅋㅋㅋㅋ", detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName);
-              } else if (detailedViewProvider.itemFiles(items[index].itemId!).isEmpty) {
-                print("2");
+              onPressed: () async {
+                if (items[index].comment == null || items[index].comment!.isEmpty) {
+                  print("1");
+                  await showdialog(context, "내용이 없습니다ㅋㅋㅋㅋㅋㅋ", detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName);
+                } else if (detailedViewProvider.itemFiles(items[index].itemId!).isEmpty) {
+                  print("2");
 
-                await showdialog(context, items[index].comment!, placeholdeUrl);
-              } else {
-                print("3");
+                  await showdialog(context, items[index].comment!, placeholdeUrl);
+                } else {
+                  print("3");
 
-                await showdialog(context, items[index].comment!, detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName);
-              }
-            },
-            icon: Icon(Icons.article_outlined),
-          )
+                  await showdialog(context, items[index].comment!, detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName);
+                }
+              },
+              icon: Icon(Icons.article_outlined),
+            )
         ],
       ),
     );

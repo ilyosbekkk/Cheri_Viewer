@@ -23,6 +23,8 @@ class DetailedPostResponse {
 
     List<File> filesList = list2.map((i) => File.fromJson(i)).toList();
 
+    print("item data:");
+    print(parsedJson["item_data"]);
     return DetailedPostResponse(parsedJson["code"], parsedJson["msg"], dataList, itemsList, filesList, parsedJson["encrypt_id"]);
   }
 
@@ -132,7 +134,7 @@ class Item {
   String? get itemId => _itemId;
 
   factory Item.fromJson(Map<String, dynamic> parsedJson) {
-    return Item(parsedJson["ITEM_ID"], parsedJson["CONTENTS"], parsedJson["order"], parsedJson["CHECK_YN"], parsedJson["IMPORTANT_YN"], parsedJson["REG_DATE"], parsedJson["COMMENT"], parsedJson["FILE_NAME"], parsedJson["FILE_PATH"], parsedJson["FILE_CHECK"], parsedJson["REFERENCE"], parsedJson["SAVE_FILE_NAME"]);
+    return Item(parsedJson["ITEM_ID"], parsedJson["CONTENTS"], parsedJson["order"], parsedJson["CHECKED_YN"], parsedJson["IMPORTANT_YN"], parsedJson["REG_DATE"], parsedJson["COMMENT"], parsedJson["FILE_NAME"], parsedJson["FILE_PATH"], parsedJson["FILE_CHECK"], parsedJson["REFERENCE"], parsedJson["SAVE_FILE_NAME"]);
   }
 }
 class File {

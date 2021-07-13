@@ -22,7 +22,6 @@ class DetailedViewProvider extends ChangeNotifier {
       Response response = await WebServices.fetchDetailedViewData(cheriId, memberId);
       Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
       postsResponse = DetailedPostResponse.fromJson(decodedResponse);
-      print("check");
       print(decodedResponse);
       if (postsResponse.msg == "success") {
         _loaded = true;
@@ -43,6 +42,8 @@ class DetailedViewProvider extends ChangeNotifier {
     try {
       Response response = await WebServices.updateCheckListItem(itemId, checked, memberId);
       if (response.statusCode == 200) {
+
+        print(response.body);
         return true;
       } else
         return false;
@@ -75,6 +76,7 @@ class DetailedViewProvider extends ChangeNotifier {
      for(int i = 0; i<_files.length; i++) {
        if(_files[i].itemId == itemId) {
          files.add(_files[i]);
+
        }
      }
      return files;

@@ -181,6 +181,9 @@ class _SearchScreenState extends State<SearchScreen> {
             height: widget.height * 0.05,
             child: TextField(
               onChanged: (searchWord) {
+
+
+
                 homePageProvider.cleanList();
                 homePageProvider.fetchRelatedSearches(_memberId!, searchWord).then((value) {});
                 setState(() {
@@ -192,18 +195,25 @@ class _SearchScreenState extends State<SearchScreen> {
               },
               controller: _controller,
               onSubmitted: (searchWord) {
-                setState(() {
-                  _searching = true;
-                });
-                homePageProvider.searchPostByTitle(10, 1, "views", searchWord, _memberId!).then((value) {
+
+                if(searchWord.isEmpty) {
+                  showToast("Please, type something!");
+                }
+                else  {
                   setState(() {
-                    _searching = false;
-                    if (homePageProvider.searchResults.isEmpty)
-                      _noSearchResult = true;
-                    else
-                      _noSearchResult = false;
+                    _searching = true;
                   });
-                });
+                  homePageProvider.searchPostByTitle(10, 1, "views", searchWord, _memberId!).then((value) {
+                    setState(() {
+                      _searching = false;
+                      if (homePageProvider.searchResults.isEmpty)
+                        _noSearchResult = true;
+                      else
+                        _noSearchResult = false;
+                    });
+                  });
+                }
+
               },
               autofocus: true,
               textAlign: TextAlign.start,
