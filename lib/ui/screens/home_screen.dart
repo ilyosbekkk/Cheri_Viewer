@@ -29,17 +29,25 @@ class _HomeScreenState extends State<HomeScreen> {
   static const orderBy = "views";
   bool  isListenerRegistered = false;
 
+
+
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void dispose() {
+    super.dispose();
+    widget._scrollController.removeListener(() {
+      print("Hello");});
 
+  }
 
+  @override
+  Widget build(BuildContext context) {
     _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
     if (_homePageProvider.reponseCode1 == 0 || _homePageProvider.reponseCode1 == -2) {
       _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {});}
     if (_homePageProvider.reponseCode2 == 0 || _homePageProvider.reponseCode2 == -2) {
       _homePageProvider.fetchCategoriesList().then((value) {});
     }
+
     if(!isListenerRegistered) {
       widget._scrollController.addListener(() {
         if (widget._scrollController.position.pixels == widget._scrollController.position.maxScrollExtent) {
@@ -50,19 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
       isListenerRegistered  = true;
     }
 
-  }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    widget._scrollController.removeListener(() {
-      print("Hello");});
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
+    print(_homePageProvider.reponseCode1);
+    print(_homePageProvider.reponseCode2);
     if (_homePageProvider.reponseCode1 == 200 &&_homePageProvider.reponseCode2 == 200)
       return  ListView.builder(
             primary: false,
@@ -138,8 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
-    else
-      return Center(
+    else return Center(
         child: Container(
             margin: EdgeInsets.only(top: widget.width * 0.5),
             child: CircularProgressIndicator(

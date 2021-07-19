@@ -39,8 +39,8 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
-    _memberId = preferences!.getString("id")??null;
-
+  //  _memberId = preferences!.getString("id")??null;
+   _memberId = "10470";
     super.didChangeDependencies();
   }
   @override
@@ -164,7 +164,11 @@ class _SearchScreenState extends State<SearchScreen> {
                     Text("먼저 로그인 하십시오!",  style: TextStyle(
                       fontSize: 18
                     ),),
-                    MaterialButton(color: Theme.of(context).selectedRowColor, textColor: Colors.white,  onPressed: () {
+                    MaterialButton(
+
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      color: Theme.of(context).selectedRowColor, textColor: Colors.white,  onPressed: () {
                       Navigator.pushNamed(context, AuthScreen.route);
                     }, child: Text("로그인"),)
                   ],

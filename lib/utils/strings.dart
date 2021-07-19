@@ -23,7 +23,8 @@ Map<String, List<String>> menu2 = {
 };
 
 Map<String, String> toastSignIn =  {english:"Please, Sign in first!", korean: "먼저 로그인 하십시오!"};
-
+Map<String, String> bookmarkSave = {english: "Bookmark has been saved", korean: "Bookmark has been saved"};
+Map<String, String> bookMarkUnsave = {english: "Bookmark has been removed", korean: "Bookmark has been removed"};
 //api urls
 const String baseUrl = "cheri.weeknday.com"; //"cheri.weeknday.com";
 const String postsList = "/api/viewerapi/list";

@@ -49,7 +49,7 @@ class Post {
   String _imgUrl;
   String _category;
   String _categoryId;
-  String? _saved;
+  String _saved;
   Post.create(this._cheriId, this._title, this._author, this._dateTime, this._views, this._imgUrl, this._category, this._categoryId,  this._saved);
 
   String get category => _category;
@@ -58,7 +58,7 @@ class Post {
 
   String get views => _views;
 
-  String? get saved => _saved;
+  String get saved => _saved;
 
   String get dateTime => _dateTime;
 
@@ -101,6 +101,10 @@ class Post {
 
   set title(String value) {
     _title = value;
+  }
+
+  set saved(String saved){
+     _saved = saved;
   }
 
   factory Post.fromJson(Map<String, dynamic> parsedJson) {

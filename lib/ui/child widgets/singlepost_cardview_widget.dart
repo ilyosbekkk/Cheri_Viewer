@@ -6,7 +6,7 @@ import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
 import 'package:viewerapp/business_logic/providers/cheri provider.dart';
 
-class CardViewWidget extends StatelessWidget {
+class CardViewWidget extends StatefulWidget {
   double height;
   double width;
   Post post;
@@ -16,8 +16,13 @@ class CardViewWidget extends StatelessWidget {
   CardViewWidget(this.height, this.width,  this.post);
 
   @override
+  _CardViewWidgetState createState() => _CardViewWidgetState();
+}
+
+class _CardViewWidgetState extends State<CardViewWidget> {
+  @override
   Widget build(BuildContext context) {
-    String? memberId = preferences!.getString("id") ?? null;
+    String? memberId = "10470";
     return Consumer<CheriProvider>(builder: (context,  cheriProvider,  child) {
       return  Container(
         margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
@@ -26,28 +31,35 @@ class CardViewWidget extends StatelessWidget {
         child: InkWell(
           onTap: () {
             if(memberId != null) {
-              Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": post.cheriId, "memberId": memberId});
-              print(post.cheriId);
+              Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": widget.post.cheriId, "memberId": memberId});
+              print(widget.post.cheriId);
             }
             else showToast(toastSignIn[korean]!);
           },
           child: Card(
             elevation: 10.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                     height: 206,
-                    width: width,
+                    width: widget.width,
                     child: Stack(
                       fit: StackFit.expand,
                       alignment: AlignmentDirectional.bottomStart,
                       children: [
                         ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)
+                          ),
                           child: FadeInImage.assetNetwork(
                             placeholder: 'assets/images/placeholder.png',
-                            image: post.imgUrl,
-                            fit: BoxFit.fill,
+                            image: widget.post.imgUrl,
+                            fit: BoxFit.fitWidth,
                           ),
                         ),
                         Row(
@@ -67,7 +79,7 @@ class CardViewWidget extends StatelessWidget {
                                   color: Theme.of(context).primaryColorDark,
                                 ),
                                 child: Text(
-                                  post.category,
+                                  widget.post.category,
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.white,
@@ -82,11 +94,18 @@ class CardViewWidget extends StatelessWidget {
                               height: 30,
                               margin: EdgeInsets.only(top: 16.0, right: 8),
                               color: Theme.of(context).primaryColorDark,
-                              child: post.saved == "N"
+                              child: widget.post.saved == "N"
                                   ? InkWell(
-                                onTap: ()  async{
+                                onTap: ()  {
                                   if(memberId != null)
-                                  cheriProvider.saveCheriPost(post.cheriId, "Y", memberId);
+                                  cheriProvider.saveCheriPost(widget.post.cheriId, "Y", memberId).then((value)  {
+                                     if(value)
+                                       setState(() {
+                                         widget.post.saved = "Y";
+                                         showToast(bookmarkSave[english]!);
+
+                                       });
+                                  });
                                   else showToast(toastSignIn[korean]!);
                                 },
                                 child: Icon(
@@ -97,7 +116,18 @@ class CardViewWidget extends StatelessWidget {
                                   : InkWell(
                                 onTap: () async {
                                   if(memberId != null)
-                                  cheriProvider.saveCheriPost(post.cheriId, "N", memberId);
+                                  cheriProvider.saveCheriPost(widget.post.cheriId, "N", memberId).then((value){
+                                    if(value) {
+                                      setState(() {
+                                        widget.post.saved = "N";
+                                        showToast(bookmarkSave[english]!);
+
+
+                                      });
+                                      showToast(bookmarkSave[english]!);
+
+                                    }
+                                  });
                                    else showToast(toastSignIn[korean]!);
                                   },
                                 child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor),
@@ -110,7 +140,7 @@ class CardViewWidget extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(left: 10.0, top: 15.0),
                   child: Text(
-                    post.title,
+                    widget.post.title,
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     maxLines: 1,
                   ),
@@ -118,7 +148,7 @@ class CardViewWidget extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(left: 10.0, top: 10.0),
                   child: Text(
-                    post.author,
+                    widget.post.author,
                     style: TextStyle(fontSize: 12),
                   ),
                 ),
@@ -127,7 +157,7 @@ class CardViewWidget extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        "${cheri_views[korean]}:${post.views}",
+                        "${cheri_views[korean]}:${widget.post.views}",
                         style: TextStyle(fontSize: 12),
                       ),
                       Container(
@@ -137,7 +167,7 @@ class CardViewWidget extends StatelessWidget {
                             size: 5.0,
                           )),
                       Text(
-                        "${timeFormatter(post.dateTime)} 전",
+                        "${timeFormatter(widget.post.dateTime)} 전",
                         style: TextStyle(fontSize: 12),
                       )
                     ],

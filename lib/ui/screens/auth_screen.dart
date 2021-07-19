@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/business_logic/providers/user management provider.dart';
-import 'package:viewerapp/utils/strings.dart';
 
 class AuthScreen extends StatefulWidget {
   static String route = "/auth_screen";
@@ -23,16 +22,25 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Consumer<UserManagementProvider>(builder: (context, authProvider, child) {
           return Container(
             child: InAppWebView(
+
               initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/login")),
 
               initialOptions: InAppWebViewGroupOptions(
                 crossPlatform: InAppWebViewOptions(
                   javaScriptEnabled: true,
+                  useShouldOverrideUrlLoading: true,
+                  mediaPlaybackRequiresUserGesture: false,
                 ),
                 android: AndroidInAppWebViewOptions(
                   useHybridComposition: true,
                 ),
+                  ios: IOSInAppWebViewOptions(
+                    allowsInlineMediaPlayback: true,
+                    enableViewportScale: true
+                  )
+
               ),
+
               onWebViewCreated: (InAppWebViewController controller) {
                 setState(() {
                   _controller = controller;

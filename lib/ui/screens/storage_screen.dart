@@ -38,13 +38,13 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
     super.didChangeDependencies();
 
     _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
-    if ((_collectionsProvider.statusCode1 == 0 || _collectionsProvider.statusCode1 == -2) && preferences!.getString("id")  != null) {
-      widget.memberId = preferences!.getString("id")!;
-      _collectionsProvider.fetchSavedPostsList(widget.memberId, "10", "1", "views").then((value) {});
+    if ((_collectionsProvider.statusCode1 == 0 || _collectionsProvider.statusCode1 == -2)) {
+     // widget.memberId = preferences!.getString("id")!;
+      _collectionsProvider.fetchSavedPostsList("10470", "10", "1", "views").then((value) {});
     }
-    if ((_collectionsProvider.statusCode2 == 0 || _collectionsProvider.statusCode2 == -2) && preferences!.getString("id")  != null) {
-      widget.memberId = preferences!.getString("id")!;
-      _collectionsProvider.fetchOpenedPostsList(widget.memberId, "10", "1", "views").then((value) {});
+    if ((_collectionsProvider.statusCode2 == 0 || _collectionsProvider.statusCode2 == -2)) {
+      //widget.memberId = preferences!.getString("id")!;
+      _collectionsProvider.fetchOpenedPostsList("10470", "10", "1", "views").then((value) {});
     }
   }
 
@@ -52,6 +52,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
   Widget build(BuildContext context) {
     print("ewqrihgiwhpwirhgpwrtpwirhrpo");
     int count = 2;
+    widget.memberId = "10470";
 
 
     if (_searchMode) count = count + 1;
@@ -59,7 +60,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
       count = count + _collectionsProvider.savedPosts.length;
     else if (mode == Button.OPEN_CHERI && _collectionsProvider.savedPosts.isNotEmpty) count = count + _collectionsProvider.openedPosts.length;
 
-    if (preferences!.getString("id") == null) {
+    if (widget.memberId == null) {
       return Container(
           margin: EdgeInsets.only(top: widget.width * 0.5),
           child: Column(
@@ -69,6 +70,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                 style: TextStyle(fontSize: 18),
               ),
               MaterialButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
                 color: Theme.of(context).selectedRowColor,
                 textColor: Colors.white,
                 onPressed: () {
