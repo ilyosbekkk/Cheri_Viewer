@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "1049194575299-l97vhjimobmacjm4d6om2bme6i674b1q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cheristoryboard.viewerapp",
+            "certificate_hash": "fb4a3d476d8dab092e16216b784e8791e72f04d7"
+          }
+        },
+        {
           "client_id": "1049194575299-up3barub3db4v0satjuilukhmtakj6he.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -45,6 +53,13 @@
             {
               "client_id": "1049194575299-j28uld610f8dgjeoajgelavmt9n5b0v4.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1049194575299-58n4ic9alf7bd1hvc465f7k9da6hm6kr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cheristoryboard.viewerapp"
+              }
             }
           ]
         }
@@ -74,6 +89,13 @@
             {
               "client_id": "1049194575299-j28uld610f8dgjeoajgelavmt9n5b0v4.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1049194575299-58n4ic9alf7bd1hvc465f7k9da6hm6kr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cheristoryboard.viewerapp"
+              }
             }
           ]
         }

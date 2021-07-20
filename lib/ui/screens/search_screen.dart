@@ -253,11 +253,12 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: IconButton(
                   icon: Icon(Icons.mic),
                   onPressed: () {
-                    setState(() {
-                      _searchActive = true;
-                    });
-
-                    _showModalBottomSheet(homePageProvider, modalHeight);
+                    showToast("Under development");
+                    // setState(() {
+                    //   _searchActive = true;
+                    // });
+                    //
+                    // _showModalBottomSheet(homePageProvider, modalHeight);
                   },
                 ))
       ],
