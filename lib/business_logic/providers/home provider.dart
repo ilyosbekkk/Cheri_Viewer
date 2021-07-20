@@ -33,14 +33,18 @@ class HomeProvider extends ChangeNotifier {
   List<bool> _activeCategories = [false, false, false, false, false, false];
 
   Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy, int category) async {
+
     try {
       Response response = await WebServices.fetchPosts(pageSize, nowPage, orderBy, category);
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+
+        print(response.body);
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
         allPosts.addAll(postsResponse.data);
-        print(decodedResponse);
-        print("I am here  man");
+        for(int i = 0; i<postsResponse.data.length; i++){
+          print("id: ${postsResponse.data[i].cheriId}|saved: ${postsResponse.data[i].saved}");
+        }
         reponseCode1 = response.statusCode;
         notifyListeners();
         return true;
@@ -74,7 +78,6 @@ class HomeProvider extends ChangeNotifier {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
         Categories categories = Categories.fromJson(decodedResponse);
-        reponseCode2 = response.statusCode;
         subCategories1.clear();
         subCategories2.clear();
         subCategories3.clear();
@@ -108,6 +111,9 @@ class HomeProvider extends ChangeNotifier {
               break;
           }
         }
+
+        reponseCode2 = response.statusCode;
+        notifyListeners();
 
         return true;
       } else {

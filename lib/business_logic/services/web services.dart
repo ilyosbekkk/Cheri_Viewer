@@ -6,7 +6,7 @@ class WebServices {
 
   static Future<http.Response> fetchPosts(int pageSize, int nowPage, String orderBy, int category) async {
     final url = Uri.https(baseUrl, postsList);
-    final body = {'pagesize': '$pageSize', 'nowpage': '$nowPage', 'orderby': '$orderBy', 'category': '$category'};
+    final body = {'pagesize': '$pageSize', 'nowpage': '$nowPage', 'orderby': '$orderBy', 'category': '$category', "member_id": '10470'};
     http.Response response = await http.post(url, headers: headers, body: body);
     return response;
   }

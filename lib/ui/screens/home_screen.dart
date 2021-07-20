@@ -15,6 +15,9 @@ class HomeScreen extends StatefulWidget {
   BuildContext context;
   ScrollController _scrollController;
 
+
+
+
   HomeScreen(this.height, this.width, this.context, this._scrollController);
 
   @override
@@ -28,6 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
   static const int category = 0;
   static const orderBy = "views";
   bool  isListenerRegistered = false;
+  bool netwrokCallDone = false;
+
 
 
 
@@ -41,13 +46,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
-    if (_homePageProvider.reponseCode1 == 0 || _homePageProvider.reponseCode1 == -2) {
-      _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {});}
-    if (_homePageProvider.reponseCode2 == 0 || _homePageProvider.reponseCode2 == -2) {
-      _homePageProvider.fetchCategoriesList().then((value) {});
+    if(!netwrokCallDone) {
+      netwrokCallDone = true;
+      _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
+      if (_homePageProvider.reponseCode1 == 0 ||
+          _homePageProvider.reponseCode1 == -2) {
+        _homePageProvider.fetchPostsList(
+            pageSize, initialPage, orderBy, category).then((value) {});
+      }
+      if (_homePageProvider.reponseCode2 == 0 ||
+          _homePageProvider.reponseCode2 == -2) {
+        _homePageProvider.fetchCategoriesList().then((value) {});
+      }
     }
-
     if(!isListenerRegistered) {
       widget._scrollController.addListener(() {
         if (widget._scrollController.position.pixels == widget._scrollController.position.maxScrollExtent) {
@@ -147,6 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSinglePost(int index, double height, double width) {
     List<Post> posts = _homePageProvider.allPosts;
+
     return CardViewWidget(height, width, posts[index]);
   }
 

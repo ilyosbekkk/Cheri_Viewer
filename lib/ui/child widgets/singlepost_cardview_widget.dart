@@ -22,6 +22,7 @@ class CardViewWidget extends StatefulWidget {
 class _CardViewWidgetState extends State<CardViewWidget> {
   @override
   Widget build(BuildContext context) {
+
     String? memberId = "10470";
     return Consumer<CheriProvider>(builder: (context,  cheriProvider,  child) {
       return  Container(
