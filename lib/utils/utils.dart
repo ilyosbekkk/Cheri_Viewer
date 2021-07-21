@@ -5,7 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 SharedPreferences? preferences;
 
 void showToast(String message) {
-  Fluttertoast.showToast(msg: message, toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 1, backgroundColor: Colors.black54, textColor: Colors.white, fontSize: 16.0);
+  Fluttertoast.showToast(msg: message,
+      toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1, backgroundColor: Colors.black54, textColor: Colors.white, fontSize: 16.0);
 }
 
 String timeFormatter(String formattedString) {
@@ -44,4 +46,10 @@ String timeFormatter(String formattedString) {
 
 Future<void> initPreferences() async {
   preferences = await SharedPreferences.getInstance();
+}
+
+enum CheriState{
+  SAVED,
+  UNSAVED,
+  IDLE
 }

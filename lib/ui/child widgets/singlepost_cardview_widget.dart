@@ -10,9 +10,6 @@ class CardViewWidget extends StatefulWidget {
   double height;
   double width;
   Post post;
-
-
-
   CardViewWidget(this.height, this.width,  this.post);
 
   @override
@@ -20,10 +17,18 @@ class CardViewWidget extends StatefulWidget {
 }
 
 class _CardViewWidgetState extends State<CardViewWidget> {
+  String? memberId;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+     memberId = preferences!.getString("id")??"";
+
+  }
   @override
   Widget build(BuildContext context) {
 
-    String? memberId = "10470";
+
     return Consumer<CheriProvider>(builder: (context,  cheriProvider,  child) {
       return  Container(
         margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
@@ -31,11 +36,22 @@ class _CardViewWidgetState extends State<CardViewWidget> {
         width: double.infinity,
         child: InkWell(
           onTap: () {
-            if(memberId != null) {
-              Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": widget.post.cheriId, "memberId": memberId});
-              print(widget.post.cheriId);
-            }
-            else showToast(toastSignIn[korean]!);
+
+            Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": widget.post.cheriId, "memberId": memberId}).then((value) {
+                if(value == CheriState.SAVED) {
+                  widget.post.saved = "Y";
+                }
+                else if(value == CheriState.UNSAVED) {
+                  widget.post.saved = "N";
+                }
+                setState(() {
+
+                });
+
+              });
+
+
+
           },
           child: Card(
             elevation: 10.0,
@@ -60,7 +76,7 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                           child: FadeInImage.assetNetwork(
                             placeholder: 'assets/images/placeholder.png',
                             image: widget.post.imgUrl,
-                            fit: BoxFit.fitWidth,
+                            fit: BoxFit.cover,
                           ),
                         ),
                         Row(
@@ -98,12 +114,12 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                               child: widget.post.saved == "N"
                                   ? InkWell(
                                 onTap: ()  {
-                                  if(memberId != null)
-                                  cheriProvider.saveCheriPost(widget.post.cheriId, "Y", memberId).then((value)  {
+                                  if(memberId != "")
+                                  cheriProvider.saveCheriPost(widget.post.cheriId, "Y", memberId!).then((value)  {
                                      if(value)
                                        setState(() {
                                          widget.post.saved = "Y";
-                                         showToast(bookmarkSave[english]!);
+                                         showToast(bookmarkSave[korean]!);
 
                                        });
                                   });
@@ -116,16 +132,14 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                               )
                                   : InkWell(
                                 onTap: () async {
-                                  if(memberId != null)
-                                  cheriProvider.saveCheriPost(widget.post.cheriId, "N", memberId).then((value){
+                                  if(memberId != "")
+                                  cheriProvider.saveCheriPost(widget.post.cheriId, "N", memberId!).then((value){
                                     if(value) {
                                       setState(() {
                                         widget.post.saved = "N";
-                                        showToast(bookmarkSave[english]!);
-
-
+                                        showToast(bookMarkUnsave[korean]!);
                                       });
-                                      showToast(bookmarkSave[english]!);
+
 
                                     }
                                   });

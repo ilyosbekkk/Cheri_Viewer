@@ -8,6 +8,7 @@ import 'package:viewerapp/utils/utils.dart';
 class UserManagementProvider extends ChangeNotifier {
   //google signin
   Future<Map<String, String>> signInWithGoogle() async {
+    print("enter");
     final GoogleSignInAccount googleUser = (await GoogleSignIn().signIn())!;
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
@@ -18,7 +19,8 @@ class UserManagementProvider extends ChangeNotifier {
 
 
     Map<String, String> credentials = {"access_token": "${googleAuth.accessToken}", "id_token": " ${googleAuth.idToken}", "site_id": "${googleUser.id}", "email": "${googleUser.email}", "name": "${googleUser.displayName}"};
-
+    print("credentials");
+    print(credentials);
     return credentials;
   }
 

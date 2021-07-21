@@ -32,10 +32,10 @@ class HomeProvider extends ChangeNotifier {
   int lastButtonIndex = -1;
   List<bool> _activeCategories = [false, false, false, false, false, false];
 
-  Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy, int category) async {
+  Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy, int category, String memberId ) async {
 
     try {
-      Response response = await WebServices.fetchPosts(pageSize, nowPage, orderBy, category);
+      Response response = await WebServices.fetchPosts(pageSize, nowPage, orderBy, category, memberId);
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/business_logic/providers/user management provider.dart';
+import 'package:viewerapp/utils/utils.dart';
 
 class AuthScreen extends StatefulWidget {
   static String route = "/auth_screen";
@@ -23,10 +24,13 @@ class _AuthScreenState extends State<AuthScreen> {
           return Container(
             child: InAppWebView(
 
-              initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/login")),
+              initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/viewerlogin")),
 
               initialOptions: InAppWebViewGroupOptions(
+
                 crossPlatform: InAppWebViewOptions(
+                  javaScriptCanOpenWindowsAutomatically: true,
+                  userAgent: 'random',
                   javaScriptEnabled: true,
                   useShouldOverrideUrlLoading: true,
                   mediaPlaybackRequiresUserGesture: false,
@@ -55,12 +59,11 @@ class _AuthScreenState extends State<AuthScreen> {
                     callback: (args) {
                       print("args:$args");
                       authProvider.saveUserData(args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"], args[0]["NAME"], args[0]["encrypt_id"]).then((value) {
-
                         if (value == true) {
                           Navigator.pop(context);
-                          print("구글 로그인이 성공 되었습니다");
+                          showToast("구글 로그인이 성공 되었습니다");
                         } else
-                          print("구글 로그인이 실패 되었습니다");
+                          showToast("구글 로그인이 실패 되었습니다");
                       });
                     });
                 _controller.addJavaScriptHandler(

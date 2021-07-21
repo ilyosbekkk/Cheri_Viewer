@@ -1,9 +1,12 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/screens/categoryview_screen.dart';
+import 'package:viewerapp/utils/utils.dart';
 import '../../business_logic/providers/home provider.dart';
 
 import '../../models/postslist_model.dart';
@@ -14,8 +17,6 @@ class HomeScreen extends StatefulWidget {
   double width;
   BuildContext context;
   ScrollController _scrollController;
-
-
 
 
   HomeScreen(this.height, this.width, this.context, this._scrollController);
@@ -32,8 +33,16 @@ class _HomeScreenState extends State<HomeScreen> {
   static const orderBy = "views";
   bool  isListenerRegistered = false;
   bool netwrokCallDone = false;
+  String? memberid;
 
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    memberid = preferences!.getString("id")??"";
+  }
 
 
   @override
@@ -52,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (_homePageProvider.reponseCode1 == 0 ||
           _homePageProvider.reponseCode1 == -2) {
         _homePageProvider.fetchPostsList(
-            pageSize, initialPage, orderBy, category).then((value) {});
+            pageSize, initialPage, orderBy, category, memberid!).then((value) {});
       }
       if (_homePageProvider.reponseCode2 == 0 ||
           _homePageProvider.reponseCode2 == -2) {
@@ -63,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
       widget._scrollController.addListener(() {
         if (widget._scrollController.position.pixels == widget._scrollController.position.maxScrollExtent) {
           initialPage = initialPage  + 1;
-          _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {});
+          _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberid!).then((value) {});
         }
       });
       isListenerRegistered  = true;
@@ -93,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
             MaterialButton(
               onPressed: () {
                 if(_homePageProvider.reponseCode1 == -1)
-                _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {});
+                _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberid!).then((value) {});
                 if(_homePageProvider.reponseCode2 == -1)
                 _homePageProvider.fetchCategoriesList().then((value) {});
 
@@ -120,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(10)),
                 onPressed: () {
                   if(_homePageProvider.reponseCode1 == -2)
-                    _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category).then((value) {});
+                    _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberid!).then((value) {});
                   if(_homePageProvider.reponseCode2 == -2)
                     _homePageProvider.fetchCategoriesList().then((value) {});
                   },
@@ -150,9 +159,11 @@ class _HomeScreenState extends State<HomeScreen> {
     else return Center(
         child: Container(
             margin: EdgeInsets.only(top: widget.width * 0.5),
-            child: CircularProgressIndicator(
-              backgroundColor: Theme.of(context).selectedRowColor,
-            )),
+            child:
+            Platform.isAndroid?
+            CircularProgressIndicator(
+              color: Theme.of(context).selectedRowColor,
+            ):CupertinoActivityIndicator()),
       );
   }
 
@@ -166,6 +177,24 @@ class _HomeScreenState extends State<HomeScreen> {
     var radius = width / 14;
     return Consumer<HomeProvider>(builder: (context, homeProvider, child) {
       return Column(children: [
+        Container(
+          decoration: BoxDecoration(
+            color:Color.fromRGBO(255, 222, 222, 0.3)
+          ),
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.category_outlined, color: Theme.of(context).selectedRowColor,),
+              Container(
+                child: Text("카테고리", style: TextStyle(
+                  fontSize: 18,
+
+                ),),
+              ),
+            ],
+          ),
+        ),
         Container(
           margin: EdgeInsets.only(left: 10, right: 10, top: 10.0),
           child: Row(
@@ -185,6 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [_buildCategoryWidget(homeProvider, radius, 4)],
           ),
         ),
+
         if (homeProvider.showSubCategories2) _buildSubCategoriesB(homeProvider, homeProvider.activeIndex)
       ]);
     });
@@ -238,24 +268,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSubCategoriesB(HomeProvider homeProvider, int i) {
     return Container(
-      child: Wrap(
-          alignment: WrapAlignment.start,
-          direction: Axis.horizontal,
-          spacing: 10.0,
-          children: List.generate(homeProvider.subCategories(i).length, (index) {
-            return InkWell(
-              onTap: () {
-                Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id": homeProvider.categoryIds(i)[index], "title": homeProvider.subCategories(i)[index]});
-              },
-              child: Chip(
-                  elevation: 5.0,
-                  backgroundColor: Theme.of(context).buttonColor,
-                  label: Text(
-                    homeProvider.subCategories(i)[index],
-                    style: Theme.of(context).textTheme.bodyText2,
-                  )),
-            );
-          })),
+      margin: EdgeInsets.only(left: 20),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Wrap(
+            alignment: WrapAlignment.start,
+            direction: Axis.horizontal,
+            spacing: 10.0,
+            children: List.generate(homeProvider.subCategories(i).length, (index) {
+              return InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id": homeProvider.categoryIds(i)[index], "title": homeProvider.subCategories(i)[index]});
+                },
+                child: Chip(
+                    elevation: 5.0,
+                    backgroundColor: Theme.of(context).buttonColor,
+                    label: Text(
+                      homeProvider.subCategories(i)[index],
+                      style: Theme.of(context).textTheme.bodyText2,
+                    )),
+              );
+            })),
+      ),
     );
   }
 

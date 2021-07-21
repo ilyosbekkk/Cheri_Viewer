@@ -1,39 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
 import 'package:viewerapp/utils/utils.dart';
 import 'package:viewerapp/utils/strings.dart';
-import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/business_logic/providers/cheri provider.dart';
 
-// ignore: must_be_immutable
-class ListViewWidget extends StatelessWidget {
+class ListViewWidget extends StatefulWidget {
 
-  double height;
-  double width;
+  double  height;
+  double   width;
   Post post;
 
   ListViewWidget(this.height, this.width,  this.post);
 
   @override
+  _ListViewWidgetState createState() => _ListViewWidgetState();
+}
+
+class _ListViewWidgetState extends State<ListViewWidget> {
+  late String  memberId;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    memberId = preferences!.getString("id")??"";
+  }
+  @override
   Widget build(BuildContext context) {
-    String? memberId = (preferences!.getString("id") ?? null);
     return  Consumer<CheriProvider>(builder: (context, cheriProvider,  child){
       return  InkWell(
         onTap: () {
-          if(memberId != null) {
-            Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": post.cheriId, "memberId": memberId});
-            print(post.cheriId);
-          }
-          else {
-            print("Please login");
-          }
+
+            Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": widget.post.cheriId, "memberId": memberId}).then((value) {
+              if(value == CheriState.SAVED) {
+                widget.post.saved = "Y";
+              }
+              else if(value == CheriState.UNSAVED) {
+                widget.post.saved = "N";
+              }
+              setState(() {});
+
+            });
+            print(widget.post.cheriId);
+
+
         },
         child: Container(
-
           margin: EdgeInsets.only(top: 10.0),
-
           height: 110,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -43,12 +59,11 @@ class ListViewWidget extends StatelessWidget {
                 margin: EdgeInsets.only(left: 16, right: 10 , top: 10, bottom: 5.0),
                 width: 101,
                 height: 100,
-
                 decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.cover
                       ,
-                      image: NetworkImage(post.imgUrl),
+                      image: NetworkImage(widget.post.imgUrl),
                     )
                 ),
               ),
@@ -64,7 +79,7 @@ class ListViewWidget extends StatelessWidget {
                       color: Theme.of(context).primaryColorDark,
                     ),
                     child: Text(
-                      post.category,
+                      widget.post.category,
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.white,
@@ -73,10 +88,10 @@ class ListViewWidget extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    width: width*0.5,
+                    width: widget.width*0.5,
                     margin: EdgeInsets.only( top: 10.0),
                     child: Text(
-                      post.title,
+                      widget.post.title,
                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                       maxLines: 1,
                     ),
@@ -84,14 +99,14 @@ class ListViewWidget extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.only(top: 10.0),
                     child: Text(
-                      post.author,
+                      widget.post.author,
                       style: TextStyle(fontSize: 12),
                     ),
                   ),
                   Row(
                     children: [
                       Text(
-                        "${cheri_views[korean]}:${post.views}",
+                        "${cheri_views[korean]}:${widget.post.views}",
                         style: TextStyle(fontSize: 12),
                       ),
                       Container(
@@ -101,7 +116,7 @@ class ListViewWidget extends StatelessWidget {
                             size: 5.0,
                           )),
                       Text(
-                        "${timeFormatter(post.dateTime)} 전",
+                        "${timeFormatter(widget.post.dateTime)} 전",
                         style: TextStyle(fontSize: 12),
                       )
                     ],
@@ -116,21 +131,42 @@ class ListViewWidget extends StatelessWidget {
                 height: 30,
                 margin: EdgeInsets.only( right: 8, top: 10),
                 color: Theme.of(context).primaryColorDark,
-                child: post.saved == "N"
+                child: widget.post.saved == "N"
                     ? InkWell(
                   onTap: () {
-                  },
+                    if(memberId != null)
+                      cheriProvider.saveCheriPost(widget.post.cheriId, "Y", memberId).then((value)  {
+                        if(value)
+                          setState(() {
+                            widget.post.saved = "Y";
+                            showToast(bookmarkSave[english]!);
+
+                          });
+                      });
+                    else showToast(toastSignIn[korean]!);
+                    },
                   child: Icon(
 
                     Icons.bookmark_border,
                     color: Theme.of(context).backgroundColor,
+
+
                   ),
                 )
                     : InkWell(
                   onTap: () {
-
+                    if(memberId != null)
+                      cheriProvider.saveCheriPost(widget.post.cheriId, "N", memberId).then((value){
+                        if(value) {
+                          setState(() {
+                            widget.post.saved = "N";
+                            showToast(bookMarkUnsave[english]!);
+                          });
+                        }
+                      });
+                    else showToast(toastSignIn[korean]!);
                   },
-                  child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor),
+                  child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor,),
                 ),
               ),
             ],

@@ -1,9 +1,11 @@
 import 'package:viewerapp/business_logic/providers/detailedview provider.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
+import 'package:viewerapp/ui/screens/search_screen.dart';
 import 'package:viewerapp/utils/strings.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
+import 'package:viewerapp/utils/utils.dart';
 
 class CheriDetailViewScreen extends StatefulWidget {
   static String route = "/cheridetail_screen";
@@ -21,12 +23,13 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   bool isDialogTextOpen = false;
   bool isDialogPictureOpen = false;
   bool _loaded = false;
+  CheriState _cheriState = CheriState.IDLE;
 
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    final args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
+    final  args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
     String cheriId = args["cheriId"]!;
     String memberId = args["memberId"]!;
 
@@ -65,7 +68,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
           color: Colors.black,
         ),
         onPressed: () {
-          Navigator.pop(context);
+          Navigator.pop(context, _cheriState);
         },
       ),
     );
@@ -74,6 +77,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   Widget _buildList(DetailedViewProvider detailedViewProvider, double width, String memberId, String cheriId) {
     return SliverToBoxAdapter(
         child: ListView.separated(
+          padding: EdgeInsets.zero,
       primary: false,
       shrinkWrap: true,
       itemCount: detailedViewProvider.items.length + 2,
@@ -89,9 +93,12 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
         }
       },
       separatorBuilder: (context, index) {
+            if(index != 0)
         return Divider(
+
           color: Colors.black,
         );
+            return Container();
       },
     ));
   }
@@ -99,17 +106,25 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   Widget _buildIntroWidget(DetailedViewProvider detailedViewProvider) {
     return Container(
       decoration: BoxDecoration(
+        border: Border(
+
+          bottom: BorderSide(width: 1.0, color: Colors.black),
+        ),
         color: Theme.of(context).primaryColorDark,
         image: detailedViewProvider.detailedPost.pictureId != null
             ? DecorationImage(
                 image: NetworkImage(
                   "https://cheri.weeknday.com${detailedViewProvider.detailedPost.pictureId}",
                 ),
-                fit: BoxFit.cover,
+          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
+
+          fit: BoxFit.cover,
               )
             : DecorationImage(
                 image: AssetImage("assets/images/placeholder.png"),
-                fit: BoxFit.cover,
+          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
+
+          fit: BoxFit.cover,
               ),
       ),
       height: 185,
@@ -135,7 +150,8 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                   )
                 : Center(
                     child: CircularProgressIndicator(
-                      backgroundColor: Theme.of(context).selectedRowColor,
+                      color: Theme.of(context).selectedRowColor,
+
                     ),
                   ),
           ),
@@ -151,7 +167,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   }
 
   Widget _buildAccountWidget(DetailedViewProvider detailedViewProvider, String memberId, String cheriId, double width) {
-    print(detailedViewProvider.detailedPost.saveYn);
+    List<String> hashtags =detailedViewProvider.detailedPost.hashTag!=null? detailedViewProvider.detailedPost.hashTag!.split(","):[];
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -186,21 +202,36 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                 ),
               ],
             ),
-          if (detailedViewProvider.detailedPost.hashTag != null)
-            Row(
-              children: [
-                Container(
-                  width: 50,
+          if (hashtags.isNotEmpty)
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Wrap(
+                   alignment: WrapAlignment.spaceEvenly,
+                  children: List.generate(hashtags.length, (index) {
+                    if(index == 0)
+                      return Container(
+                        width: 50,
+                      );
+                    else {
+                      index = index - 1;
+                     return Container(
+                          margin: EdgeInsets.only(left: 10),
+                         child: InkWell(
+                           onTap: () {
+                             Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(height, width, hashtags[index])));
+                           },
+                           child: Text("#${hashtags[index]}",style: TextStyle(
+                             color: Colors.blue,
+                             fontSize: 15
+                           ),),
+                         ));}
+                  })
                 ),
-                Container(
-                  width: 0.8 * width,
-                  child: Text(
-                    (detailedViewProvider.detailedPost.hashTag)!,
-                    style: TextStyle(color: Colors.blue, fontSize: 15),
-                  ),
-                ),
-              ],
+              ),
             ),
+          if(memberId != "")
           Container(
             margin: EdgeInsets.only(top: 10),
             child: Row(
@@ -211,11 +242,28 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                       onPressed: () {
                         if (detailedViewProvider.detailedPost.saveYn == "Y") {
                           detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "N", memberId).then((value) {
-                            if (value) detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {});
+                            if (value) {
+                              detailedViewProvider.fetchDetailedViewData(
+                                  cheriId, memberId).then((value) {
+                                    if(value)
+                                      setState(() {
+                                        _cheriState = CheriState.UNSAVED;
+                                        showToast(bookMarkUnsave[korean]!);
+
+                                      });
+                              });
+                            }
                           });
                         } else {
                           detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "Y", memberId).then((value) {
-                            if (value) detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {});
+                            if (value) detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
+                              if(value)
+                                setState(() {
+                                  _cheriState = CheriState.SAVED;
+                                  showToast(bookmarkSave[korean]!);
+
+                                });
+                            });
                           });
                         }
                       },
@@ -264,14 +312,13 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     return Container(
       child: Row(
         children: [
+          if(memberId != "")
           Checkbox(
               checkColor: Colors.blue,
               value: items[index].checkedYn == "Y" ? true : false,
               onChanged: (bool? value) {
-                print("value: $value");
                 String checked = (value == true) ? "Y" : "N";
 
-                print("vvvv: $checked");
                 detailedViewProvider.updateCheckListItem(items[index].itemId!, checked, memberId).then((value) {
                   if (value) {
                     detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
@@ -283,6 +330,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
           Expanded(
             flex: 4,
             child: Container(
+              margin: memberId != ""? EdgeInsets.only(left: 0):EdgeInsets.only(left: 10),
               child: Text(
                 items[index].contents!,
                 maxLines: 5,
@@ -345,7 +393,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                               child: IconButton(
                                   icon: Icon(Icons.clear),
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    Navigator.pop(context,  _cheriState);
                                   }),
                             )
                           ],
@@ -401,4 +449,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
           );
         });
   }
+
+
+
 }

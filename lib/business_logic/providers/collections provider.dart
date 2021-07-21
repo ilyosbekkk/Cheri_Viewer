@@ -27,8 +27,6 @@ class CollectionsProvider extends ChangeNotifier {
         return true;
       } else {
         statusCode1 = response.statusCode;
-        print("bookmark");
-        print(response.body);
         notifyListeners();
         return false;
       }
@@ -54,10 +52,11 @@ class CollectionsProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
-        print("response2:");
         print(decodedResponse);
         openedPosts.addAll(postsResponse.data);
         statusCode2 = response.statusCode;
+        print("size");
+        print(openedPosts.length);
         notifyListeners();
         return true;
       } else {

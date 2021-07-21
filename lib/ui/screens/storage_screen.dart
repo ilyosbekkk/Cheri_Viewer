@@ -13,7 +13,6 @@ import 'auth_screen.dart';
 class StorageBoxScreen extends StatefulWidget {
   final height;
   final width;
-  late String memberId= "";
 
   StorageBoxScreen(this.height, this.width);
 
@@ -26,33 +25,33 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
   Button mode = Button.BOOKMARK;
   CollectionsProvider _collectionsProvider = CollectionsProvider();
   TextEditingController _controller = TextEditingController();
+  bool netwrokCallDone = false;
+  late String memberId;
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-
+    memberId = preferences!.getString("id")??"";
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
-    if ((_collectionsProvider.statusCode1 == 0 || _collectionsProvider.statusCode1 == -2)) {
-     // widget.memberId = preferences!.getString("id")!;
-      _collectionsProvider.fetchSavedPostsList("10470", "10", "1", "views").then((value) {});
-    }
-    if ((_collectionsProvider.statusCode2 == 0 || _collectionsProvider.statusCode2 == -2)) {
-      //widget.memberId = preferences!.getString("id")!;
-      _collectionsProvider.fetchOpenedPostsList("10470", "10", "1", "views").then((value) {});
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    print("ewqrihgiwhpwirhgpwrtpwirhrpo");
     int count = 2;
-    widget.memberId = "10470";
+    _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
+
+    if(!netwrokCallDone){
+      netwrokCallDone =true;
+      if ((_collectionsProvider.statusCode1 == 0 || _collectionsProvider.statusCode1 == -2)) {
+        // widget.memberId = preferences!.getString("id")!;
+        _collectionsProvider.fetchSavedPostsList(memberId, "10", "1", "views").then((value) {});
+      }
+      if ((_collectionsProvider.statusCode2 == 0 || _collectionsProvider.statusCode2 == -2)) {
+        //widget.memberId = preferences!.getString("id")!;
+        _collectionsProvider.fetchOpenedPostsList(memberId, "10", "1", "views").then((value) {});
+      }
+    }
 
 
     if (_searchMode) count = count + 1;
@@ -60,7 +59,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
       count = count + _collectionsProvider.savedPosts.length;
     else if (mode == Button.OPEN_CHERI && _collectionsProvider.savedPosts.isNotEmpty) count = count + _collectionsProvider.openedPosts.length;
 
-    if (widget.memberId == null) {
+    if (memberId == "") {
       return Container(
           margin: EdgeInsets.only(top: widget.width * 0.5),
           child: Column(
@@ -91,7 +90,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
               if (index == 0) {
                 return _buildCustomTabBar();
               } else if (index == 1) {
-                return _buildSortWidget(widget.memberId, _collectionsProvider);
+                return _buildSortWidget(memberId, _collectionsProvider);
               } else if (index == 2 && _searchMode) {
                 return _buildSearchWidget();
               } else {
@@ -109,8 +108,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
               Text("TimeOut happened:("),
               MaterialButton(
                 onPressed: () {
-                  _collectionsProvider.fetchSavedPostsList(widget.memberId, "10", "1", "views").then((value) {});
-                  _collectionsProvider.fetchOpenedPostsList(widget.memberId, "10", "1", "views").then((value) {});
+                  _collectionsProvider.fetchSavedPostsList(memberId, "10", "1", "views").then((value) {});
+                  _collectionsProvider.fetchOpenedPostsList(memberId, "10", "1", "views").then((value) {});
                 },
                 child: Text("try again"),
               )
@@ -164,7 +163,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
           child: Container(
               margin: EdgeInsets.only(top: widget.width * 0.5),
               child: CircularProgressIndicator(
-                backgroundColor: Theme.of(context).selectedRowColor,
+                color: Theme.of(context).selectedRowColor,
               )),
         );
     }}
@@ -368,4 +367,4 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
   }
 }
 
-enum Button { BOOKMARK, OPEN_CHERI }
+enum Button {BOOKMARK, OPEN_CHERI}

@@ -48,6 +48,7 @@ class _NavCotrollerState extends State<NavCotroller> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     String? memberId = preferences!.getString("id")??null;
+    String? accountImgurl = preferences!.getString("imgUrl")??null;
     _screens = [_buildHomeScreen(height, width), _buildSearchScreen(height, width), _buildStorageBoxScreen(height, width, memberId)];
     String string;
     switch (_source.keys.toList()[0]) {
@@ -71,7 +72,7 @@ class _NavCotrollerState extends State<NavCotroller> {
       body: SafeArea(
         child: CustomScrollView(
             controller: _selectedIndex == 0?  _scrollController:_selectedIndex == 1?_scrollController2:_scrollController3,
-            slivers: [_buildSliverAppBar(height), _screens[_selectedIndex]],
+            slivers: [_buildSliverAppBar(height, accountImgurl), _screens[_selectedIndex]],
           ),
 
       ),
@@ -97,7 +98,7 @@ class _NavCotrollerState extends State<NavCotroller> {
 
   Widget _buildSearchScreen(double height, double width) {
     return SliverToBoxAdapter(
-      child: SearchScreen(height, width, _scrollController),
+      child: SearchScreen(height, width, ""),
     );
   }
 
@@ -108,7 +109,7 @@ class _NavCotrollerState extends State<NavCotroller> {
     );
   }
 
-  Widget _buildSliverAppBar(double height) {
+  Widget _buildSliverAppBar(double height, String?  imgUrl) {
     AppBar appBar = AppBar(
       title: Text('Demo'),
     );
@@ -130,15 +131,16 @@ class _NavCotrollerState extends State<NavCotroller> {
             color: Theme.of(context).selectedRowColor,
           )),
       actions: [
+        if(imgUrl == null)
         IconButton(
             onPressed: () {
               String? encrypedId = (preferences!.getString("encrypt_id") ?? null);
 
               if (encrypedId == null) {
-                print("hey1");
+
                 Navigator.pushNamed(context, AuthScreen.route);
               }else {
-                print("hey2");
+
                 Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId});
               }
                 },
@@ -147,6 +149,21 @@ class _NavCotrollerState extends State<NavCotroller> {
               size: 30,
               color: Colors.black54,
             )),
+        if(imgUrl != null)
+          Container(
+            margin: EdgeInsets.only(right: 10),
+            child: InkWell(
+              onTap: () {
+                String? encrypedId = (preferences!.getString("encrypt_id") ?? null);
+
+                Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId});
+              },
+              child: CircleAvatar(
+                radius: 15,
+                foregroundImage: NetworkImage(  "https://cheri.weeknday.com/${imgUrl}"),
+              ),
+            ),
+          )
       ],
     );
   }

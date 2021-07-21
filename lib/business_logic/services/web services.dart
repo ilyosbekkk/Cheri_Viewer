@@ -4,9 +4,13 @@ import 'package:viewerapp/utils/strings.dart';
 class WebServices {
   static Map<String, String> headers = {'Accept': 'application/json;'};
 
-  static Future<http.Response> fetchPosts(int pageSize, int nowPage, String orderBy, int category) async {
+  static Future<http.Response> fetchPosts(int pageSize, int nowPage, String orderBy, int category, String  memberId) async {
     final url = Uri.https(baseUrl, postsList);
-    final body = {'pagesize': '$pageSize', 'nowpage': '$nowPage', 'orderby': '$orderBy', 'category': '$category', "member_id": '10470'};
+    late  Map<String, String> body;
+    if(memberId.isNotEmpty)
+     body = {'pagesize': '$pageSize', 'nowpage': '$nowPage', 'orderby': '$orderBy', 'category': '$category', "member_id": memberId};
+    else
+       body  = {'pagesize': '$pageSize', 'nowpage': '$nowPage', 'orderby': '$orderBy', 'category': '$category'};
     http.Response response = await http.post(url, headers: headers, body: body);
     return response;
   }

@@ -1,12 +1,8 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart';
-import 'package:speech_to_text/speech_recognition_error.dart';
-import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 import 'package:viewerapp/business_logic/services/web services.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/models/search%20model.dart';
@@ -44,7 +40,9 @@ class SearchProvider extends ChangeNotifier {
     try {
       Response response = await WebServices.fetchRecentSearches(memberId);
       Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+      print("recent searhces: $response");
       if (response.statusCode == 200) {
+        print(decodedResponse);
         Search search = Search.fromJson(decodedResponse);
         _recentSearches.addAll(search.searchWords!);
         print(decodedResponse);

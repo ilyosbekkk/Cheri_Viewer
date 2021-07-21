@@ -7,6 +7,7 @@ import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:viewerapp/business_logic/providers/search%20provider.dart';
+import 'package:viewerapp/utils/utils.dart';
 
 class VoiceRecorderModalBottomSheet extends StatefulWidget {
   final _height;
@@ -28,6 +29,7 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
   String currentLocaleId = '';
   int resultListened = 0;
   String word1 = "";
+  bool  resultAvailable = false;
   bool word2 = false;
   List<LocaleName> localeNames = [];
   final SpeechToText speech = SpeechToText();
@@ -53,12 +55,80 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
 
   @override
   Widget build(BuildContext context) {
-    if(word1.isNotEmpty || word1 != ""){
-      Navigator.pop(context, word1);
+    if(resultAvailable){
+      return Container(
+        height: widget._height * 0.4,
+
+        child: Column(
+
+          children: [
+            Container(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                  icon: Icon(
+                    Icons.clear,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+            ),
+            Spacer(),
+            Text('결과: "$word1"',  style: TextStyle(
+              fontSize: 18
+            ),),
+            ElevatedButton.icon(
+              icon: Icon(Icons.search),
+
+
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).selectedRowColor),
+
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+
+                    )
+              )),
+              onPressed: () {
+                Navigator.pop(context, word1);
+              },
+              label: Text("검색"),
+
+            ),
+            ElevatedButton.icon(
+              icon: Icon(Icons.refresh),
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).selectedRowColor),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+
+                      )
+                  )),
+              onPressed: () async {
+                await startListening();
+
+                setState(() {
+                  resultAvailable = false;
+                  word1 = "";
+
+                });
+              },
+              label: Text("다시"),
+
+            ),
+            Spacer()
+          ],
+        ),
+      );
     }
+    else
     return Container(
+
       height: widget._height * 0.4,
       child: Column(
+        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
@@ -150,14 +220,17 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
     ++resultListened;
 
 
-    word1 = result.recognizedWords;
 
-    word2 = result.finalResult;
-    setState(() {
+     setState(() {
+       word1 = result.recognizedWords;
+       word2 = result.finalResult;
+       resultAvailable = true;
+       stopListening();
 
-    });
-    print(result.recognizedWords);
-    print(result.finalResult);
+
+     });
+
+
   }
 
   void soundLevelListener(double level) {

@@ -24,6 +24,15 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
   late double _width;
   bool _loaded = false;
   RefreshController _refreshController = RefreshController(initialRefresh: false);
+  late  String memberId;
+
+   @override
+  void initState() {
+    super.initState();
+    memberId = preferences!.getString("id")??"";
+
+    }
+
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +49,15 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
             enablePullDown: true,
             child: Consumer<CategoriesProvider>(builder: (context, postProvider, widget) {
               if (!_loaded) {
-                postProvider.fetchCategories(10, 1, "views", int.parse(args["id"]!)).then((value) {
+                postProvider.fetchCategories(10, 1, "views", int.parse(args["id"]!), memberId).then((value) {
                   _loaded = true;
                 });
               }
               if (postProvider.categoryLoading)
                 return Center(
                   child: CircularProgressIndicator(
-                    backgroundColor: Theme.of(context).selectedRowColor,
+                    color: Theme.of(context).selectedRowColor,
+
                   ),
                 );
               else
@@ -171,11 +181,11 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 enabled: true,
                 onSelected: (value) async {
                   if (value == "second1") {
-                    await postListsProvidert.fetchCategories(10, 1, "regdate r", int.parse(category));
+                    await postListsProvidert.fetchCategories(10, 1, "regdate", int.parse(category), memberId);
                   } else if (value == "second2") {
-                    await postListsProvidert.fetchCategories(10, 1, "regdate", int.parse(category));
+                    await postListsProvidert.fetchCategories(10, 1, "regdate", int.parse(category),  memberId);
                   } else if (value == "second3") {
-                    await postListsProvidert.fetchCategories(10, 1, "views", int.parse(category));
+                    await postListsProvidert.fetchCategories(10, 1, "views", int.parse(category), memberId);
                   }
                   setState(() {});
                 },
