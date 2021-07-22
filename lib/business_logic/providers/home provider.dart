@@ -42,9 +42,7 @@ class HomeProvider extends ChangeNotifier {
         print(response.body);
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
         allPosts.addAll(postsResponse.data);
-        for(int i = 0; i<postsResponse.data.length; i++){
-          print("id: ${postsResponse.data[i].cheriId}|saved: ${postsResponse.data[i].saved}");
-        }
+
         reponseCode1 = response.statusCode;
         notifyListeners();
         return true;

@@ -22,25 +22,25 @@ class _AuthScreenState extends State<AuthScreen> {
       body: SafeArea(
         child: Consumer<UserManagementProvider>(builder: (context, authProvider, child) {
           return Container(
-            child: InAppWebView(
+            child:InAppWebView(
 
-              initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/viewerlogin")),
+              initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/viewer/login")),
 
               initialOptions: InAppWebViewGroupOptions(
 
-                crossPlatform: InAppWebViewOptions(
-                  javaScriptCanOpenWindowsAutomatically: true,
-                  userAgent: 'random',
-                  javaScriptEnabled: true,
-                  useShouldOverrideUrlLoading: true,
-                  mediaPlaybackRequiresUserGesture: false,
-                ),
-                android: AndroidInAppWebViewOptions(
-                  useHybridComposition: true,
-                ),
+                  crossPlatform: InAppWebViewOptions(
+                    javaScriptCanOpenWindowsAutomatically: true,
+                    userAgent: 'random',
+                    javaScriptEnabled: true,
+                    useShouldOverrideUrlLoading: true,
+                    mediaPlaybackRequiresUserGesture: false,
+                  ),
+                  android: AndroidInAppWebViewOptions(
+                    useHybridComposition: true,
+                  ),
                   ios: IOSInAppWebViewOptions(
                     allowsInlineMediaPlayback: true,
-                    enableViewportScale: true
+
                   )
 
               ),
@@ -95,3 +95,4 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 }
+

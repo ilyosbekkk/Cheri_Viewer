@@ -51,6 +51,11 @@ class _ListViewWidgetState extends State<ListViewWidget> {
         child: Container(
           margin: EdgeInsets.only(top: 10.0),
           height: 110,
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(width: 0.5),
+            )
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,

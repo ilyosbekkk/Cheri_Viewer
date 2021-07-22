@@ -1,4 +1,7 @@
 
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -55,8 +58,13 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
               }
               if (postProvider.categoryLoading)
                 return Center(
-                  child: CircularProgressIndicator(
+
+                  child:
+                  Platform.isAndroid?
+                  CircularProgressIndicator(
                     color: Theme.of(context).selectedRowColor,
+
+                  ):CupertinoActivityIndicator(
 
                   ),
                 );
@@ -114,7 +122,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
 
   Widget _buildDividedList(CategoriesProvider postListProvider, double height, double width, String category) {
     return SliverToBoxAdapter(
-        child: ListView.separated(
+        child: ListView.builder(
       primary: false,
       shrinkWrap: true,
       itemCount: postListProvider.categories.length + 1,
@@ -126,10 +134,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
           return _buildSinglePost(index, height, width, postListProvider);
         }
       },
-      separatorBuilder: (BuildContext context, int index) => Divider(
-        height: 1,
-        color: Colors.black,
-      ),
+
     ));
   }
 

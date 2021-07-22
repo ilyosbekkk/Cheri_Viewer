@@ -1,6 +1,5 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viewerapp/ui/screens/profile_screen.dart';
 import 'package:viewerapp/ui/screens/search_screen.dart';
 import 'package:viewerapp/ui/screens/storage_screen.dart';
@@ -28,7 +27,8 @@ class _NavCotrollerState extends State<NavCotroller> {
   double appBarHeight = 0;
   Map _source = {ConnectivityResult.none: false};
   MyConnectivity _connectivity = MyConnectivity.instance;
-
+  late String? memberId;
+  late  String? accountImgurl;
   @override
   void initState() {
 
@@ -47,8 +47,8 @@ class _NavCotrollerState extends State<NavCotroller> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    String? memberId = preferences!.getString("id")??null;
-    String? accountImgurl = preferences!.getString("imgUrl")??null;
+     memberId = preferences!.getString("id")??"";
+    accountImgurl = preferences!.getString("imgUrl")??"";
     _screens = [_buildHomeScreen(height, width), _buildSearchScreen(height, width), _buildStorageBoxScreen(height, width, memberId)];
     String string;
     switch (_source.keys.toList()[0]) {
@@ -131,17 +131,23 @@ class _NavCotrollerState extends State<NavCotroller> {
             color: Theme.of(context).selectedRowColor,
           )),
       actions: [
-        if(imgUrl == null)
+        if(imgUrl == "")
         IconButton(
             onPressed: () {
               String? encrypedId = (preferences!.getString("encrypt_id") ?? null);
 
-              if (encrypedId == null) {
+              print("id");
+              print(encrypedId);
 
+              if (encrypedId == null) {
+               print("yes");
                 Navigator.pushNamed(context, AuthScreen.route);
               }else {
-
-                Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId});
+       print("no");
+                Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId}).then((value) {
+                  memberId = preferences!.getString("id")??"";
+                  accountImgurl = preferences!.getString("imgUrl")??"";
+                });
               }
                 },
             icon: Icon(
@@ -149,12 +155,13 @@ class _NavCotrollerState extends State<NavCotroller> {
               size: 30,
               color: Colors.black54,
             )),
-        if(imgUrl != null)
+        if(imgUrl != "")
           Container(
             margin: EdgeInsets.only(right: 10),
             child: InkWell(
               onTap: () {
                 String? encrypedId = (preferences!.getString("encrypt_id") ?? null);
+                print(encrypedId);
 
                 Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId});
               },

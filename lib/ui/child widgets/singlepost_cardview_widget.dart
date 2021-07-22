@@ -32,7 +32,7 @@ class _CardViewWidgetState extends State<CardViewWidget> {
     return Consumer<CheriProvider>(builder: (context,  cheriProvider,  child) {
       return  Container(
         margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
-        height: 310,
+        height: 320,
         width: double.infinity,
         child: InkWell(
           onTap: () {
@@ -162,9 +162,21 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 10.0, top: 10.0),
-                  child: Text(
-                    widget.post.author,
-                    style: TextStyle(fontSize: 12),
+                  child: Row(
+                    children: [
+                      Text(
+                        widget.post.author,
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      Spacer(),
+
+                      Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Theme.of(context).selectedRowColor)
+                          ),
+                          margin: EdgeInsets.only(right: 10),
+                          child: Icon(Icons.check,  color: Theme.of(context).selectedRowColor,))
+                    ],
                   ),
                 ),
                 Container(
@@ -184,7 +196,8 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                       Text(
                         "${timeFormatter(widget.post.dateTime)} 전",
                         style: TextStyle(fontSize: 12),
-                      )
+                      ),
+
                     ],
                   ),
                 )

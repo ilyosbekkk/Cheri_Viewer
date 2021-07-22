@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:viewerapp/business_logic/providers/detailedview provider.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
 import 'package:viewerapp/ui/screens/search_screen.dart';
@@ -149,8 +151,13 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   )
                 : Center(
-                    child: CircularProgressIndicator(
+
+                    child:
+                    Platform.isAndroid?
+                    CircularProgressIndicator(
                       color: Theme.of(context).selectedRowColor,
+
+                    ):CupertinoActivityIndicator(
 
                     ),
                   ),
@@ -313,20 +320,29 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
       child: Row(
         children: [
           if(memberId != "")
-          Checkbox(
-              checkColor: Colors.blue,
-              value: items[index].checkedYn == "Y" ? true : false,
-              onChanged: (bool? value) {
-                String checked = (value == true) ? "Y" : "N";
+           Checkbox(
+              side: BorderSide(
+                color: Theme.of(context).selectedRowColor,
+                style: BorderStyle.solid
+              ),
 
-                detailedViewProvider.updateCheckListItem(items[index].itemId!, checked, memberId).then((value) {
-                  if (value) {
-                    detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
-                      if (value) print("saved!");
-                    });
-                  }
-                });
-              }),
+                activeColor: Colors.transparent,
+
+
+                checkColor: Theme.of(context).selectedRowColor,
+                value: items[index].checkedYn == "Y" ? true : false,
+                onChanged: (bool? value) {
+                  String checked = (value == true) ? "Y" : "N";
+
+                  detailedViewProvider.updateCheckListItem(items[index].itemId!, checked, memberId).then((value) {
+                    if (value) {
+                      detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
+                        if (value) print("saved!");
+                      });
+                    }
+                  });
+                }),
+
           Expanded(
             flex: 4,
             child: Container(

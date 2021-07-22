@@ -1,3 +1,4 @@
+import 'package:kakao_flutter_sdk/all.dart';
 import 'package:viewerapp/business_logic/providers/categories provider.dart';
 import 'package:viewerapp/business_logic/providers/collections provider.dart';
 import 'package:viewerapp/business_logic/providers/home provider.dart';
@@ -21,6 +22,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await initPreferences();
+  KakaoContext.clientId = "818a2baccb86e7432dcdb89f7957110d";
+
   final List<SingleChildWidget> providers = [
     ChangeNotifierProvider(create: (_) => UserManagementProvider(),),
     ChangeNotifierProvider(create: (_) => HomeProvider()),
@@ -44,6 +47,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+
         primarySwatch: Colors.blue,
         primaryColor: Color.fromRGBO(0, 149, 246, 1),
         selectedRowColor: Color.fromRGBO(175, 27, 63, 1),

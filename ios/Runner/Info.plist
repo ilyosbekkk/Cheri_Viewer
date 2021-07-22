@@ -2,10 +2,27 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
+    <!--permissions for voice recording-->
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This example listens for speech on the device microphone on your request.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This example recognizes words as you speak them and displays them. </string>
+	<!--Kakao login-->
+	<key>KAKAO_APP_KEY</key>
+    <string>818a2baccb86e7432dcdb89f7957110d</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>kakao818a2baccb86e7432dcdb89f7957110d</string>
+		<string>kakaokompassauth</string>
+		<string>storykompassauth</string>
+		<string>kakaolink</string>
+		<string>kakaotalk-5.9.7</string>
+	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs  to  access photo library to change the profile image of the user</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs  to  access camera service to change the profile image of the user</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -53,15 +70,15 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>CFBundleURLTypes</key>
-    	<array>
-    		<dict>
-    			<key>CFBundleTypeRole</key>
-    			<string>Editor</string>
-    			<key>CFBundleURLSchemes</key>
-    			<array>
-    				<string>com.googleusercontent.apps.1049194575299-58n4ic9alf7bd1hvc465f7k9da6hm6kr</string>
-    			</array>
-    		</dict>
-    	</array>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.1049194575299-58n4ic9alf7bd1hvc465f7k9da6hm6kr</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

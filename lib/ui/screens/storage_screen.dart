@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -162,9 +165,11 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
         return Center(
           child: Container(
               margin: EdgeInsets.only(top: widget.width * 0.5),
-              child: CircularProgressIndicator(
+              child:
+              Platform.isAndroid?
+              CircularProgressIndicator(
                 color: Theme.of(context).selectedRowColor,
-              )),
+              ):CupertinoActivityIndicator()),
         );
     }}
   }

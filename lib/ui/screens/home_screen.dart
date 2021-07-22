@@ -177,24 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var radius = width / 14;
     return Consumer<HomeProvider>(builder: (context, homeProvider, child) {
       return Column(children: [
-        Container(
-          decoration: BoxDecoration(
-            color:Color.fromRGBO(255, 222, 222, 0.3)
-          ),
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.category_outlined, color: Theme.of(context).selectedRowColor,),
-              Container(
-                child: Text("카테고리", style: TextStyle(
-                  fontSize: 18,
 
-                ),),
-              ),
-            ],
-          ),
-        ),
         Container(
           margin: EdgeInsets.only(left: 10, right: 10, top: 10.0),
           child: Row(

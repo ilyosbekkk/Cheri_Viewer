@@ -27,15 +27,25 @@ class UserManagementProvider extends ChangeNotifier {
   //kakao auth
   Future<String> signInWithKakao() async {
     final installed = await isKakaoTalkInstalled();
-    String credentials;
-    KakaoContext.clientId = "818a2baccb86e7432dcdb89f7957110d";
+    print(installed);
+    String credentials ="";
+
     if (installed) {
       try {
-        var code = await AuthCodeClient.instance.request();
-        var token = await AuthApi.instance.issueAccessToken(code);
-        AccessTokenStore.instance.toStore(token);
-        credentials = "access_token:${token.accessToken}";
-      } on KakaoAuthException catch (e) {
+        var code = await AuthCodeClient.instance.requestWithTalk();
+         print(code);
+         var token = await AuthApi.instance.issueAccessToken(code);
+         print(token);
+         AccessTokenStore.instance.toStore(token);
+         credentials = "access_token:${token.accessToken}";
+         print("credentials=>>>>$credentials");
+         return credentials;
+       }
+      catch(e){
+        print(e);
+        return "";
+      }
+      on KakaoAuthException catch (e) {
         showToast("Unexpected error occured, please try again!");
         print(e);
         credentials = e.toString();
@@ -66,8 +76,13 @@ class UserManagementProvider extends ChangeNotifier {
     bool setImgUrl = await preferences!.setString("imgUrl", imgUrl);
     bool setName = await preferences!.setString("name", name);
     bool  setEncryptedId = await  preferences!.setString("encrypt_id", encryptedId);
+    print(setId);
+    print(setEmail);
+    print(setImgUrl);
+    print(setName);
+    print(setEncryptedId);
 
-    if (setId && setEmail && setImgUrl && setName && setEncryptedId  ) {
+    if (setId && setEmail && setImgUrl && setName && setEncryptedId) {
       print("Hey I've done");
       return true;
     }
