@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -175,15 +177,23 @@ class _SearchScreenState extends State<SearchScreen> {
                 margin: EdgeInsets.only(top: widget.width*0.5),
                 child: Column(
                   children: [
-                    Text("먼저 로그인 하십시오!",  style: TextStyle(
-                      fontSize: 18
-                    ),),
-                    MaterialButton(
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("먼저 로그인 하십시오!",  style: TextStyle(
+                        fontSize: 18
+                      ),),
+                    ),
+                  Platform.isAndroid?  MaterialButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                       color: Theme.of(context).selectedRowColor, textColor: Colors.white,  onPressed: () {
                       Navigator.pushNamed(context, AuthScreen.route);
-                    }, child: Text("로그인"),)
+                    }, child: Text("로그인"),):CupertinoButton(
+
+                      color: Theme.of(context).selectedRowColor,
+                      child: Text("로그인"), onPressed: (){
+                    Navigator.pushNamed(context, AuthScreen.route);
+                  })
                   ],
                 )),
           );

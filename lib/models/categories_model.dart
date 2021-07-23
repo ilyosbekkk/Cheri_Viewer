@@ -28,20 +28,20 @@ class  Categories{
 
 class Category{
 
-  String? _menu_id;
-  String? _top_category;
+  String? _menuId;
+  String? _topCategory;
   String? _category;
-  String? _category_id;
+  String? _categoryId;
 
-  Category.create(this._menu_id, this._top_category, this._category, this._category_id);
+  Category.create(this._menuId, this._topCategory, this._category, this._categoryId);
 
-  String? get category_id => _category_id;
+  String? get categoryId => _categoryId;
 
   String? get category => _category;
 
-  String? get top_category => _top_category;
+  String? get topCategory => _topCategory;
 
-  String? get menu_id => _menu_id;
+  String? get menuId => _menuId;
 
   factory Category.fromJson(Map<String, dynamic> parsedJson) {
     return Category.create(parsedJson["MENU_ID"],  parsedJson["TOP_CATEGORY"], parsedJson["CATEGORY"], parsedJson["CATEGORY_ID"]);

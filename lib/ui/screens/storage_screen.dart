@@ -63,26 +63,31 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
     else if (mode == Button.OPEN_CHERI && _collectionsProvider.savedPosts.isNotEmpty) count = count + _collectionsProvider.openedPosts.length;
 
     if (memberId == "") {
-      return Container(
-          margin: EdgeInsets.only(top: widget.width * 0.5),
-          child: Column(
-            children: [
-              Text(
-                "먼저 로그인 하십시오!",
-                style: TextStyle(fontSize: 18),
-              ),
-              MaterialButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                color: Theme.of(context).selectedRowColor,
-                textColor: Colors.white,
-                onPressed: () {
+      return  Center(
+        child: Container(
+            margin: EdgeInsets.only(top: widget.width*0.5),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("먼저 로그인 하십시오!",  style: TextStyle(
+                      fontSize: 18
+                  ),),
+                ),
+                Platform.isAndroid?  MaterialButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  color: Theme.of(context).selectedRowColor, textColor: Colors.white,  onPressed: () {
                   Navigator.pushNamed(context, AuthScreen.route);
-                },
-                child: Text("로그인"),
-              )
-            ],
-          ));
+                }, child: Text("로그인"),):CupertinoButton(
+
+                    color: Theme.of(context).selectedRowColor,
+                    child: Text("로그인"), onPressed: (){
+                  Navigator.pushNamed(context, AuthScreen.route);
+                })
+              ],
+            )),
+      );;
     } else {
       if (_collectionsProvider.statusCode1 == 200 && _collectionsProvider.statusCode2 == 200)
         return ListView.builder(

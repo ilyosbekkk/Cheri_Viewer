@@ -66,7 +66,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
       ),
       leading: IconButton(
         icon: Icon(
-          Icons.arrow_back_sharp,
+         Platform.isAndroid? Icons.arrow_back_sharp:Icons.arrow_back_ios,
           color: Colors.black,
         ),
         onPressed: () {

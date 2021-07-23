@@ -33,18 +33,15 @@ class UserManagementProvider extends ChangeNotifier {
     if (installed) {
       try {
         var code = await AuthCodeClient.instance.requestWithTalk();
-         print(code);
+         print("code $code");
          var token = await AuthApi.instance.issueAccessToken(code);
-         print(token);
+         print("token $token");
          AccessTokenStore.instance.toStore(token);
          credentials = "access_token:${token.accessToken}";
          print("credentials=>>>>$credentials");
          return credentials;
        }
-      catch(e){
-        print(e);
-        return "";
-      }
+
       on KakaoAuthException catch (e) {
         showToast("Unexpected error occured, please try again!");
         print(e);

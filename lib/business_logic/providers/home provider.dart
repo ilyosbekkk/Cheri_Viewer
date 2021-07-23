@@ -82,29 +82,29 @@ class HomeProvider extends ChangeNotifier {
         subCategories4.clear();
         subCategories5.clear();
         for (int i = 0; i < categories.categories!.length; i++) {
-          switch (categories.categories![i].menu_id) {
+          switch (categories.categories![i].menuId) {
             case "1":
               subCategories1.add(categories.categories![i].category!);
-              catId1.add(categories.categories![i].category_id!);
+              catId1.add(categories.categories![i].categoryId!);
               break;
             case "2":
               subCategories2.add(categories.categories![i].category!);
-              catId2.add(categories.categories![i].category_id!);
+              catId2.add(categories.categories![i].categoryId!);
 
               break;
             case "4":
               subCategories3.add(categories.categories![i].category!);
-              catId3.add(categories.categories![i].category_id!);
+              catId3.add(categories.categories![i].categoryId!);
 
               break;
             case "6":
               subCategories4.add(categories.categories![i].category!);
-              catId4.add(categories.categories![i].category_id!);
+              catId4.add(categories.categories![i].categoryId!);
 
               break;
             case "7":
               subCategories5.add(categories.categories![i].category!);
-              catId5.add(categories.categories![i].category_id!);
+              catId5.add(categories.categories![i].categoryId!);
 
               break;
           }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,23 @@ class _AuthScreenState extends State<AuthScreen> {
       body: SafeArea(
         child: Consumer<UserManagementProvider>(builder: (context, authProvider, child) {
           return Container(
-            child:InAppWebView(
+            child: CupertinoButton(
+              child: Text("Kakao login"),
+              onPressed: ()async{
+                await authProvider.signInWithKakao();
+              },
+            ),
+
+          );
+        }),
+      ),
+    );
+  }
+}
+
+
+/*
+InAppWebView(
 
               initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/viewer/login")),
 
@@ -88,11 +105,5 @@ class _AuthScreenState extends State<AuthScreen> {
                     });
                 _controller.addJavaScriptHandler(handlerName: "email", callback: (args) {});
               },
-            ),
-          );
-        }),
-      ),
-    );
-  }
-}
-
+            )
+ */

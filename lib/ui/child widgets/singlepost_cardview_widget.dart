@@ -172,7 +172,8 @@ class _CardViewWidgetState extends State<CardViewWidget> {
 
                       Container(
                           decoration: BoxDecoration(
-                              border: Border.all(color: Theme.of(context).selectedRowColor)
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Theme.of(context).selectedRowColor, )
                           ),
                           margin: EdgeInsets.only(right: 10),
                           child: Icon(Icons.check,  color: Theme.of(context).selectedRowColor,))

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -39,18 +38,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
     memberid = preferences!.getString("id")??"";
+
   }
 
 
   @override
   void dispose() {
     super.dispose();
-    widget._scrollController.removeListener(() {
-      print("Hello");});
-
+    widget._scrollController.removeListener(() { });
   }
 
   @override
