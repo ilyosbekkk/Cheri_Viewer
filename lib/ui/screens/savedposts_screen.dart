@@ -8,16 +8,22 @@ import 'package:viewerapp/business_logic/providers/collections provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
+import 'package:viewerapp/utils/constants.dart';
 import 'package:viewerapp/utils/utils.dart';
 
 import '../../utils/strings.dart';
 import 'auth_screen.dart';
 
 class StorageBoxScreen extends StatefulWidget {
-  final height;
-  final width;
+  double? height;
+  double? width;
+  ScrollController? _scrollController;
+
 
   StorageBoxScreen(this.height, this.width);
+  StorageBoxScreen.scroll(this._scrollController);
+  void  jumpToTheTop() => _scrollController!.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+
 
   @override
   _StorageBoxScreenState createState() => _StorageBoxScreenState();
@@ -32,17 +38,12 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
   late String memberId;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+  void didChangeDependencies() {
+
+    super.didChangeDependencies();
     memberId = preferences!.getString("id")??"";
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    int count = 2;
     _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
+
 
     if(!netwrokCallDone){
       netwrokCallDone =true;
@@ -56,7 +57,13 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
       }
     }
 
+  }
 
+
+  @override
+  Widget build(BuildContext context) {
+
+    int count = 2;
     if (_searchMode) count = count + 1;
     if (mode == Button.BOOKMARK && _collectionsProvider.savedPosts.isNotEmpty)
       count = count + _collectionsProvider.savedPosts.length;
@@ -65,7 +72,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
     if (memberId == "") {
       return  Center(
         child: Container(
-            margin: EdgeInsets.only(top: widget.width*0.5),
+            margin: EdgeInsets.only(top: widget.width!.toDouble()*0.5),
             child: Column(
               children: [
                 Padding(
@@ -87,7 +94,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                 })
               ],
             )),
-      );;
+      );
     } else {
       if (_collectionsProvider.statusCode1 == 200 && _collectionsProvider.statusCode2 == 200)
         return ListView.builder(
@@ -106,7 +113,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                   index = index - 3;
                 else
                   index = index - 2;
-                return _buildPostWidget(widget.height, widget.width, index, _collectionsProvider);
+                return _buildPostWidget(widget.height!.toDouble(), widget.width!.toDouble(), index, _collectionsProvider);
               }
             });
       else if (_collectionsProvider.statusCode1 == -1 || _collectionsProvider.statusCode2 == -1)
@@ -116,8 +123,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
               Text("TimeOut happened:("),
               MaterialButton(
                 onPressed: () {
-                  _collectionsProvider.fetchSavedPostsList(memberId, "10", "1", "views").then((value) {});
-                  _collectionsProvider.fetchOpenedPostsList(memberId, "10", "1", "views").then((value) {});
+                  _collectionsProvider.fetchSavedPostsList(memberId, pageSize.toString(), "1", orderBy).then((value) {});
+                  _collectionsProvider.fetchOpenedPostsList(memberId, pageSize.toString(), "1", orderBy).then((value) {});
                 },
                 child: Text("try again"),
               )
@@ -127,7 +134,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
       else if (_collectionsProvider.statusCode1 == -2 || _collectionsProvider.statusCode2 == -2) {
         return Center(
           child: Container(
-            margin: EdgeInsets.only(top: widget.width * 0.5),
+            margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
             child: Column(
               children: [
                 Icon(
@@ -152,7 +159,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
       } else if (_collectionsProvider.statusCode1 == -3 || _collectionsProvider.statusCode2 == -3) {
         return Center(
           child: Container(
-            margin: EdgeInsets.only(top: widget.width * 0.5),
+            margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
             child: Column(
               children: [
                 Text("Unexpected error happened"),
@@ -169,7 +176,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
         print(_collectionsProvider.statusCode2);
         return Center(
           child: Container(
-              margin: EdgeInsets.only(top: widget.width * 0.5),
+              margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
               child:
               Platform.isAndroid?
               CircularProgressIndicator(
@@ -198,15 +205,15 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: Colors.grey),
-                  left: BorderSide(color: Colors.grey),
-                  right: BorderSide(color: Colors.white),
-                  bottom: mode == Button.BOOKMARK ? BorderSide(width: 4, color: Theme.of(context).selectedRowColor) : BorderSide(color: Colors.grey),
+                  top: BorderSide(color: Colors.transparent, ),
+                  left: BorderSide(color: Colors.transparent,  width: 0.5),
+                  right: BorderSide(color: Colors.transparent, width:0.0),
+                  bottom: mode == Button.BOOKMARK ? BorderSide(width: 2, color: Theme.of(context).selectedRowColor) : BorderSide(color: Colors.grey),
                 ),
               ),
               alignment: Alignment.center,
               height: 60,
-              width: widget.width / 2,
+              width: widget.width!.toDouble() / 2,
               child: Text(
                 "북마크",
                 style: TextStyle(fontSize: 15),
@@ -222,15 +229,15 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: Colors.grey),
-                  left: BorderSide(color: Colors.grey),
-                  right: BorderSide(color: Colors.grey),
-                  bottom: mode == Button.OPEN_CHERI ? BorderSide(width: 4, color: Theme.of(context).selectedRowColor) : BorderSide(color: Colors.grey),
+                  top: BorderSide(color: Colors.transparent , width: 0.5),
+                  left: BorderSide(color: Colors.transparent, width:0.0),
+                  right: BorderSide(color: Colors.transparent,width:0.5 ),
+                  bottom: mode == Button.OPEN_CHERI ? BorderSide(width: 2, color: Theme.of(context).selectedRowColor) : BorderSide(color: Colors.grey),
                 ),
               ),
               alignment: Alignment.center,
               height: 60,
-              width: widget.width / 2,
+              width: widget.width!.toDouble() / 2,
               child: Text("여러본 체리", style: TextStyle(fontSize: 15)),
             ),
           )
@@ -342,7 +349,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
           Expanded(
             flex: 9,
             child: Container(
-              height: widget.height * 0.05,
+              height: widget.height!.toDouble() * 0.05,
               child: TextField(
                 controller: _controller,
                 onSubmitted: (searchWord) {

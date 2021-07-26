@@ -15,6 +15,8 @@ class HomeProvider extends ChangeNotifier {
   int reponseCode1 = 0;
   int reponseCode2 = 0;
   String categoriesMessage = "";
+  bool  _networkCallDone = false;
+  bool _scrollControllerRegistered = false;
   List<Post> allPosts = [];
 
   int activeIndex = -1;
@@ -35,14 +37,17 @@ class HomeProvider extends ChangeNotifier {
   Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy, int category, String memberId ) async {
 
     try {
+      print("network request is being done");
+
       Response response = await WebServices.fetchPosts(pageSize, nowPage, orderBy, category, memberId);
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-
-        print(response.body);
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
-        allPosts.addAll(postsResponse.data);
 
+        print(postsResponse.data.length);
+
+
+        allPosts.addAll(postsResponse.data);
         reponseCode1 = response.statusCode;
         notifyListeners();
         return true;
@@ -69,6 +74,10 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
+
+  void fetchPostList2(int pageSize, int  nowPage,  String orderBy, int  category, String memberId){
+
+  }
   Future<bool> fetchCategoriesList() async {
     try {
       Response response = await WebServices.fetchCategoriesList("cheri");
@@ -202,4 +211,19 @@ class HomeProvider extends ChangeNotifier {
   bool get showSubCategories2 => _showSubCategories2;
 
   List<bool> get activeAcategories => _activeCategories;
+
+  bool get networkCallDone => _networkCallDone;
+
+  set networkCallDone(bool value) {
+    _networkCallDone = value;
+    notifyListeners();
+  }
+
+  bool get scrollControllerRegistered => _scrollControllerRegistered;
+
+  set scrollControllerRegistered(bool value) {
+    _scrollControllerRegistered = value;
+    notifyListeners();
+
+  }
 }

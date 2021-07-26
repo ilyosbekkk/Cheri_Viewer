@@ -15,11 +15,15 @@ import 'package:viewerapp/utils/utils.dart';
 import '../../utils/strings.dart';
 
 class SearchScreen extends StatefulWidget {
-  final height;
-  final width;
-  final searchword;
+  double? height;
+  double? width;
+  String? searchword;
+  ScrollController? _scrollController;
 
   SearchScreen(this.height, this.width, this.searchword);
+  SearchScreen.scroll(this._scrollController);
+  void  jumpToTheTop() => _scrollController!.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -38,18 +42,18 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     _memberId = preferences!.getString("id")??"";
-    if(widget.searchword.isNotEmpty)
-      _controller.text = widget.searchword;
+    if(widget.searchword!.isNotEmpty)
+      _controller.text = widget.searchword!;
 
   }
 
   @override
   Widget build(BuildContext context) {
-    final modalHeight = (widget.height - MediaQueryData.fromWindow(window).padding.top);
-    if(widget.searchword.isNotEmpty)
+    final modalHeight = (widget.height!.toDouble() - MediaQueryData.fromWindow(window).padding.top);
+    if(widget.searchword!.isNotEmpty)
     return Scaffold(
       body: Container(
-          margin: EdgeInsets.only(left: widget.width * 0.025, top: 10),
+          margin: EdgeInsets.only(left: widget.width!.toDouble() * 0.025, top: 10),
           child: Consumer<SearchProvider>(
             builder: (context, searchProvider, child) {
               if (!_loaded && _memberId != "") {
@@ -61,7 +65,7 @@ class _SearchScreenState extends State<SearchScreen> {
           )),
     );
     else return Container(
-        margin: EdgeInsets.only(left: widget.width * 0.025, top: 10),
+        margin: EdgeInsets.only(left: widget.width!.toDouble() * 0.025, top: 10),
         child: Consumer<SearchProvider>(
           builder: (context, searchProvider, child) {
             if (!_loaded && _memberId != "") {
@@ -136,14 +140,14 @@ class _SearchScreenState extends State<SearchScreen> {
                 if (_searching) {
                   return Center(
                     child: Container(
-                      margin: EdgeInsets.only(top: widget.width *0.5),
+                      margin: EdgeInsets.only(top: widget.width!.toDouble() *0.5),
                         child: CircularProgressIndicator(
                           color: Theme.of(context).selectedRowColor,
 
                     )),
                   );
                 } else if (searchProvider.searchResults.length > 0) {
-                  return _buildPostWidget(0.4 * widget.height, widget.width, index, searchProvider);
+                  return _buildPostWidget(0.4 * widget.height!.toDouble(), widget.width!.toDouble(), index, searchProvider);
                 } else if (searchProvider.searchResults.isEmpty && _noSearchResult) {
                   return Center(
                     child: Text(
@@ -174,7 +178,7 @@ class _SearchScreenState extends State<SearchScreen> {
             })
         : Center(
       child: Container(
-                margin: EdgeInsets.only(top: widget.width*0.5),
+                margin: EdgeInsets.only(top: widget.width!.toDouble()*0.5),
                 child: Column(
                   children: [
                     Padding(
@@ -205,7 +209,7 @@ class _SearchScreenState extends State<SearchScreen> {
         Expanded(
           flex: 9,
           child: Container(
-            height: widget.height * 0.05,
+            height: widget.height!.toDouble() * 0.05,
             child: TextField(
               onChanged: (searchWord) {
 

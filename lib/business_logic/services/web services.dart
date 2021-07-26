@@ -5,6 +5,7 @@ class WebServices {
   static Map<String, String> headers = {'Accept': 'application/json;'};
 
   static Future<http.Response> fetchPosts(int pageSize, int nowPage, String orderBy, int category, String  memberId) async {
+    print("hello  world");
     final url = Uri.https(baseUrl, postsList);
     late  Map<String, String> body;
     if(memberId.isNotEmpty)

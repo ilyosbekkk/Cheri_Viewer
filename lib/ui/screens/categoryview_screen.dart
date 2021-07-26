@@ -10,6 +10,7 @@ import 'package:viewerapp/business_logic/providers/categories provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
+import 'package:viewerapp/utils/constants.dart';
 import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
 
@@ -26,33 +27,22 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
   late double _height;
   late double _width;
   bool _loaded = false;
-  RefreshController _refreshController = RefreshController(initialRefresh: false);
   late  String memberId;
-
-   @override
-  void initState() {
-    super.initState();
-    memberId = preferences!.getString("id")??"";
-
-    }
+  var scrollConttoller = ScrollController();
 
 
   @override
   Widget build(BuildContext context) {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
+    memberId = preferences!.getString("id")??"";
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     return Scaffold(
       body: SafeArea(
-        child: SmartRefresher(
-            onLoading: _onLoading,
-            onRefresh: _onRefresh,
-            controller: _refreshController,
-            enablePullDown: true,
-            child: Consumer<CategoriesProvider>(builder: (context, postProvider, widget) {
+        child:  Consumer<CategoriesProvider>(builder: (context, postProvider, widget) {
               if (!_loaded) {
-                postProvider.fetchCategories(10, 1, "views", int.parse(args["id"]!), memberId).then((value) {
+                postProvider.fetchCategories(pageSize, 1, orderBy, int.parse(args["id"]!), memberId).then((value) {
                   _loaded = true;
                 });
               }
@@ -73,8 +63,8 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                   slivers: [_buildSliverAppBar(_height, args["title"]!), ((preferences!.getString("mode1") ?? "card") == "card") ? _buildList(postProvider, 0.4 * _height, _width, args["id"]!) : _buildDividedList(postProvider, 0.4 * _height, _width, args["id"]!)],
                 );
             })),
-      ),
     );
+
   }
 
   Widget _buildSliverAppBar(double height, String title) {
@@ -214,20 +204,4 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
     );
   }
 
-  void _onRefresh() async {
-    // monitor network fetch
-    await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use refreshFailed()
-    _refreshController.refreshCompleted();
-  }
-
-  void _onLoading() async {
-    // monitor network fetch
-
-    await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-
-    if (mounted) setState(() {});
-    _refreshController.loadComplete();
-  }
 }

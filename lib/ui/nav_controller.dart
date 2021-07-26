@@ -2,7 +2,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:viewerapp/ui/screens/profile_screen.dart';
 import 'package:viewerapp/ui/screens/search_screen.dart';
-import 'package:viewerapp/ui/screens/storage_screen.dart';
+import 'package:viewerapp/ui/screens/savedposts_screen.dart';
 import 'package:viewerapp/utils/internet_connectivity.dart';
 import 'package:viewerapp/utils/utils.dart';
 
@@ -31,6 +31,8 @@ class _NavCotrollerState extends State<NavCotroller> {
   late  String? accountImgurl;
   @override
   void initState() {
+
+
 
     super.initState();
     _connectivity.initialise();
@@ -71,8 +73,11 @@ class _NavCotrollerState extends State<NavCotroller> {
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
+
             controller: _selectedIndex == 0?  _scrollController:_selectedIndex == 1?_scrollController2:_scrollController3,
-            slivers: [_buildSliverAppBar(height, accountImgurl), _screens[_selectedIndex]],
+            slivers: [
+              _buildSliverAppBar(height, accountImgurl),
+              _screens[_selectedIndex]],
           ),
 
       ),
@@ -145,8 +150,12 @@ class _NavCotrollerState extends State<NavCotroller> {
               }else {
        print("no");
                 Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId}).then((value) {
-                  memberId = preferences!.getString("id")??"";
-                  accountImgurl = preferences!.getString("imgUrl")??"";
+                  setState(() {
+                    memberId = preferences!.getString("id")??"";
+                    accountImgurl = preferences!.getString("imgUrl")??"";
+                  });
+
+                  print(accountImgurl);
                 });
               }
                 },
@@ -176,9 +185,26 @@ class _NavCotrollerState extends State<NavCotroller> {
   }
 
   void _onItemSelected(int index) {
+
+
+    if(_selectedIndex == index){
+      if(index == 0){
+      var homescreen = HomeScreen.scroll(_scrollController);
+      homescreen.jumpToTheTop();}
+      else if(index == 1){
+        var  searchscreen = SearchScreen.scroll(_scrollController2);
+        searchscreen.jumpToTheTop();
+      }
+      else if(index == 2){
+        var  collectionscreen = StorageBoxScreen.scroll(_scrollController3);
+        collectionscreen.jumpToTheTop();
+      }
+    }
+    else
     setState(() {
       _selectedIndex = index;
     });
   }
+
 
 }
