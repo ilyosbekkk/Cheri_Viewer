@@ -22,7 +22,25 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       body: SafeArea(
         child: Consumer<UserManagementProvider>(builder: (context, authProvider, child) {
-          return InAppWebView(
+          return Center(
+            child: MaterialButton(
+              child: Text("login"),
+              onPressed: () async{
+
+                await authProvider.signInWithKakao();
+              },
+            ),
+          );
+
+        }),
+      ),
+    );
+  }
+}
+
+
+/*
+InAppWebView(
 
             initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/viewer/login")),
 
@@ -88,14 +106,6 @@ class _AuthScreenState extends State<AuthScreen> {
                   });
               _controller.addJavaScriptHandler(handlerName: "email", callback: (args) {});
             },
-          );
-        }),
-      ),
-    );
-  }
-}
-
-
-/*
+          )
 
  */

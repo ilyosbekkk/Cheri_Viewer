@@ -23,6 +23,9 @@ void main() async {
   await Firebase.initializeApp();
   await initPreferences();
   KakaoContext.clientId = "818a2baccb86e7432dcdb89f7957110d";
+  KakaoContext.javascriptClientId = "65f0b93a57edf2c89862c440f83df6eb";
+
+
 
   final List<SingleChildWidget> providers = [
     ChangeNotifierProvider(create: (_) => UserManagementProvider(),),
