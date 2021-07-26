@@ -170,13 +170,10 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                       ),
                       Spacer(),
 
+                      if(widget.post.checked == "Y")
                       Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(color: Theme.of(context).selectedRowColor, )
-                          ),
                           margin: EdgeInsets.only(right: 10),
-                          child: Icon(Icons.check,  color: Theme.of(context).selectedRowColor,))
+                          child: Icon(Icons.check_box_outlined, color: Theme.of(context).selectedRowColor, size: 30,))
                     ],
                   ),
                 ),

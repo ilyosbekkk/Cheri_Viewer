@@ -50,7 +50,8 @@ class Post {
   String _category;
   String _categoryId;
   String _saved;
-  Post.create(this._cheriId, this._title, this._author, this._dateTime, this._views, this._imgUrl, this._category, this._categoryId,  this._saved);
+  String _checked;
+  Post.create(this._cheriId, this._title, this._author, this._dateTime, this._views, this._imgUrl, this._category, this._categoryId,  this._saved, this._checked);
 
   String get category => _category;
 
@@ -107,8 +108,15 @@ class Post {
      _saved = saved;
   }
 
+  String get checked => _checked;
+
+  set checked(String value) {
+    _checked = value;
+  }
+
   factory Post.fromJson(Map<String, dynamic> parsedJson) {
     String isSaved = parsedJson["SAVE_C"] == null?"N":parsedJson["SAVE_C"];
-    return Post.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], parsedJson["NAME"], parsedJson["REG_DATE"], parsedJson["VIEWS"], 'https://cheri.weeknday.com/' + parsedJson["CHERI_PICTURE_URL"], parsedJson["CATEGORY"],  parsedJson["CATEGORY_ID"], isSaved);
+    return Post.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], parsedJson["NAME"], parsedJson["REG_DATE"], parsedJson["VIEWS"], 'https://cheri.weeknday.com/' + parsedJson["CHERI_PICTURE_URL"], parsedJson["CATEGORY"],  parsedJson["CATEGORY_ID"], isSaved, parsedJson["ITEM_CHECK_YN"]);
   }
 }
+//ITEM_CHECK_YN

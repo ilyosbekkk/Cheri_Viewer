@@ -34,11 +34,12 @@ class _HomeScreenState extends State<HomeScreen> {
   int initialPage = 1;
   String? memberid;
   int currentLength = 0;
-  RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    memberid = preferences!.getString("id") ?? "";
+
     _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
     if (!_homePageProvider.networkCallDone) {
       _homePageProvider.networkCallDone = true;
@@ -58,7 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    memberid = preferences!.getString("id") ?? "";
 
     if (_homePageProvider.reponseCode1 == 200 && _homePageProvider.reponseCode2 == 200)
       return ListView.builder(
@@ -154,11 +154,10 @@ class _HomeScreenState extends State<HomeScreen> {
       return Center(
         child: Container(
             margin: EdgeInsets.only(top: widget.width! * 0.5),
-            child: Platform.isAndroid
-                ? CircularProgressIndicator(
+            child: CircularProgressIndicator(
                     color: Theme.of(context).selectedRowColor,
                   )
-                : CupertinoActivityIndicator()),
+                ),
       );
   }
 

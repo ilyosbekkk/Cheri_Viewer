@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:viewerapp/business_logic/providers/detailedview provider.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
@@ -36,16 +35,24 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     String memberId = args["memberId"]!;
 
     return Scaffold(
-      body: SafeArea(child: Consumer<DetailedViewProvider>(builder: (context, detailedProvider, child) {
-        if (!_loaded) {
-          detailedProvider.fetchDetailedViewData(cheriId, memberId).then((value) {});
-          _loaded = true;
-        }
-        return CustomScrollView(
-          controller: _scrollController,
-          slivers: [_buildSliverAppBar(height, detailedProvider), _buildList(detailedProvider, width, memberId, cheriId)],
-        );
-      })),
+      body: WillPopScope(
+        onWillPop: () async {
+          if (Navigator.of(context).userGestureInProgress)
+            return false;
+          else
+            return true;
+        },
+        child: SafeArea(child: Consumer<DetailedViewProvider>(builder: (context, detailedProvider, child) {
+          if (!_loaded) {
+            detailedProvider.fetchDetailedViewData(cheriId, memberId).then((value) {});
+            _loaded = true;
+          }
+          return CustomScrollView(
+            controller: _scrollController,
+            slivers: [_buildSliverAppBar(height, detailedProvider), _buildList(detailedProvider, width, memberId, cheriId)],
+          );
+        })),
+      ),
     );
   }
 
@@ -66,7 +73,8 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
       ),
       leading: IconButton(
         icon: Icon(
-         Platform.isAndroid? Icons.arrow_back_sharp:Icons.arrow_back_ios,
+
+          Icons.arrow_back_sharp,
           color: Colors.black,
         ),
         onPressed: () {
@@ -153,13 +161,11 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                 : Center(
 
                     child:
-                    Platform.isAndroid?
+
                     CircularProgressIndicator(
                       color: Theme.of(context).selectedRowColor,
 
-                    ):CupertinoActivityIndicator(
-
-                    ),
+                    )
                   ),
           ),
           Container(
@@ -334,7 +340,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                 onChanged: (bool? value) {
                   String checked = (value == true) ? "Y" : "N";
 
-                  detailedViewProvider.updateCheckListItem(items[index].itemId!, checked, memberId).then((value) {
+                  detailedViewProvider.updateCheckListItem(items[index].itemId!, checked, memberId, detailedViewProvider.detailedPost.cherId??"").then((value) {
                     if (value) {
                       detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
                         if (value) print("saved!");

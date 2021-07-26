@@ -181,7 +181,7 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
       var systemLocale = await speech.systemLocale();
       currentLocaleId = systemLocale?.localeId ?? '';
     }
-
+     print("speech $hasSpeech");
     speechAvailable = hasSpeech;
   }
 

@@ -50,13 +50,11 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 return Center(
 
                   child:
-                  Platform.isAndroid?
+
                   CircularProgressIndicator(
                     color: Theme.of(context).selectedRowColor,
 
-                  ):CupertinoActivityIndicator(
-
-                  ),
+                  )
                 );
               else
                 return CustomScrollView(
@@ -84,7 +82,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
       ),
       leading: IconButton(
         icon: Icon(
-          Platform.isAndroid? Icons.arrow_back_sharp:Icons.arrow_back_ios,
+          Icons.arrow_back_sharp,
           color: Colors.black,
         ),
         onPressed: () {

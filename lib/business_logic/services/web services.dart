@@ -5,7 +5,7 @@ class WebServices {
   static Map<String, String> headers = {'Accept': 'application/json;'};
 
   static Future<http.Response> fetchPosts(int pageSize, int nowPage, String orderBy, int category, String  memberId) async {
-    print("hello  world");
+    print("hello  world $memberId");
     final url = Uri.https(baseUrl, postsList);
     late  Map<String, String> body;
     if(memberId.isNotEmpty)
@@ -40,9 +40,9 @@ class WebServices {
     return response;
   }
 
-  static Future<http.Response> updateCheckListItem(String itemId, String checked, String memberId) async {
+  static Future<http.Response> updateCheckListItem(String itemId, String checked, String memberId,  String cheriId) async {
     final url = Uri.https(baseUrl, checkUpdate);
-    final body = {'cheri_item_id': itemId, 'checked': checked, 'member_id': memberId};
+    final body = {'cheri_item_id': itemId, 'checked': checked, 'member_id': memberId, 'cheri_id': cheriId};
     http.Response response = await http.post(url, headers: headers, body: body);
 
     return response;

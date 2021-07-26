@@ -37,14 +37,13 @@ class HomeProvider extends ChangeNotifier {
   Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy, int category, String memberId ) async {
 
     try {
-      print("network request is being done");
 
       Response response = await WebServices.fetchPosts(pageSize, nowPage, orderBy, category, memberId);
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
 
-        print(postsResponse.data.length);
+        print(decodedResponse);
 
 
         allPosts.addAll(postsResponse.data);

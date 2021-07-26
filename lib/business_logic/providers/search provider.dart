@@ -51,6 +51,7 @@ class SearchProvider extends ChangeNotifier {
       }
       return result;
     } catch (e) {
+      print("er;ighirghi");
       print(e);
       return false;
     }

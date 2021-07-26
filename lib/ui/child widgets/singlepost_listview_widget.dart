@@ -33,8 +33,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
     return  Consumer<CheriProvider>(builder: (context, cheriProvider,  child){
       return  InkWell(
         onTap: () {
-
-            Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": widget.post.cheriId, "memberId": memberId}).then((value) {
+          Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": widget.post.cheriId, "memberId": memberId}).then((value) {
               if(value == CheriState.SAVED) {
                 widget.post.saved = "Y";
               }
@@ -50,7 +49,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
         },
         child: Container(
           margin: EdgeInsets.only(top: 10.0),
-          height: 110,
+          height: 120,
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(width: 0.5),
@@ -66,8 +65,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                 height: 100,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                      fit: BoxFit.cover
-                      ,
+                      fit: BoxFit.cover,
                       image: NetworkImage(widget.post.imgUrl),
                     )
                 ),
@@ -77,7 +75,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                 children: [
                   Container(
                     alignment: Alignment.center,
-                    height: 20,
+                    height: 25,
                     width: 70,
                     margin: EdgeInsets.only(top: 10.0),
                     decoration: BoxDecoration(
@@ -123,7 +121,13 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                       Text(
                         "${timeFormatter(widget.post.dateTime)} 전",
                         style: TextStyle(fontSize: 12),
-                      )
+                      ),
+                      if(widget.post.checked == "Y")
+                      Container(
+                        alignment: Alignment.topRight,
+                          margin: EdgeInsets.only(left: 10),
+                          child: Icon(Icons.check_box_outlined,  color: Theme.of(context).selectedRowColor,))
+
                     ],
                   ),
 
@@ -131,9 +135,8 @@ class _ListViewWidgetState extends State<ListViewWidget> {
               ),
               Spacer(),
               Container(
-
-                width: 30,
-                height: 30,
+                width: 25,
+                height: 25,
                 margin: EdgeInsets.only( right: 8, top: 10),
                 color: Theme.of(context).primaryColorDark,
                 child: widget.post.saved == "N"
@@ -174,6 +177,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                   child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor,),
                 ),
               ),
+
             ],
           ),
         ),

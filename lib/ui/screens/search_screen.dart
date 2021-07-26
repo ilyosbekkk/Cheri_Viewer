@@ -1,18 +1,17 @@
-import 'dart:io';
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:provider/provider.dart';
-import 'package:viewerapp/business_logic/providers/search provider.dart';
-import 'package:viewerapp/models/postslist_model.dart';
+import 'package:viewerapp/ui/child%20widgets/voice%20recorder%20modal%20bottom%20sheet.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
-import 'package:viewerapp/ui/child%20widgets/voice%20recorder%20modal%20bottom%20sheet.dart';
+import 'package:viewerapp/business_logic/providers/search provider.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/screens/auth_screen.dart';
 import 'package:viewerapp/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../utils/strings.dart';
+import 'dart:ui';
 
 class SearchScreen extends StatefulWidget {
   double? height;
@@ -187,12 +186,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         fontSize: 18
                       ),),
                     ),
-                  Platform.isAndroid?  MaterialButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      color: Theme.of(context).selectedRowColor, textColor: Colors.white,  onPressed: () {
-                      Navigator.pushNamed(context, AuthScreen.route);
-                    }, child: Text("로그인"),):CupertinoButton(
+        CupertinoButton(
 
                       color: Theme.of(context).selectedRowColor,
                       child: Text("로그인"), onPressed: (){

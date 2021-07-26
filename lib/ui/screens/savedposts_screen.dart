@@ -81,12 +81,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                       fontSize: 18
                   ),),
                 ),
-                Platform.isAndroid?  MaterialButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  color: Theme.of(context).selectedRowColor, textColor: Colors.white,  onPressed: () {
-                  Navigator.pushNamed(context, AuthScreen.route);
-                }, child: Text("로그인"),):CupertinoButton(
+                CupertinoButton(
 
                     color: Theme.of(context).selectedRowColor,
                     child: Text("로그인"), onPressed: (){
@@ -178,10 +173,10 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
           child: Container(
               margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
               child:
-              Platform.isAndroid?
+
               CircularProgressIndicator(
                 color: Theme.of(context).selectedRowColor,
-              ):CupertinoActivityIndicator()),
+              )),
         );
     }}
   }

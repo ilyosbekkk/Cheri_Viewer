@@ -38,9 +38,9 @@ class DetailedViewProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> updateCheckListItem(String itemId, String checked, String memberId) async {
+  Future<bool> updateCheckListItem(String itemId, String checked, String memberId,  String cheriId) async {
     try {
-      Response response = await WebServices.updateCheckListItem(itemId, checked, memberId);
+      Response response = await WebServices.updateCheckListItem(itemId, checked, memberId,  cheriId);
       if (response.statusCode == 200) {
 
         print(response.body);
