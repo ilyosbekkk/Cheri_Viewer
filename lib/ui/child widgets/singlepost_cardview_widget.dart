@@ -74,6 +74,9 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                             topRight: Radius.circular(10)
                           ),
                           child: FadeInImage.assetNetwork(
+                            imageErrorBuilder: (context, error, stackTrace) => Image.asset('assets/images/placeholder.png')
+                            ,
+
                             placeholder: 'assets/images/placeholder.png',
                             image: widget.post.imgUrl,
                             fit: BoxFit.cover,

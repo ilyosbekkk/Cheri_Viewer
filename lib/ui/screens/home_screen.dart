@@ -41,6 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
     memberid = preferences!.getString("id") ?? "";
 
     _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
+    print("heyyyy");
+    print(!_homePageProvider.networkCallDone);
+    print(!_homePageProvider.scrollControllerRegistered);
+
     if (!_homePageProvider.networkCallDone) {
       _homePageProvider.networkCallDone = true;
       _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberid ?? "").then((value) {});

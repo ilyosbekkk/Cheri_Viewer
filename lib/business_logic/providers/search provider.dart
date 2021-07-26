@@ -38,9 +38,10 @@ class SearchProvider extends ChangeNotifier {
     bool result = false;
     if (_recentSearches.isNotEmpty) _recentSearches.clear();
     try {
+      print("recentttttt");
       Response response = await WebServices.fetchRecentSearches(memberId);
       Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-      print("recent searhces: $response");
+      print("recent searhces: ${response.body}");
       if (response.statusCode == 200) {
         print(decodedResponse);
         Search search = Search.fromJson(decodedResponse);

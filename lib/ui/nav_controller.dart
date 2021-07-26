@@ -56,7 +56,7 @@ class _NavCotrollerState extends State<NavCotroller> {
     switch (_source.keys.toList()[0]) {
       case ConnectivityResult.none:
         string = "Offline";
-        showToast("Please turn on the internet!");
+        showToast("인터넷 좀 켜주세요!");
         print(string);
         break;
       case ConnectivityResult.mobile:

@@ -205,6 +205,7 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Container(
             height: widget.height!.toDouble() * 0.05,
             child: TextField(
+
               onChanged: (searchWord) {
 
 
@@ -222,7 +223,7 @@ class _SearchScreenState extends State<SearchScreen> {
               onSubmitted: (searchWord) {
 
                 if(searchWord.isEmpty) {
-                  showToast("Please, type something!");
+                  showToast("검색은 비워 둘 수 없습니다.");
                 }
                 else  {
                   setState(() {
@@ -243,6 +244,11 @@ class _SearchScreenState extends State<SearchScreen> {
               autofocus: true,
               textAlign: TextAlign.start,
               decoration: InputDecoration(
+
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  borderSide: BorderSide(width: 1,color: Color.fromRGBO(175, 27, 63, 1)),
+                ),
                 contentPadding: EdgeInsets.only(left: 10.0),
                 hintText: search_hint[korean],
                 border: OutlineInputBorder(

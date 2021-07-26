@@ -36,7 +36,8 @@ class SearchWord {
   String? get wordId => _wordId;
 
   factory SearchWord.fromJson(Map<String, dynamic> parsedJson) {
-    return SearchWord.create(parsedJson["ID"], parsedJson["SEARCH_WORD"]);
+    String searchWord = parsedJson["SEARCH_WORD"]??"ㅇ";
+    return SearchWord.create(parsedJson["ID"], searchWord);
   }
 
 

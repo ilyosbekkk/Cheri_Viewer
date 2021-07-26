@@ -57,9 +57,12 @@ class WebServices {
   }
 
   static Future<http.Response> fetchRecentSearches(String memberId) async {
+    print("memberId: $memberId");
     final url = Uri.https(baseUrl, recentSearches);
     final body = {'member_id': memberId};
     http.Response response = await http.post(url, headers: headers, body: body);
+
+    print("body: ${response.body}");
 
     return response;
   }

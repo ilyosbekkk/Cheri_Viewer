@@ -247,6 +247,13 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          Container(
+              margin: EdgeInsets.only(left: 10),
+              child:  Text("결과:${mode == Button.BOOKMARK?_collectionsProvider.savedPosts.length:_collectionsProvider.openedPosts.length} 건", style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold
+              ),)),
+          Spacer(),
           InkWell(
               onTap: () {
                 setState(() {
@@ -353,6 +360,10 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                 autofocus: true,
                 textAlign: TextAlign.start,
                 decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderSide: BorderSide(width: 1,color: Color.fromRGBO(175, 27, 63, 1)),
+                  ),
                   contentPadding: EdgeInsets.only(left: 10.0),
                   hintText: search_hint[korean],
                   border: OutlineInputBorder(

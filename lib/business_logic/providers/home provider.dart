@@ -215,14 +215,14 @@ class HomeProvider extends ChangeNotifier {
 
   set networkCallDone(bool value) {
     _networkCallDone = value;
-    notifyListeners();
+
   }
 
   bool get scrollControllerRegistered => _scrollControllerRegistered;
 
   set scrollControllerRegistered(bool value) {
     _scrollControllerRegistered = value;
-    notifyListeners();
+
 
   }
 }
