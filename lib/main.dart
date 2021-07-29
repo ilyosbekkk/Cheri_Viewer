@@ -26,7 +26,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await initPreferences();
-  KakaoContext.clientId = "818a2baccb86e7432dcdb89f7957110d";
 
 
   final List<SingleChildWidget> providers = [

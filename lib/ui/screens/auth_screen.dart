@@ -31,7 +31,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 crossPlatform: InAppWebViewOptions(
 
                   javaScriptCanOpenWindowsAutomatically: true,
-                  userAgent:  'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36',
+                  userAgent:  'random',
                   javaScriptEnabled: true,
                   useShouldOverrideUrlLoading: true,
                   mediaPlaybackRequiresUserGesture: false,
@@ -75,12 +75,19 @@ class _AuthScreenState extends State<AuthScreen> {
               _controller.addJavaScriptHandler(
                   handlerName: "kakao_user_info",
                   callback: (args) {
-                    print("kakao info: $args");
+                    authProvider.saveUserData(args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"], args[0]["NAME"], args[0]["encrypt_id"]).then((value) {
+                      if (value == true) {
+                        Navigator.pop(context);
+                        showToast("카카오 로그인이 성공 되었습니다");
+                      } else
+                        showToast("카카오 로그인이 실패 되었습니다");
+
+                    });
                   });
               _controller.addJavaScriptHandler(
                   handlerName: "naver",
                   callback: (args) async {
-                    return await authProvider.signInWithNaver();
+                   // await authProvider.signInWithNaver();
                   });
               _controller.addJavaScriptHandler(
                   handlerName: "naver_user_info",
@@ -88,6 +95,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     print("naver info: $args");
                   });
               _controller.addJavaScriptHandler(handlerName: "email_user_info", callback: (args) {
+                  print(args);
                   authProvider.saveUserData(args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"], args[0]["NAME"], args[0]["encrypt_id"]).then((value) {
                     if (value == true) {
                       Navigator.pop(context);
@@ -97,6 +105,13 @@ class _AuthScreenState extends State<AuthScreen> {
 
                   });
               });
+
+              _controller.addJavaScriptHandler(handlerName: "go_main", callback: (args) {
+                print(args);
+                  Navigator.pop(context);
+              });
+
+
 
 
             },
