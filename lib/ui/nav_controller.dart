@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:viewerapp/ui/screens/profile_screen.dart';
 import 'package:viewerapp/ui/screens/search_screen.dart';
@@ -11,8 +12,6 @@ import 'screens/home_screen.dart';
 
 class NavCotroller extends StatefulWidget {
   static String route = "/";
-
-  const NavCotroller();
 
   @override
   _NavCotrollerState createState() => _NavCotrollerState();
@@ -29,12 +28,16 @@ class _NavCotrollerState extends State<NavCotroller> {
   MyConnectivity _connectivity = MyConnectivity.instance;
   late String? memberId;
   late  String? accountImgurl;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
   @override
   void initState() {
-
-
-
     super.initState();
+
+    this.initDynamicLinks();
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {
       setState(() => _source = source);
@@ -70,29 +73,31 @@ class _NavCotrollerState extends State<NavCotroller> {
     }
 
 
-    return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
+    return  Scaffold(
+            body: SafeArea(
+              child: CustomScrollView(
 
-            controller: _selectedIndex == 0?  _scrollController:_selectedIndex == 1?_scrollController2:_scrollController3,
-            slivers: [
-              _buildSliverAppBar(height, accountImgurl),
-              _screens[_selectedIndex]],
-          ),
+                controller: _selectedIndex == 0?  _scrollController:_selectedIndex == 1?_scrollController2:_scrollController3,
+                slivers: [
+                  _buildSliverAppBar(height, accountImgurl),
+                  _screens[_selectedIndex]],
+              ),
 
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "홈"),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: "검색"),
-          BottomNavigationBarItem(icon: Icon(Icons.bookmark_border), label: "보관함"),
-        ],
-        onTap: _onItemSelected,
-        selectedItemColor: Theme.of(context).selectedRowColor,
-        currentIndex: _selectedIndex,
-        unselectedItemColor: Colors.black38,
-      ),
-    );
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "홈"),
+                BottomNavigationBarItem(icon: Icon(Icons.search), label: "검색"),
+                BottomNavigationBarItem(icon: Icon(Icons.bookmark_border), label: "보관함"),
+              ],
+              onTap: _onItemSelected,
+              selectedItemColor: Theme.of(context).selectedRowColor,
+              currentIndex: _selectedIndex,
+              unselectedItemColor: Colors.black38,
+            ),
+          );
+
+
   }
 
   Widget _buildHomeScreen(double height, double width) {
@@ -204,6 +209,31 @@ class _NavCotrollerState extends State<NavCotroller> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  Future<void> initDynamicLinks() async {
+    FirebaseDynamicLinks.instance.onLink(
+        onSuccess: (PendingDynamicLinkData? dynamicLink) async  {
+          if(dynamicLink != null){
+             print("link ${dynamicLink.link.queryParametersAll}");
+             Navigator.pushNamed(context, AuthScreen.route);
+          }
+          },
+        onError: (OnLinkErrorException e) async {
+          print('onLinkError');
+          print(e.message);
+          return false;
+        }
+
+    );
+
+    final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
+    final Uri? deepLink = data != null?data.link:null;
+    if(deepLink!= null){
+      print("second  $deepLink");
+      Navigator.pushNamed(context, AuthScreen.route);
+    }
+
   }
 
 

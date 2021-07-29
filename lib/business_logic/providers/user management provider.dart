@@ -1,3 +1,5 @@
+
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
@@ -32,9 +34,11 @@ class UserManagementProvider extends ChangeNotifier {
 
     if (installed) {
       try {
-        var code = await AuthCodeClient.instance.requestWithTalk();
+        print("done");
+        String  code = await AuthCodeClient.instance.requestWithTalk();
          print("code $code");
-         var token = await AuthApi.instance.issueAccessToken(code);
+
+        AccessTokenResponse  token = await AuthApi.instance.issueAccessToken(code);
          print("token $token");
          AccessTokenStore.instance.toStore(token);
          credentials = "access_token:${token.accessToken}";
@@ -67,17 +71,17 @@ class UserManagementProvider extends ChangeNotifier {
     return credentials;
   }
 
-  Future<bool> saveUserData(String id,  String email, String  imgUrl,  String name,  String encryptedId) async {
-    bool setId = await preferences!.setString("id", id);
-    bool setEmail = await preferences!.setString("email", email);
-    bool setImgUrl = await preferences!.setString("imgUrl", imgUrl);
-    bool setName = await preferences!.setString("name", name);
-    bool  setEncryptedId = await  preferences!.setString("encrypt_id", encryptedId);
-    print(setId);
-    print(setEmail);
-    print(setImgUrl);
-    print(setName);
-    print(setEncryptedId);
+  Future<bool> saveUserData(String? id,  String? email, String?  imgUrl,  String? name,  String? encryptedId) async {
+    bool setId = await preferences!.setString("id", id??"");
+    bool setEmail = await preferences!.setString("email", email??"");
+    bool setImgUrl = await preferences!.setString("imgUrl", imgUrl??"");
+    bool setName = await preferences!.setString("name", name??"");
+    bool  setEncryptedId = await  preferences!.setString("encrypt_id", encryptedId??"");
+    print(id);
+    print(email);
+    print(imgUrl);
+    print(name);
+    print(encryptedId);
 
     if (setId && setEmail && setImgUrl && setName && setEncryptedId) {
       print("Hey I've done");

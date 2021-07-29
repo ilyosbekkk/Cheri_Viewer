@@ -19,6 +19,7 @@ class HomeScreen extends StatefulWidget {
   BuildContext? context;
   ScrollController? _scrollController;
 
+
   HomeScreen(this.height, this.width, this.context, this._scrollController);
 
   HomeScreen.scroll(this._scrollController);
@@ -35,16 +36,18 @@ class _HomeScreenState extends State<HomeScreen> {
   String? memberid;
   int currentLength = 0;
 
+   @override
+  void initState() {
+     super.initState();
+
+   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     memberid = preferences!.getString("id") ?? "";
 
     _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
-    print("heyyyy");
-    print(!_homePageProvider.networkCallDone);
-    print(!_homePageProvider.scrollControllerRegistered);
-
     if (!_homePageProvider.networkCallDone) {
       _homePageProvider.networkCallDone = true;
       _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberid ?? "").then((value) {});

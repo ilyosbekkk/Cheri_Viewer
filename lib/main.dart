@@ -1,3 +1,6 @@
+
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:viewerapp/business_logic/providers/categories provider.dart';
 import 'package:viewerapp/business_logic/providers/collections provider.dart';
@@ -19,12 +22,11 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
+  print("main is starting");
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await initPreferences();
   KakaoContext.clientId = "818a2baccb86e7432dcdb89f7957110d";
-  KakaoContext.javascriptClientId = "65f0b93a57edf2c89862c440f83df6eb";
-
 
 
   final List<SingleChildWidget> providers = [
@@ -37,13 +39,19 @@ void main() async {
     ChangeNotifierProvider(create: (_) =>CheriProvider()),
   ];
 
-  runApp(MultiProvider(
-    providers: providers,
-    child: MyApp(),
-  ));
+
+    runApp(
+        MultiProvider(
+          providers: providers,
+          child: MyApp(),
+        ));
+
+
 }
 
 class MyApp extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -67,6 +75,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       initialRoute: "/",
+
       routes: {
         NavCotroller.route: (_) => NavCotroller(),
         AuthScreen.route: (_) => AuthScreen(),

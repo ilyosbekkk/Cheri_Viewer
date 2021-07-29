@@ -26,6 +26,14 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   bool _loaded = false;
   CheriState _cheriState = CheriState.IDLE;
 
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("Eqrgwrkt");
+  }
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -33,6 +41,9 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     final  args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
     String cheriId = args["cheriId"]!;
     String memberId = args["memberId"]!;
+
+
+
 
     return Scaffold(
       body: WillPopScope(

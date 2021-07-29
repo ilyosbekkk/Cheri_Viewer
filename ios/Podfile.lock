@@ -88,7 +88,7 @@ PODS:
   - GTMSessionFetcher/Core (1.6.1)
   - image_picker (0.0.1):
     - Flutter
-  - kakao_flutter_sdk (0.6.4):
+  - kakao_flutter_sdk (0.7.0):
     - Flutter
   - KakaoSDKAuth (2.5.4):
     - KakaoSDKCommon (= 2.5.4)
@@ -230,7 +230,7 @@ SPEC CHECKSUMS:
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
   GTMSessionFetcher: 36689134877faeb055b27dfa4ccc9ceaa42e029e
   image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
-  kakao_flutter_sdk: 90f18c09513cfaaa6af63214617ceb696878fc09
+  kakao_flutter_sdk: e9ce9223c809eba9a9c375fb134ca608400ca9a1
   KakaoSDKAuth: 6fbd3579e80efffa05a24f17f696c59ca5ab331f
   KakaoSDKCommon: caa186f5cf6f7426ab5135b43001ad997e018daa
   KakaoSDKUser: 285abc213101bd07a9b44735defd36994ea9ada8

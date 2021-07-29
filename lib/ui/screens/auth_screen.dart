@@ -22,33 +22,16 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       body: SafeArea(
         child: Consumer<UserManagementProvider>(builder: (context, authProvider, child) {
-          return Center(
-            child: MaterialButton(
-              child: Text("login"),
-              onPressed: () async{
-
-                await authProvider.signInWithKakao();
-              },
-            ),
-          );
-
-        }),
-      ),
-    );
-  }
-}
-
-
-/*
-InAppWebView(
+          return InAppWebView(
 
             initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/viewer/login")),
 
             initialOptions: InAppWebViewGroupOptions(
 
                 crossPlatform: InAppWebViewOptions(
+
                   javaScriptCanOpenWindowsAutomatically: true,
-                  userAgent: 'random',
+                  userAgent:  'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36',
                   javaScriptEnabled: true,
                   useShouldOverrideUrlLoading: true,
                   mediaPlaybackRequiresUserGesture: false,
@@ -104,8 +87,27 @@ InAppWebView(
                   callback: (args) {
                     print("naver info: $args");
                   });
-              _controller.addJavaScriptHandler(handlerName: "email", callback: (args) {});
+              _controller.addJavaScriptHandler(handlerName: "email_user_info", callback: (args) {
+                  authProvider.saveUserData(args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"], args[0]["NAME"], args[0]["encrypt_id"]).then((value) {
+                    if (value == true) {
+                      Navigator.pop(context);
+                      showToast("이메일 로그인이 성공 되었습니다");
+                    } else
+                      showToast("이메일 로그인이 실패 되었습니다");
+
+                  });
+              });
+
+
             },
-          )
+          );
+        }),
+      ),
+    );
+  }
+}
+
+
+/*
 
  */
