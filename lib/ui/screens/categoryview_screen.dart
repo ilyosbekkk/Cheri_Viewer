@@ -1,16 +1,14 @@
 
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viewerapp/business_logic/providers/categories provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
-import 'package:viewerapp/utils/constants.dart';
+
 import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
 
@@ -28,14 +26,16 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
   late double _width;
   bool _loaded = false;
   late  String memberId;
+  String? language;
   var scrollConttoller = ScrollController();
 
 
   @override
   Widget build(BuildContext context) {
+      language = languagePreferences!.getString("language")??"en";
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
-    memberId = preferences!.getString("id")??"";
+    memberId = userPreferences!.getString("id")??"";
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     return Scaffold(
@@ -58,7 +58,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 );
               else
                 return CustomScrollView(
-                  slivers: [_buildSliverAppBar(_height, args["title"]!), ((preferences!.getString("mode1") ?? "card") == "card") ? _buildList(postProvider, 0.4 * _height, _width, args["id"]!) : _buildDividedList(postProvider, 0.4 * _height, _width, args["id"]!)],
+                  slivers: [_buildSliverAppBar(_height, args["title"]!), ((userPreferences!.getString("mode1") ?? "card") == "card") ? _buildList(postProvider, 0.4 * _height, _width, args["id"]!) : _buildDividedList(postProvider, 0.4 * _height, _width, args["id"]!)],
                 );
             })),
     );
@@ -70,7 +70,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
       shadowColor: Colors.blue,
       elevation: 5,
       centerTitle: true,
-      shape: ((preferences!.getString("mode1") ?? "card") == "card") ? Border(bottom: BorderSide(color: Colors.black, width: 0.5)) : Border(bottom: BorderSide(color: Colors.black, width: 0.0)),
+      shape: ((userPreferences!.getString("mode1") ?? "card") == "card") ? Border(bottom: BorderSide(color: Colors.black, width: 0.5)) : Border(bottom: BorderSide(color: Colors.black, width: 0.0)),
       floating: true,
       backgroundColor: Color.fromRGBO(250, 250, 250, 1),
       title: Text(
@@ -128,7 +128,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
 
   Widget _buildSinglePost(int index, double height, double width, CategoriesProvider categoriesProvider) {
     List<Post> posts = categoriesProvider.categories;
-    String mode = preferences!.getString("mode1") ?? "card";
+    String mode = userPreferences!.getString("mode1") ?? "card";
     if (mode == "card")
       return CardViewWidget(height, width,  posts[index]);
     else
@@ -149,19 +149,19 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 enabled: true,
                 onSelected: (value) async {
                   if (value == "first1") {
-                    await preferences!.setString("mode1", "card");
+                    await userPreferences!.setString("mode1", "card");
                   } else if (value == "first2") {
-                    await preferences!.setString("mode1", "list");
+                    await userPreferences!.setString("mode1", "list");
                   }
                   setState(() {});
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(
-                        child: Text(menu1[korean]![0]),
+                        child: Text(menu1[language]![0]),
                         value: "first1",
                       ),
                       PopupMenuItem(
-                        child: Text(menu1[korean]![1]),
+                        child: Text(menu1[language]![1]),
                         value: "first2",
                       )
                     ]),
@@ -184,15 +184,15 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(
-                        child: Text(menu2[korean]![0]),
+                        child: Text(menu2[language]![0]),
                         value: "second1",
                       ),
                       PopupMenuItem(
-                        child: Text(menu2[korean]![1]),
+                        child: Text(menu2[language]![1]),
                         value: "second2",
                       ),
                       PopupMenuItem(
-                        child: Text(menu2[korean]![2]),
+                        child: Text(menu2[language]![2]),
                         value: "second3",
                       ),
                     ]),

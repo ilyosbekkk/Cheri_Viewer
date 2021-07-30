@@ -18,15 +18,16 @@ class CardViewWidget extends StatefulWidget {
 
 class _CardViewWidgetState extends State<CardViewWidget> {
   String? memberId;
+  String? language;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-     memberId = preferences!.getString("id")??"";
+     memberId = userPreferences!.getString("id")??"";
 
   }
   @override
   Widget build(BuildContext context) {
+     language = languagePreferences!.getString("language")??"en";
 
 
     return Consumer<CheriProvider>(builder: (context,  cheriProvider,  child) {
@@ -122,11 +123,11 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                                      if(value)
                                        setState(() {
                                          widget.post.saved = "Y";
-                                         showToast(bookmarkSave[korean]!);
+                                         showToast(bookmarkSave[language]!);
 
                                        });
                                   });
-                                  else showToast(toastSignIn[korean]!);
+                                  else showToast(toastSignIn[language]!);
                                 },
                                 child: Icon(
                                   Icons.bookmark_border,
@@ -140,13 +141,13 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                                     if(value) {
                                       setState(() {
                                         widget.post.saved = "N";
-                                        showToast(bookMarkUnsave[korean]!);
+                                        showToast(bookMarkUnsave[language]!);
                                       });
 
 
                                     }
                                   });
-                                   else showToast(toastSignIn[korean]!);
+                                   else showToast(toastSignIn[language]!);
                                   },
                                 child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor),
                               ),
@@ -185,7 +186,7 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                   child: Row(
                     children: [
                       Text(
-                        "${cheri_views[korean]}:${widget.post.views}",
+                        "${cheriViews[language]}:${widget.post.views}",
                         style: TextStyle(fontSize: 12),
                       ),
                       Container(
@@ -195,7 +196,7 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                             size: 5.0,
                           )),
                       Text(
-                        "${timeFormatter(widget.post.dateTime)} 전",
+                        "${timeFormatter(widget.post.dateTime)} ${ago[language]}",
                         style: TextStyle(fontSize: 12),
                       ),
 

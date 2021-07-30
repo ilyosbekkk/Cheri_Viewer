@@ -35,12 +35,13 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _searching = false;
   bool _loaded = false;
   bool _noSearchResult = false;
+  String?  language;
 
 
   @override
   void initState() {
     super.initState();
-    _memberId = preferences!.getString("id")??"";
+    _memberId = userPreferences!.getString("id")??"";
     if(widget.searchword!.isNotEmpty)
       _controller.text = widget.searchword!;
 
@@ -48,6 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    language = languagePreferences!.getString("language")??"en";
     final modalHeight = (widget.height!.toDouble() - MediaQueryData.fromWindow(window).padding.top);
     if(widget.searchword!.isNotEmpty)
     return Scaffold(
@@ -118,7 +120,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       color: Color.fromRGBO(245, 245, 245, 1),
                       margin: EdgeInsets.only(top: 10.0),
                       child: Text(
-                        "최근검색",
+                        "${recentSearch[language]}",
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                       ),
                     );
@@ -129,7 +131,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       color: Color.fromRGBO(245, 245, 245, 1),
                       margin: EdgeInsets.only(top: 10.0),
                       child: Text(
-                        "관련된 검색어",
+                        "${relatedSearch[language]}",
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                       ),
                     );
@@ -150,7 +152,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 } else if (searchProvider.searchResults.isEmpty && _noSearchResult) {
                   return Center(
                     child: Text(
-                      "검색 결과가  없습니다",
+                      "${noSearchResult[language]}",
                       style: TextStyle(fontSize: 15),
                     ),
                   );
@@ -158,7 +160,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   if (searchProvider.recentSearches.isEmpty)
                     return Center(
                       child: Text(
-                        "최근 검색 결과가 없습니다",
+                        "${noRelatedSearchResult[language]}",
                         style: TextStyle(fontSize: 15),
                       ),
                     );
@@ -168,7 +170,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   if (searchProvider.relatedSearches.isEmpty)
                     return Center(
                         child: Text(
-                      "관련된 검색 결과가 없습니다!",
+                      "${noRelatedSearchResult[language]}",
                       style: TextStyle(fontSize: 15),
                     ));
                   return _buildRelatedSearchesWidget(searchProvider.relatedSearches[index].word!, searchProvider);
@@ -182,14 +184,14 @@ class _SearchScreenState extends State<SearchScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text("먼저 로그인 하십시오!",  style: TextStyle(
+                      child: Text("${toastSignIn[language]}",  style: TextStyle(
                         fontSize: 18
                       ),),
                     ),
         CupertinoButton(
 
                       color: Theme.of(context).selectedRowColor,
-                      child: Text("로그인"), onPressed: (){
+                      child: Text("${loginButton[language]}"), onPressed: (){
                     Navigator.pushNamed(context, AuthScreen.route);
                   })
                   ],
@@ -207,9 +209,6 @@ class _SearchScreenState extends State<SearchScreen> {
             child: TextField(
 
               onChanged: (searchWord) {
-
-
-
                 homePageProvider.cleanList();
                 homePageProvider.fetchRelatedSearches(_memberId!, searchWord).then((value) {});
                 setState(() {
@@ -223,7 +222,7 @@ class _SearchScreenState extends State<SearchScreen> {
               onSubmitted: (searchWord) {
 
                 if(searchWord.isEmpty) {
-                  showToast("검색은 비워 둘 수 없습니다.");
+                  showToast("${emptySearchWord[language]}");
                 }
                 else  {
                   setState(() {
@@ -250,7 +249,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   borderSide: BorderSide(width: 1,color: Color.fromRGBO(175, 27, 63, 1)),
                 ),
                 contentPadding: EdgeInsets.only(left: 10.0),
-                hintText: search_hint[korean],
+                hintText: searchHint[korean],
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -293,7 +292,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildPostWidget(double height, double width, index, SearchProvider homePageProvider) {
     List<Post> posts = homePageProvider.searchResults;
-    String mode = preferences!.getString("mode2") ?? "card";
+    String mode = userPreferences!.getString("mode2") ?? "card";
     if (mode == "card")
       return CardViewWidget(height, width,  posts[index]);
     else
@@ -314,9 +313,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 enabled: true,
                 onSelected: (value) async {
                   if (value == "first1") {
-                    await preferences!.setString("mode2", "card");
+                    await userPreferences!.setString("mode2", "card");
                   } else if (value == "first2") {
-                    await preferences!.setString("mode2", "list");
+                    await userPreferences!.setString("mode2", "list");
                   }
                   setState(() {});
                 },
@@ -349,15 +348,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 },
                 itemBuilder: (context) => [
                   PopupMenuItem(
-                    child: Text(menu2[korean]![0]),
+                    child: Text(menu2[language]![0]),
                     value: "second1",
                   ),
                   PopupMenuItem(
-                    child: Text(menu2[korean]![1]),
+                    child: Text(menu2[language]![1]),
                     value: "second2",
                   ),
                   PopupMenuItem(
-                    child: Text(menu2[korean]![2]),
+                    child: Text(menu2[language]![2]),
                     value: "second3",
                   ),
                 ]),

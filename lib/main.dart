@@ -1,7 +1,4 @@
 
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-
-import 'package:kakao_flutter_sdk/all.dart';
 import 'package:viewerapp/business_logic/providers/categories provider.dart';
 import 'package:viewerapp/business_logic/providers/collections provider.dart';
 import 'package:viewerapp/business_logic/providers/home provider.dart';
@@ -9,8 +6,7 @@ import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
 import 'package:viewerapp/ui/screens/categoryview_screen.dart';
 import 'business_logic/providers/cheri provider.dart';
 import 'business_logic/providers/detailedview provider.dart';
-import 'package:viewerapp/ui/screens/settings_screen.dart';
-import 'package:viewerapp/ui/screens/profile_screen.dart';
+import 'package:viewerapp/ui/screens/webview main screen.dart';
 import 'package:viewerapp/ui/screens/auth_screen.dart';
 import 'business_logic/providers/search provider.dart';
 import 'business_logic/providers/user management provider.dart';
@@ -80,7 +76,6 @@ class MyApp extends StatelessWidget {
         AuthScreen.route: (_) => AuthScreen(),
         CheriDetailViewScreen.route: (_) => CheriDetailViewScreen(),
         CategoryViewScreen.route: (_) => CategoryViewScreen(),
-        SettingsScreen.route: (_) => SettingsScreen(),
         ProfileScreen.route: (_) => ProfileScreen(),
       },
     );

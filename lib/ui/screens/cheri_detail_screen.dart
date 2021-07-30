@@ -21,8 +21,10 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   ScrollController _scrollController = ScrollController();
   late double height;
   late double width;
+  String? language;
   bool isDialogTextOpen = false;
   bool isDialogPictureOpen = false;
+
   bool _loaded = false;
   CheriState _cheriState = CheriState.IDLE;
 
@@ -30,12 +32,13 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
-    print("Eqrgwrkt");
+
   }
   @override
   Widget build(BuildContext context) {
+    language =  languagePreferences!.getString("language")??"en";
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     final  args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
@@ -181,7 +184,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
           ),
           Container(
             child: Text(
-              "${detailedViewProvider.detailedPost.regDate != null ? detailedViewProvider.detailedPost.regDate : ""}  ${cheri_views[korean]} ${detailedViewProvider.detailedPost.views != null ? detailedViewProvider.detailedPost.views : ""}",
+              "${detailedViewProvider.detailedPost.regDate != null ? detailedViewProvider.detailedPost.regDate : ""}  ${cheriViews[language]} ${detailedViewProvider.detailedPost.views != null ? detailedViewProvider.detailedPost.views : ""}",
               style: TextStyle(fontSize: 12, color: Colors.white),
             ),
           )
@@ -272,7 +275,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                                     if(value)
                                       setState(() {
                                         _cheriState = CheriState.UNSAVED;
-                                        showToast(bookMarkUnsave[korean]!);
+                                        showToast(bookMarkUnsave[language]!);
 
                                       });
                               });
@@ -284,7 +287,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                               if(value)
                                 setState(() {
                                   _cheriState = CheriState.SAVED;
-                                  showToast(bookmarkSave[korean]!);
+                                  showToast(bookmarkSave[language]!);
 
                                 });
                             });
@@ -302,7 +305,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                             ),
                     ),
                     Text(
-                      "북마크",
+                      "${bookMarkNumber[language]}",
                       style: TextStyle(fontSize: 12),
                     )
                   ],
@@ -319,7 +322,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                       ),
                     ),
                     Text(
-                      "공유",
+                      "${shareNumber[language]}",
                       style: TextStyle(fontSize: 12),
                     )
                   ],
@@ -377,7 +380,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
               onPressed: () async {
                 if (items[index].comment == null || items[index].comment!.isEmpty) {
                   print("1");
-                  await showdialog(context, "내용이 없습니다ㅋㅋㅋㅋㅋㅋ", detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName);
+                  await showdialog(context, "${noContent[language]}", detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName);
                 } else if (detailedViewProvider.itemFiles(items[index].itemId!).isEmpty) {
                   print("2");
 
@@ -417,7 +420,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                             Align(
                               alignment: Alignment.center,
                               child: Text(
-                                "상세 설명",
+                                "${dialogViewIntroduction[language]}",
                                 style: TextStyle(fontSize: 21),
                               ),
                             ),
@@ -439,7 +442,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "체리 항목 설명",
+                              "${dialogCategoryIntroduction[language]}",
                               style: TextStyle(fontSize: 15),
                             ),
                             IconButton(
@@ -460,7 +463,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "관련 자료",
+                              "${dialogRelatedContent[language]}",
                               style: TextStyle(fontSize: 15),
                             ),
                             IconButton(

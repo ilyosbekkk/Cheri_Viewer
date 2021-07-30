@@ -12,8 +12,8 @@ import '../services/web services.dart';
 class HomeProvider extends ChangeNotifier {
   bool _showSubCategories1 = false;
   bool _showSubCategories2 = false;
-  int reponseCode1 = 0;
-  int reponseCode2 = 0;
+  int responseCode1 = 0;
+  int responseCode2 = 0;
   String categoriesMessage = "";
   bool  _networkCallDone = false;
   bool _scrollControllerRegistered = false;
@@ -47,26 +47,26 @@ class HomeProvider extends ChangeNotifier {
 
 
         allPosts.addAll(postsResponse.data);
-        reponseCode1 = response.statusCode;
+        responseCode1 = response.statusCode;
         notifyListeners();
         return true;
       } else {
-        reponseCode1 = response.statusCode;
+        responseCode1 = response.statusCode;
         notifyListeners();
         return false;
       }
     } on TimeoutException catch (e) {
-      reponseCode1 = -1;
+      responseCode1 = -1;
       notifyListeners();
       print("Timeout exception $e");
       return false;
     } on SocketException catch (e) {
-      reponseCode1 = -2;
+      responseCode1 = -2;
       notifyListeners();
       print("SocketException $e");
       return false;
     } on Error catch (e) {
-      reponseCode1 = -3;
+      responseCode1 = -3;
       notifyListeners();
       print("General Error: $e");
       return false;
@@ -118,27 +118,27 @@ class HomeProvider extends ChangeNotifier {
           }
         }
 
-        reponseCode2 = response.statusCode;
+        responseCode2 = response.statusCode;
         notifyListeners();
 
         return true;
       } else {
-        reponseCode2 = response.statusCode;
+        responseCode2 = response.statusCode;
         notifyListeners();
         return false;
       }
     } on TimeoutException catch (e) {
-      reponseCode2 = -1;
+      responseCode2 = -1;
       notifyListeners();
       print("Timeout exception $e");
       return false;
     } on SocketException catch (e) {
-      reponseCode2 = -2;
+      responseCode2 = -2;
       notifyListeners();
       print("SocketException $e");
       return false;
     } on Error catch (e) {
-      reponseCode2 = -3;
+      responseCode2 = -3;
       notifyListeners();
       print("General Error: $e");
       return false;
@@ -219,10 +219,25 @@ class HomeProvider extends ChangeNotifier {
   }
 
   bool get scrollControllerRegistered => _scrollControllerRegistered;
-
   set scrollControllerRegistered(bool value) {
     _scrollControllerRegistered = value;
 
 
   }
+  void  cleanHomeScreen(){
+    allPosts.clear();
+    activeIndex = -1;
+    _showSubCategories1 = false;
+    _showSubCategories2 = false;
+    responseCode1 = 0;
+    responseCode2 = 0;
+    categoriesMessage = "";
+    _networkCallDone = false;
+    notifyListeners();
+
+  }
+
+
+
+
 }

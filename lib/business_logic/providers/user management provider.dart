@@ -75,11 +75,11 @@ class UserManagementProvider extends ChangeNotifier {
   }
 
   Future<bool> saveUserData(String? id,  String? email, String?  imgUrl,  String? name,  String? encryptedId) async {
-    bool setId = await preferences!.setString("id", id??"");
-    bool setEmail = await preferences!.setString("email", email??"");
-    bool setImgUrl = await preferences!.setString("imgUrl", imgUrl??"");
-    bool setName = await preferences!.setString("name", name??"");
-    bool  setEncryptedId = await  preferences!.setString("encrypt_id", encryptedId??"");
+    bool setId = await userPreferences!.setString("id", id??"");
+    bool setEmail = await userPreferences!.setString("email", email??"");
+    bool setImgUrl = await userPreferences!.setString("imgUrl", imgUrl??"");
+    bool setName = await userPreferences!.setString("name", name??"");
+    bool  setEncryptedId = await  userPreferences!.setString("encrypt_id", encryptedId??"");
 
 
     if (setId && setEmail && setImgUrl && setName && setEncryptedId) {
@@ -89,6 +89,6 @@ class UserManagementProvider extends ChangeNotifier {
   }
 
   Future<bool> logout() async {
-    return await preferences!.clear();
+    return await userPreferences!.clear();
   }
 }

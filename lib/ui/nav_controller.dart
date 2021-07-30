@@ -1,10 +1,15 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
-import 'package:viewerapp/ui/screens/profile_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:viewerapp/business_logic/providers/collections%20provider.dart';
+import 'package:viewerapp/business_logic/providers/home%20provider.dart';
+import 'package:viewerapp/business_logic/providers/search%20provider.dart';
+import 'package:viewerapp/ui/screens/webview main screen.dart';
 import 'package:viewerapp/ui/screens/search_screen.dart';
 import 'package:viewerapp/ui/screens/savedposts_screen.dart';
-import 'package:viewerapp/utils/internet_connectivity.dart';
+import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
 
 import 'screens/auth_screen.dart';
@@ -19,7 +24,11 @@ class NavCotroller extends StatefulWidget {
 
 class _NavCotrollerState extends State<NavCotroller> {
   int _selectedIndex = 0;
+  String? language;
   var _screens = [];
+  HomeProvider homeProvider = HomeProvider();
+  CollectionsProvider collectionsProvider = CollectionsProvider();
+  SearchProvider searchProvider = SearchProvider();
   ScrollController _scrollController = ScrollController();
   ScrollController _scrollController2 = ScrollController();
   ScrollController _scrollController3 = ScrollController();
@@ -28,6 +37,8 @@ class _NavCotrollerState extends State<NavCotroller> {
   MyConnectivity _connectivity = MyConnectivity.instance;
   late String? memberId;
   late  String? accountImgurl;
+  RefreshController _refreshController =
+  RefreshController(initialRefresh: false);
 
   @override
   void didChangeDependencies() {
@@ -50,16 +61,20 @@ class _NavCotrollerState extends State<NavCotroller> {
   }
   @override
   Widget build(BuildContext context) {
+    language = languagePreferences!.getString("language")??"en";
+     homeProvider = Provider.of<HomeProvider>(context, listen:false);
+     searchProvider = Provider.of<SearchProvider>(context, listen: false);
+     collectionsProvider = Provider.of<CollectionsProvider>(context, listen: false);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-     memberId = preferences!.getString("id")??"";
-    accountImgurl = preferences!.getString("imgUrl")??"";
+     memberId = userPreferences!.getString("id")??"";
+    accountImgurl = userPreferences!.getString("imgUrl")??"";
     _screens = [_buildHomeScreen(height, width), _buildSearchScreen(height, width), _buildStorageBoxScreen(height, width, memberId)];
     String string;
     switch (_source.keys.toList()[0]) {
       case ConnectivityResult.none:
         string = "Offline";
-        showToast("인터넷 좀 켜주세요!");
+        showToast("${turnonthenet[language]}");
         print(string);
         break;
       case ConnectivityResult.mobile:
@@ -71,19 +86,15 @@ class _NavCotrollerState extends State<NavCotroller> {
         print(string);
          break;
     }
-
-
     return  Scaffold(
-            body: SafeArea(
-              child: CustomScrollView(
+            body: SafeArea(child: CustomScrollView(
 
                 controller: _selectedIndex == 0?  _scrollController:_selectedIndex == 1?_scrollController2:_scrollController3,
                 slivers: [
                   _buildSliverAppBar(height, accountImgurl),
-                  _screens[_selectedIndex]],
-              ),
 
-            ),
+                  _screens[_selectedIndex]],
+              ),),
             bottomNavigationBar: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "홈"),
@@ -133,31 +144,49 @@ class _NavCotrollerState extends State<NavCotroller> {
       shape: Border(bottom: BorderSide(color: Colors.black26, width: 0.5)),
       floating: true,
       backgroundColor: Color.fromRGBO(250, 250, 250, 1),
-      title: Container(
-          height: 29,
-          width: 130,
-          child: Image.asset(
-            "assets/images/logo.png",
-            color: Theme.of(context).selectedRowColor,
-          )),
+      title: InkWell(
+        onTap: () {
+           homeProvider.cleanHomeScreen();
+           searchProvider.cleanList();
+           collectionsProvider.cleanCollections();
+           setState(() {
+             _selectedIndex = 0;
+           });
+
+
+        },
+        child: Container(
+            height: 29,
+            width: 130,
+            child: Image.asset(
+              "assets/images/logo.png",
+              color: Theme.of(context).selectedRowColor,
+            )),
+      ),
       actions: [
         if(imgUrl == "")
         IconButton(
             onPressed: () {
-              String? encrypedId = (preferences!.getString("encrypt_id") ?? null);
+              String? encrypedId = (userPreferences!.getString("encrypt_id") ?? null);
 
               print("id");
               print(encrypedId);
 
               if (encrypedId == null) {
                print("yes");
-                Navigator.pushNamed(context, AuthScreen.route);
+                Navigator.pushNamed(context, AuthScreen.route).then((value)  {
+                  setState(() {
+                    memberId = userPreferences!.getString("id")??"";
+                    accountImgurl = userPreferences!.getString("imgUrl")??"";
+                  });
+                });
               }else {
        print("no");
                 Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId}).then((value) {
                   setState(() {
-                    memberId = preferences!.getString("id")??"";
-                    accountImgurl = preferences!.getString("imgUrl")??"";
+
+                    language = languagePreferences!.getString("language")??"en";
+
                   });
 
                   print(accountImgurl);
@@ -174,7 +203,7 @@ class _NavCotrollerState extends State<NavCotroller> {
             margin: EdgeInsets.only(right: 10),
             child: InkWell(
               onTap: () {
-                String? encrypedId = (preferences!.getString("encrypt_id") ?? null);
+                String? encrypedId = (userPreferences!.getString("encrypt_id") ?? null);
                 print(encrypedId);
 
                 Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId});
@@ -211,6 +240,7 @@ class _NavCotrollerState extends State<NavCotroller> {
     });
   }
 
+   
   Future<void> initDynamicLinks() async {
     FirebaseDynamicLinks.instance.onLink(
         onSuccess: (PendingDynamicLinkData? dynamicLink) async  {
@@ -235,6 +265,4 @@ class _NavCotrollerState extends State<NavCotroller> {
     }
 
   }
-
-
 }

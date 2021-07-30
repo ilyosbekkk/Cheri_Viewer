@@ -78,4 +78,12 @@ class CollectionsProvider extends ChangeNotifier {
       return false;
     }
   }
+
+  void cleanCollections(){
+    savedPosts.clear();
+    openedPosts.clear();
+    statusCode1 = 0;
+    statusCode2= 0;
+
+  }
 }

@@ -87,7 +87,10 @@ class SearchProvider extends ChangeNotifier {
 
   void cleanList() {
     if (_searchResults.isNotEmpty) _searchResults.clear();
+    notifyListeners();
   }
+
+
 
 
 }

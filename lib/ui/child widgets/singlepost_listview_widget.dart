@@ -21,15 +21,17 @@ class ListViewWidget extends StatefulWidget {
 
 class _ListViewWidgetState extends State<ListViewWidget> {
   late String  memberId;
+  String? language;
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
-    memberId = preferences!.getString("id")??"";
+    memberId = userPreferences!.getString("id")??"";
   }
   @override
   Widget build(BuildContext context) {
+    language = languagePreferences!.getString("language")??"en";
     return  Consumer<CheriProvider>(builder: (context, cheriProvider,  child){
       return  InkWell(
         onTap: () {
@@ -109,7 +111,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                   Row(
                     children: [
                       Text(
-                        "${cheri_views[korean]}:${widget.post.views}",
+                        "${cheriViews[language]}:${widget.post.views}",
                         style: TextStyle(fontSize: 12),
                       ),
                       Container(
@@ -119,7 +121,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                             size: 5.0,
                           )),
                       Text(
-                        "${timeFormatter(widget.post.dateTime)} 전",
+                        "${timeFormatter(widget.post.dateTime)}${ago[language]}",
                         style: TextStyle(fontSize: 12),
                       ),
                       if(widget.post.checked == "Y")
@@ -147,11 +149,11 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                         if(value)
                           setState(() {
                             widget.post.saved = "Y";
-                            showToast(bookmarkSave[english]!);
+                            showToast(bookmarkSave[language]!);
 
                           });
                       });
-                    else showToast(toastSignIn[korean]!);
+                    else showToast(toastSignIn[language]!);
                     },
                   child: Icon(
 
@@ -172,7 +174,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                           });
                         }
                       });
-                    else showToast(toastSignIn[korean]!);
+                    else showToast(toastSignIn[language]!);
                   },
                   child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor,),
                 ),

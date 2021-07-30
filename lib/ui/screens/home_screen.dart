@@ -1,12 +1,9 @@
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/screens/categoryview_screen.dart';
-import 'package:viewerapp/utils/constants.dart';
 import 'package:viewerapp/utils/utils.dart';
 import '../../business_logic/providers/home provider.dart';
 
@@ -35,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int initialPage = 1;
   String? memberid;
   int currentLength = 0;
+  String?  language;
 
    @override
   void initState() {
@@ -45,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    memberid = preferences!.getString("id") ?? "";
+    memberid = userPreferences!.getString("id") ?? "";
 
     _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
     if (!_homePageProvider.networkCallDone) {
@@ -66,8 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    if (_homePageProvider.reponseCode1 == 200 && _homePageProvider.reponseCode2 == 200)
+  language = languagePreferences!.getString("language")??"en";
+    if (_homePageProvider.responseCode1 == 200 && _homePageProvider.responseCode2 == 200)
       return ListView.builder(
         primary: false,
         shrinkWrap: true,
@@ -81,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                 margin: EdgeInsets.all(10),
                 child: Text(
-                  "결과가 없습니다!",
+                  "${lazyLoadinNoResult[AutofillHints.language]}",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ));
@@ -99,22 +97,22 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
       );
-    else if (_homePageProvider.reponseCode1 == -1 || _homePageProvider.reponseCode2 == -1)
+    else if (_homePageProvider.responseCode1 == -1 || _homePageProvider.responseCode2 == -1)
       return Center(
         child: Column(
           children: [
-            Text("TimeOut happened:("),
+            Text("${timeOutError[language]}"),
             MaterialButton(
               onPressed: () {
-                if (_homePageProvider.reponseCode1 == -1) _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberid!).then((value) {});
-                if (_homePageProvider.reponseCode2 == -1) _homePageProvider.fetchCategoriesList().then((value) {});
+                if (_homePageProvider.responseCode1 == -1) _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberid!).then((value) {});
+                if (_homePageProvider.responseCode2 == -1) _homePageProvider.fetchCategoriesList().then((value) {});
               },
               child: Text("try again"),
             )
           ],
         ),
       );
-    else if (_homePageProvider.reponseCode1 == -2 || _homePageProvider.reponseCode2 == -2) {
+    else if (_homePageProvider.responseCode1 == -2 || _homePageProvider.responseCode2 == -2) {
       return Center(
         child: Container(
           margin: EdgeInsets.only(top: widget.width! * 0.5),
@@ -133,25 +131,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 textColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 onPressed: () {
-                  if (_homePageProvider.reponseCode1 == -2) _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberid!).then((value) {});
-                  if (_homePageProvider.reponseCode2 == -2) _homePageProvider.fetchCategoriesList().then((value) {});
+                  if (_homePageProvider.responseCode1 == -2) _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberid!).then((value) {});
+                  if (_homePageProvider.responseCode2 == -2) _homePageProvider.fetchCategoriesList().then((value) {});
                 },
-                child: Text("Reload Page"),
+                child: Text("${reloadButton[language]}"),
               )
             ],
           ),
         ),
       );
-    } else if (_homePageProvider.reponseCode1 == -3 || _homePageProvider.reponseCode2 == -3) {
+    } else if (_homePageProvider.responseCode1 == -3 || _homePageProvider.responseCode2 == -3) {
       return Center(
         child: Container(
           margin: EdgeInsets.only(top: widget.width! * 0.5),
           child: Column(
             children: [
-              Text("Unexpected error happened"),
+              Text("${unexpectedError[language]}"),
               MaterialButton(
                 onPressed: () {},
-                child: Text("Try again"),
+                child: Text("${buttonTryAgain[language]}"),
               )
             ],
           ),
@@ -237,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
               width: 2 * radius,
               child: Text(
-                categories[korean]![index],
+                categories[language]![index],
                 maxLines: 1,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: homeProvider.activeAcategories[index] ? Theme.of(context).selectedRowColor : Colors.black, fontSize: 12),

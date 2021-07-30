@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/business_logic/providers/user management provider.dart';
+import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -16,9 +17,11 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   late InAppWebViewController _controller;
+  String? language;
 
   @override
   Widget build(BuildContext context) {
+    language = languagePreferences!.getString("language")??"en";
     return Scaffold(
       body: SafeArea(
         child: Consumer<UserManagementProvider>(builder: (context, authProvider, child) {
@@ -59,13 +62,17 @@ class _AuthScreenState extends State<AuthScreen> {
                   handlerName: "google_user_info",
                   callback: (args) {
                     print("args:$args");
+                    if(args[0]["message"] == null){
                     authProvider.saveUserData(args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"], args[0]["NAME"], args[0]["encrypt_id"]).then((value) {
                       if (value == true) {
                         Navigator.pop(context);
-                        showToast("구글 로그인이 성공 되었습니다");
+                        showToast("${googleLoginSuccess[language]}");
                       } else
-                        showToast("구글 로그인이 실패 되었습니다");
-                    });
+                        showToast("${googleLoginSuccessFailure[language]}");
+                    });}
+                    else  {
+                      showToast(args[0]["message"]);
+                    }
                   });
               _controller.addJavaScriptHandler(
                   handlerName: "kakao",
@@ -75,14 +82,19 @@ class _AuthScreenState extends State<AuthScreen> {
               _controller.addJavaScriptHandler(
                   handlerName: "kakao_user_info",
                   callback: (args) {
+                    print(args);
+                    if(args[0]["message"] == null){
                     authProvider.saveUserData(args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"], args[0]["NAME"], args[0]["encrypt_id"]).then((value) {
                       if (value == true) {
                         Navigator.pop(context);
-                        showToast("카카오 로그인이 성공 되었습니다");
+                        showToast("${kakaoLoginSuccess[language]}");
                       } else
-                        showToast("카카오 로그인이 실패 되었습니다");
+                        showToast("${kakaoLoginSuccessFailure[language]}");
 
-                    });
+                    });}
+                    else {
+                      showToast(args[0]["message"]);
+                    }
                   });
               _controller.addJavaScriptHandler(
                   handlerName: "naver",
@@ -95,26 +107,25 @@ class _AuthScreenState extends State<AuthScreen> {
                     print("naver info: $args");
                   });
               _controller.addJavaScriptHandler(handlerName: "email_user_info", callback: (args) {
-                  print(args);
-                  authProvider.saveUserData(args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"], args[0]["NAME"], args[0]["encrypt_id"]).then((value) {
-                    if (value == true) {
-                      Navigator.pop(context);
-                      showToast("이메일 로그인이 성공 되었습니다");
-                    } else
-                      showToast("이메일 로그인이 실패 되었습니다");
 
-                  });
+                   authProvider.saveUserData(
+                       args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"],
+                       args[0]["NAME"], args[0]["encrypt_id"]).then((value) {
+                     if (value == true) {
+                       Navigator.pop(context);
+                       showToast("${emailLoginSuccess[language]}");
+                     } else
+                       showToast("${emailLoginSuccessFailure[language]}");
+                   });
+
+
               });
-
               _controller.addJavaScriptHandler(handlerName: "go_main", callback: (args) {
                 print(args);
                   Navigator.pop(context);
               });
 
-
-
-
-            },
+              },
           );
         }),
       ),

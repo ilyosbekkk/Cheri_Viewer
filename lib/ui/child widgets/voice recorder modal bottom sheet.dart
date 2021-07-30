@@ -2,12 +2,12 @@ import 'dart:math';
 
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'package:viewerapp/business_logic/providers/search%20provider.dart';
+import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
+
 
 class VoiceRecorderModalBottomSheet extends StatefulWidget {
   final _height;
@@ -33,6 +33,7 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
   bool word2 = false;
   List<LocaleName> localeNames = [];
   final SpeechToText speech = SpeechToText();
+  String? language;
 
   @override
   void initState() {
@@ -55,6 +56,7 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
 
   @override
   Widget build(BuildContext context) {
+      language = languagePreferences!.getString("language")??"en";
     if(resultAvailable){
       return Container(
         height: widget._height * 0.4,
@@ -74,7 +76,7 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
                   }),
             ),
             Spacer(),
-            Text('결과: "$word1"',  style: TextStyle(
+            Text('${voiceResult[language]}: "$word1"',  style: TextStyle(
               fontSize: 18
             ),),
             ElevatedButton.icon(
@@ -93,7 +95,7 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
               onPressed: () {
                 Navigator.pop(context, word1);
               },
-              label: Text("검색"),
+              label: Text("${voiceSearch[language]}"),
 
             ),
             ElevatedButton.icon(
@@ -115,7 +117,7 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
 
                 });
               },
-              label: Text("다시"),
+              label: Text("${voiceTryAgain[language]}"),
 
             ),
             Spacer()
@@ -145,7 +147,7 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
           Container(
             margin: EdgeInsets.only(top: 30),
             child: Text(
-              "듣고 있습니다...말씀하세요 🙂",
+              "${voiceMessage[language]}",
               style: TextStyle(fontSize: 20),
             ),
           ),

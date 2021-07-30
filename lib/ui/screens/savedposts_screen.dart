@@ -1,4 +1,4 @@
-import 'dart:io';
+
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,7 @@ import 'package:viewerapp/business_logic/providers/collections provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
-import 'package:viewerapp/utils/constants.dart';
+
 import 'package:viewerapp/utils/utils.dart';
 
 import '../../utils/strings.dart';
@@ -36,12 +36,12 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
   TextEditingController _controller = TextEditingController();
   bool netwrokCallDone = false;
   late String memberId;
-
+  String? language;
   @override
   void didChangeDependencies() {
 
     super.didChangeDependencies();
-    memberId = preferences!.getString("id")??"";
+    memberId = userPreferences!.getString("id")??"";
     _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
 
 
@@ -62,7 +62,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
-
+    language = languagePreferences!.getString("language")??"en";
     int count = 2;
     if (_searchMode) count = count + 1;
     if (mode == Button.BOOKMARK && _collectionsProvider.savedPosts.isNotEmpty)
@@ -210,7 +210,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
               height: 60,
               width: widget.width!.toDouble() / 2,
               child: Text(
-                "북마크",
+                "${bookMarkNumber[language]}",
                 style: TextStyle(fontSize: 15),
               ),
             ),
@@ -233,7 +233,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
               alignment: Alignment.center,
               height: 60,
               width: widget.width!.toDouble() / 2,
-              child: Text("여러본 체리", style: TextStyle(fontSize: 15)),
+              child: Text("${openedCheri[language]}", style: TextStyle(fontSize: 15)),
             ),
           )
         ],
@@ -249,7 +249,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
         children: [
           Container(
               margin: EdgeInsets.only(left: 10),
-              child:  Text("결과:${mode == Button.BOOKMARK?_collectionsProvider.savedPosts.length:_collectionsProvider.openedPosts.length} 건", style: TextStyle(
+              child:  Text("${voiceResult[language]}:${mode == Button.BOOKMARK?_collectionsProvider.savedPosts.length:_collectionsProvider.openedPosts.length}", style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold
               ),)),
@@ -276,19 +276,19 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                 enabled: true,
                 onSelected: (value) async {
                   if (value == "first1") {
-                    await preferences!.setString("mode2", "card");
+                    await userPreferences!.setString("mode2", "card");
                   } else if (value == "first2") {
-                    await preferences!.setString("mode2", "list");
+                    await userPreferences!.setString("mode2", "list");
                   }
                   setState(() {});
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(
-                        child: Text(menu1[korean]![0]),
+                        child: Text(menu1[language]![0]),
                         value: "first1",
                       ),
                       PopupMenuItem(
-                        child: Text(menu1[korean]![1]),
+                        child: Text(menu1[language]![1]),
                         value: "first2",
                       )
                     ]),
@@ -311,15 +311,15 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(
-                        child: Text(menu2[korean]![0]),
+                        child: Text(menu2[language]![0]),
                         value: "second1",
                       ),
                       PopupMenuItem(
-                        child: Text(menu2[korean]![1]),
+                        child: Text(menu2[language]![1]),
                         value: "second2",
                       ),
                       PopupMenuItem(
-                        child: Text(menu2[korean]![2]),
+                        child: Text(menu2[language]![2]),
                         value: "second3",
                       ),
                     ]),
@@ -336,7 +336,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
     else
       posts.addAll(collectionsProvider.openedPosts);
 
-    String sortMode = preferences!.getString("mode2") ?? "card";
+    String sortMode = userPreferences!.getString("mode2") ?? "card";
     if (sortMode == "card")
       return CardViewWidget(height, width, posts[index]);
     else
@@ -365,7 +365,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                     borderSide: BorderSide(width: 1,color: Color.fromRGBO(175, 27, 63, 1)),
                   ),
                   contentPadding: EdgeInsets.only(left: 10.0),
-                  hintText: search_hint[korean],
+                  hintText: searchHint[korean],
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
