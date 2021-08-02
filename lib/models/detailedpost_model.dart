@@ -56,8 +56,9 @@ class Intro {
   String? _saveYn;
   String? _hashTag = "";
   String? _comment;
+  String? _memberId;
 
-  Intro.create(this._cherId, this._title, this._categoryId, this._share, this._regDate, this._pictureId, this._views, this._categoryName, this._picture, this._nickName, this._saveCount, this._saveYn, this._hashTag, this._comment);
+  Intro.create(this._cherId, this._title, this._categoryId, this._share, this._regDate, this._pictureId, this._views, this._categoryName, this._picture, this._nickName, this._saveCount, this._saveYn, this._hashTag, this._comment, this._memberId);
 
   Intro();
 
@@ -89,8 +90,10 @@ class Intro {
 
   String? get comment => _comment;
 
+  String? get memberId => _memberId;
+
   factory Intro.fromJson(Map<String, dynamic> parsedJson) {
-    return Intro.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], parsedJson["CATEGORY_ID"], parsedJson["SHARE"], parsedJson["REG_DATE"], parsedJson["PICTURE_ID"], parsedJson["VIEWS"], parsedJson["CATEGORY"], parsedJson["PICTURE"], parsedJson["NAME"], parsedJson["SAVECOUNT"], parsedJson["SAVE_YN"], parsedJson["hashtag"], parsedJson["COMMENT"]);
+    return Intro.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], parsedJson["CATEGORY_ID"], parsedJson["SHARE"], parsedJson["REG_DATE"], parsedJson["PICTURE_ID"], parsedJson["VIEWS"], parsedJson["CATEGORY"], parsedJson["PICTURE"], parsedJson["NAME"], parsedJson["SAVECOUNT"], parsedJson["SAVE_YN"], parsedJson["hashtag"], parsedJson["COMMENT"], parsedJson["MEMBER_ID"]);
   }
 }
 class Item {

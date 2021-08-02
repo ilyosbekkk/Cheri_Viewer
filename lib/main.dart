@@ -1,9 +1,9 @@
-
 import 'package:viewerapp/business_logic/providers/categories provider.dart';
 import 'package:viewerapp/business_logic/providers/collections provider.dart';
 import 'package:viewerapp/business_logic/providers/home provider.dart';
 import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
 import 'package:viewerapp/ui/screens/categoryview_screen.dart';
+import 'package:viewerapp/ui/screens/search%20result%20screen.dart';
 import 'business_logic/providers/cheri provider.dart';
 import 'business_logic/providers/detailedview provider.dart';
 import 'package:viewerapp/ui/screens/webview main screen.dart';
@@ -77,6 +77,7 @@ class MyApp extends StatelessWidget {
         CheriDetailViewScreen.route: (_) => CheriDetailViewScreen(),
         CategoryViewScreen.route: (_) => CategoryViewScreen(),
         ProfileScreen.route: (_) => ProfileScreen(),
+        Searchresultscreen.route: (_) => Searchresultscreen()
       },
     );
   }

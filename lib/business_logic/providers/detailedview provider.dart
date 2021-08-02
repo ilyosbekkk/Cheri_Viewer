@@ -22,6 +22,8 @@ class DetailedViewProvider extends ChangeNotifier {
       Response response = await WebServices.fetchDetailedViewData(cheriId, memberId);
       Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
       postsResponse = DetailedPostResponse.fromJson(decodedResponse);
+      print("idddd: ${postsResponse.encryptedId}");
+      print("decoded response");
       print(decodedResponse);
       if (postsResponse.msg == "success") {
         _loaded = true;

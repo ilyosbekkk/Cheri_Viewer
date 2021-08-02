@@ -11,7 +11,7 @@ import '../nav_controller.dart';
 class ProfileScreen extends StatefulWidget {
   static String route = "/profile_screen";
 
-  const ProfileScreen();
+
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -27,10 +27,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     language = languagePreferences!.getString("language")??"en";
     var provider = Provider.of<UserManagementProvider>(context, listen: false);
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
+
+
+
+  String url =   args["user_id"] == null?"https://cheri.weeknday.com/viewer/profile?my=${args["encrypt_id"]}":"https://cheri.weeknday.com/viewer/profile?my=${args["encrypt_id"]}&m=${args["user_id"]}";
+
+  print("urllll: ${url}");
+
+
     return Scaffold(
       body: SafeArea(
         child: InAppWebView(
-                  initialUrlRequest: URLRequest(url: Uri.parse("https://cheri.weeknday.com/viewer/profile?my=${args["encrypt_id"]}")),
+                  initialUrlRequest: URLRequest(url: Uri.parse(url)),
                   initialOptions: InAppWebViewGroupOptions(
                     crossPlatform: InAppWebViewOptions(
                       javaScriptEnabled: true,
@@ -51,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _controller.addJavaScriptHandler(handlerName: "go_main", callback: (args) {
                       print(args);
                       switch(args[0]){
-                        case "go Main":{
+                        case "go_main":{
                            Navigator.pop(context);
                            break;
                         }
@@ -97,10 +105,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                          }
                        });
                     });
-
-
-
-
                   }),
       ),
 
@@ -109,3 +113,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 
 }
+
+//

@@ -5,6 +5,7 @@ import 'package:viewerapp/business_logic/providers/search provider.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/screens/auth_screen.dart';
+import 'package:viewerapp/ui/screens/search%20result%20screen.dart';
 import 'package:viewerapp/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -42,8 +43,6 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     _memberId = userPreferences!.getString("id")??"";
-    if(widget.searchword!.isNotEmpty)
-      _controller.text = widget.searchword!;
 
   }
 
@@ -51,21 +50,8 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     language = languagePreferences!.getString("language")??"en";
     final modalHeight = (widget.height!.toDouble() - MediaQueryData.fromWindow(window).padding.top);
-    if(widget.searchword!.isNotEmpty)
-    return Scaffold(
-      body: Container(
-          margin: EdgeInsets.only(left: widget.width!.toDouble() * 0.025, top: 10),
-          child: Consumer<SearchProvider>(
-            builder: (context, searchProvider, child) {
-              if (!_loaded && _memberId != "") {
-                searchProvider.fetchRecentSearches(_memberId!).then((value) {});
-                _loaded = true;
-              }
-              return _buildWidgetsList(searchProvider, modalHeight);
-            },
-          )),
-    );
-    else return Container(
+
+    return Container(
         margin: EdgeInsets.only(left: widget.width!.toDouble() * 0.025, top: 10),
         child: Consumer<SearchProvider>(
           builder: (context, searchProvider, child) {
@@ -79,14 +65,8 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildWidgetsList(SearchProvider searchProvider, double modalHeight) {
-    int count = 2;
-    if (searchProvider.searchResults.length > 0 && !_searching) {
-      count = searchProvider.searchResults.length + count;
-    } else if (searchProvider.searchResults.length == 0 && _noSearchResult) {
-      count++;
-    } else {
-      if (!_searching) {
-        if (_controller.text.isEmpty) {
+    int count = 1;
+    if (_controller.text.isEmpty) {
           if (searchProvider.recentSearches.isEmpty)
             count++;
           else
@@ -97,106 +77,55 @@ class _SearchScreenState extends State<SearchScreen> {
           else
             count = searchProvider.relatedSearches.length + count;
         }
-      } else {
-        count++;
+
+
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: count,  itemBuilder: (context, index) {
+      if(index == 0)
+        return  _buildSearchWidget(searchProvider, modalHeight);
+      else if(_controller.text.isEmpty){
+        if(searchProvider.recentSearches.isNotEmpty){
+          index = index - 1;
+          return _buildRecentSearchResultWidget(searchProvider.recentSearches[index].word??"ㅇ", searchProvider);
+        }
+      else{
+        return Container(
+          margin: EdgeInsets.only(top: 0.3 * widget.height!.toInt()),
+          child: Column(
+           children: [
+             Icon(Icons.announcement_rounded,  color: Theme.of(context).selectedRowColor,size: 30,),
+             Text("No recent searches", style: TextStyle(
+               fontSize: 20
+             ),)
+           ],
+          ),
+        );
+        }
       }
-    }
-    return _memberId != ""
-        ? ListView.builder(
-            primary: false,
-            shrinkWrap: true,
-            itemCount: count,
-            itemBuilder: (BuildContext context, index) {
-              if (index == 0) {
-                return _buildSearchWidget(searchProvider,  modalHeight);
-              } else if (index == 1) {
-                if (searchProvider.searchResults.length > 0) {
-                  return _buildSortWidget(_controller.text, searchProvider.searchResults.length, searchProvider);
-                } else {
-                  if (_controller.text.isEmpty) {
-                    return Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(10),
-                      color: Color.fromRGBO(245, 245, 245, 1),
-                      margin: EdgeInsets.only(top: 10.0),
-                      child: Text(
-                        "${recentSearch[language]}",
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                      ),
-                    );
-                  } else
-                    return Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(10),
-                      color: Color.fromRGBO(245, 245, 245, 1),
-                      margin: EdgeInsets.only(top: 10.0),
-                      child: Text(
-                        "${relatedSearch[language]}",
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                      ),
-                    );
-                }
-              } else {
-                index = index - 2;
-                if (_searching) {
-                  return Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: widget.width!.toDouble() *0.5),
-                        child: CircularProgressIndicator(
-                          color: Theme.of(context).selectedRowColor,
+      else{
+        if(searchProvider.relatedSearches.isNotEmpty){
+          index  = index - 1;
+          return _buildRelatedSearchesWidget(searchProvider.relatedSearches[index].word??"", searchProvider);
+        }
+        else{
+          return  Container(
+            margin: EdgeInsets.only(top: 0.3 * widget.height!.toInt()),
 
-                    )),
-                  );
-                } else if (searchProvider.searchResults.length > 0) {
-                  return _buildPostWidget(0.4 * widget.height!.toDouble(), widget.width!.toDouble(), index, searchProvider);
-                } else if (searchProvider.searchResults.isEmpty && _noSearchResult) {
-                  return Center(
-                    child: Text(
-                      "${noSearchResult[language]}",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  );
-                } else if (_controller.text.isEmpty) {
-                  if (searchProvider.recentSearches.isEmpty)
-                    return Center(
-                      child: Text(
-                        "${noRelatedSearchResult[language]}",
-                        style: TextStyle(fontSize: 15),
-                      ),
-                    );
-                  else
-                    return _buildRecentSearchResultWidget(searchProvider.recentSearches[index].word!, searchProvider);
-                } else {
-                  if (searchProvider.relatedSearches.isEmpty)
-                    return Center(
-                        child: Text(
-                      "${noRelatedSearchResult[language]}",
-                      style: TextStyle(fontSize: 15),
-                    ));
-                  return _buildRelatedSearchesWidget(searchProvider.relatedSearches[index].word!, searchProvider);
-                }
-              }
-            })
-        : Center(
-      child: Container(
-                margin: EdgeInsets.only(top: widget.width!.toDouble()*0.5),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("${toastSignIn[language]}",  style: TextStyle(
-                        fontSize: 18
-                      ),),
-                    ),
-        CupertinoButton(
-
-                      color: Theme.of(context).selectedRowColor,
-                      child: Text("${loginButton[language]}"), onPressed: (){
-                    Navigator.pushNamed(context, AuthScreen.route);
-                  })
-                  ],
-                )),
+            child: Column(
+              children: [
+                Icon(Icons.announcement_rounded,  color: Theme.of(context).selectedRowColor, size: 30,),
+                Text("No related searches",  style: TextStyle(
+                    fontSize: 20
+                ),)
+              ],
+            ),
           );
+        }
+      }
+    });
+
+
   }
 
   Widget _buildSearchWidget(SearchProvider homePageProvider,  double modalHeight){
@@ -225,18 +154,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   showToast("${emptySearchWord[language]}");
                 }
                 else  {
-                  setState(() {
-                    _searching = true;
-                  });
-                  homePageProvider.searchPostByTitle(10, 1, "views", searchWord, _memberId!).then((value) {
-                    setState(() {
-                      _searching = false;
-                      if (homePageProvider.searchResults.isEmpty)
-                        _noSearchResult = true;
-                      else
-                        _noSearchResult = false;
-                    });
-                  });
+                  Navigator.pushNamed(context, Searchresultscreen.route,  arguments: {"searchWord":searchWord });
+
                 }
 
               },
@@ -290,81 +209,8 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildPostWidget(double height, double width, index, SearchProvider homePageProvider) {
-    List<Post> posts = homePageProvider.searchResults;
-    String mode = userPreferences!.getString("mode2") ?? "card";
-    if (mode == "card")
-      return CardViewWidget(height, width,  posts[index]);
-    else
-      return ListViewWidget(height, width,  posts[index]);
-  }
 
-  Widget _buildSortWidget(String searchWord, int count, SearchProvider homePageProvider) {
-    return Container(
-      margin: EdgeInsets.only(top: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-            margin: EdgeInsets.only(left: 5.0),
-            child: PopupMenuButton(
-                child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/list.svg")),
-                elevation: 10,
-                enabled: true,
-                onSelected: (value) async {
-                  if (value == "first1") {
-                    await userPreferences!.setString("mode2", "card");
-                  } else if (value == "first2") {
-                    await userPreferences!.setString("mode2", "list");
-                  }
-                  setState(() {});
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    child: Text(menu1[korean]![0]),
-                    value: "first1",
-                  ),
-                  PopupMenuItem(
-                    child: Text(menu1[korean]![1]),
-                    value: "first2",
-                  )
-                ]),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 10.0, right: 10),
-            child: PopupMenuButton(
-                elevation: 10,
-                child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/options.svg")),
-                enabled: true,
-                onSelected: (value) async {
-                  if (value == "second1") {
-                    await homePageProvider.searchPostByTitle(10, 1, "regdate", searchWord, _memberId!);
-                  } else if (value == "second2") {
-                    await homePageProvider.searchPostByTitle(10, 1, "regdate", searchWord, _memberId!);
-                  } else if (value == "second3") {
-                    await homePageProvider.searchPostByTitle(10, 1, "views", searchWord, _memberId!);
-                  }
-                  setState(() {});
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    child: Text(menu2[language]![0]),
-                    value: "second1",
-                  ),
-                  PopupMenuItem(
-                    child: Text(menu2[language]![1]),
-                    value: "second2",
-                  ),
-                  PopupMenuItem(
-                    child: Text(menu2[language]![2]),
-                    value: "second3",
-                  ),
-                ]),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildRecentSearchResultWidget(String recentSearchWord, SearchProvider searchProvider) {
     return Container(
@@ -379,20 +225,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 alignment: Alignment.bottomLeft,
                 child: MaterialButton(
                   onPressed: () {
-                    setState(() {
-                      _controller.text = recentSearchWord;
-                      _searching = true;
-                    });
-                    searchProvider.searchPostByTitle(10, 1, "views", recentSearchWord, _memberId!).then((value) {
-                      setState(() {
-                        _searching = false;
-                        if (searchProvider.searchResults.isEmpty)
-                          _noSearchResult = true;
-                        else
-                          _noSearchResult = false;
-                      });
-                    });
-                  },
+                    Navigator.pushNamed(context, Searchresultscreen.route,  arguments: {"searchWord":recentSearchWord });
+                    },
                   child: Text(
                     recentSearchWord,
                     maxLines: 1,

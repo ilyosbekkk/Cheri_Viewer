@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:viewerapp/business_logic/providers/detailedview provider.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
 import 'package:viewerapp/ui/screens/search_screen.dart';
+import 'package:viewerapp/ui/screens/webview%20main%20screen.dart';
 import 'package:viewerapp/utils/strings.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -206,7 +207,13 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                   Icons.account_circle,
                   size: 30,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  String? encrypedId = (userPreferences!.getString("encrypt_id") ?? null);
+                  print(encrypedId);
+
+                  Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId,  "user_id": detailedViewProvider.postsResponse.detailedPosts!.memberId});
+
+                },
               ),
               Text(
                 (detailedViewProvider.detailedPost.nickName != null ? detailedViewProvider.detailedPost.nickName : "")!,

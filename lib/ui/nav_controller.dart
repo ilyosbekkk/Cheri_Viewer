@@ -68,6 +68,7 @@ class _NavCotrollerState extends State<NavCotroller> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
      memberId = userPreferences!.getString("id")??"";
+     print("memberId :${memberId}");
     accountImgurl = userPreferences!.getString("imgUrl")??"";
     _screens = [_buildHomeScreen(height, width), _buildSearchScreen(height, width), _buildStorageBoxScreen(height, width, memberId)];
     String string;
@@ -141,7 +142,7 @@ class _NavCotrollerState extends State<NavCotroller> {
     return SliverAppBar(
       shadowColor: Colors.blue,
       elevation: 5,
-      shape: Border(bottom: BorderSide(color: Colors.black26, width: 0.5)),
+      shape: Border(bottom: BorderSide(color: _selectedIndex==2?Colors.white:Colors.black54, width: 0.5,)),
       floating: true,
       backgroundColor: Color.fromRGBO(250, 250, 250, 1),
       title: InkWell(
@@ -206,11 +207,16 @@ class _NavCotrollerState extends State<NavCotroller> {
                 String? encrypedId = (userPreferences!.getString("encrypt_id") ?? null);
                 print(encrypedId);
 
-                Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId});
+                Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId,  "user_id": null});
               },
               child: CircleAvatar(
-                radius: 15,
-                foregroundImage: NetworkImage(  "https://cheri.weeknday.com/${imgUrl}"),
+                radius: 16,
+                backgroundColor: Theme.of(context).selectedRowColor,
+                child: CircleAvatar(
+                  radius: 15,
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: NetworkImage(imgUrl!),
+                ),
               ),
             ),
           )
