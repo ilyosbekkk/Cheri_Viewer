@@ -75,15 +75,16 @@ class UserManagementProvider extends ChangeNotifier {
   }
 
   Future<bool> saveUserData(String? id,  String? email, String?  imgUrl,  String? name,  String? encryptedId) async {
-    bool setId = await userPreferences!.setString("id", id??"");
-    bool setEmail = await userPreferences!.setString("email", email??"");
-    bool setImgUrl = await userPreferences!.setString("imgUrl", imgUrl??"");
-    bool setName = await userPreferences!.setString("name", name??"");
-    bool  setEncryptedId = await  userPreferences!.setString("encrypt_id", encryptedId??"");
+    if(id != null &&  email  != null && imgUrl != null &&   name != null &&  name  != null && encryptedId != null) {
+      bool setId = await userPreferences!.setString("id", id);
+      bool setEmail = await userPreferences!.setString("email", email);
+      bool setImgUrl = await userPreferences!.setString("imgUrl", imgUrl);
+      bool setName = await userPreferences!.setString("name", name);
+      bool setEncryptedId = await userPreferences!.setString("encrypt_id", encryptedId);
 
-
-    if (setId && setEmail && setImgUrl && setName && setEncryptedId) {
-      return true;
+      if (setId && setEmail && setImgUrl && setName && setEncryptedId) {
+        return true;
+      }
     }
     return false;
   }

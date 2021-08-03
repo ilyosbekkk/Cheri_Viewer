@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:viewerapp/business_logic/providers/detailedview provider.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
+import 'package:viewerapp/ui/screens/search%20result%20screen.dart';
 import 'package:viewerapp/ui/screens/search_screen.dart';
 import 'package:viewerapp/ui/screens/webview%20main%20screen.dart';
 import 'package:viewerapp/utils/strings.dart';
@@ -39,7 +40,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    language =  languagePreferences!.getString("language")??"en";
+    language =  languagePreferences!.getString("language")??"ko";
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     final  args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
@@ -254,7 +255,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                           margin: EdgeInsets.only(left: 10),
                          child: InkWell(
                            onTap: () {
-                             Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(height, width, hashtags[index])));
+                             Navigator.pushNamed(context, Searchresultscreen.route,  arguments: {"searchWord":hashtags[index]});
                            },
                            child: Text("#${hashtags[index]}",style: TextStyle(
                              color: Colors.blue,

@@ -14,6 +14,7 @@ import 'package:viewerapp/utils/utils.dart';
 import '../../utils/strings.dart';
 import 'auth_screen.dart';
 
+// ignore: must_be_immutable
 class StorageBoxScreen extends StatefulWidget {
   double? height;
   double? width;
@@ -62,7 +63,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
-    language = languagePreferences!.getString("language")??"en";
+    language = languagePreferences!.getString("language")??"ko";
     int count = 2;
     if (_searchMode) count = count + 1;
     if (mode == Button.BOOKMARK && _collectionsProvider.savedPosts.isNotEmpty)
@@ -90,7 +91,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
               ],
             )),
       );
-    } else {
+    }
+    else {
       if (_collectionsProvider.statusCode1 == 200 && _collectionsProvider.statusCode2 == 200)
         return ListView.builder(
             primary: false,
@@ -166,7 +168,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
             ),
           ),
         );
-      } else{
+      }
+      else{
         print(_collectionsProvider.statusCode1);
         print(_collectionsProvider.statusCode2);
         return Center(
@@ -178,7 +181,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                 color: Theme.of(context).selectedRowColor,
               )),
         );
-    }}
+    }
+    }
   }
 
   Widget _buildCustomTabBar() {
@@ -210,7 +214,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
               height: 60,
               width: widget.width!.toDouble() / 2,
               child: Text(
-                "${bookMarkNumber[language]}",
+                "${bookMarkScreen[language]}",
                 style: TextStyle(fontSize: 15),
               ),
             ),
@@ -301,11 +305,11 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                 enabled: true,
                 onSelected: (value) async {
                   if (value == "second1") {
-                    await postListsProvidert.fetchSavedPostsList(memberId, "8", "1", "regdate r");
+                    await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "latestdate");
                   } else if (value == "second2") {
-                    await postListsProvidert.fetchSavedPostsList(memberId, "8", "1", "regdate");
+                    await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "olddate");
                   } else if (value == "second3") {
-                    await postListsProvidert.fetchSavedPostsList(memberId, "8", "1", "views");
+                    await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "views");
                   }
                   setState(() {});
                 },

@@ -24,7 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    language = languagePreferences!.getString("language")??"en";
+    language = languagePreferences!.getString("language")??"ko";
     var provider = Provider.of<UserManagementProvider>(context, listen: false);
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
 
@@ -68,10 +68,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           showToast("${passwordChanged[language]}");
                           break;
                         }
+
                         case  "log_out":{
                          provider.logout().then((value)  {
                            if(value) {
-                             Navigator.pushNamedAndRemoveUntil(context, NavCotroller.route, (r) => false);
+                             Navigator.pop(context);
                              showToast("${logoutMessage[language]}");
                            }
                            else
@@ -82,7 +83,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         case  "delete_account":{
                           provider.logout().then((value)  {
                             if(value) {
-                              Navigator.pushNamedAndRemoveUntil(context, NavCotroller.route, (r) => false);
                               showToast("${deleteAcountMessage[language]}");
                             }
                             else
@@ -90,6 +90,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           });
                           break;
                         }
+
+
                       }
 
 
@@ -98,6 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                        languagePreferences!.setString("language", args[0]).then((value)  {
                          if(value){
                            showToast("${languageChanged[language]}");
+                           Navigator.pop(context);
 
                          }
                          else {

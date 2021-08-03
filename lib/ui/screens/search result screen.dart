@@ -27,13 +27,13 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
   bool _loaded = false;
   late  String memberId;
   String? language;
-  bool _searching = false;
+  bool _searching = true;
   var scrollConttoller = ScrollController();
 
 
   @override
   Widget build(BuildContext context) {
-    language = languagePreferences!.getString("language")??"en";
+    language = languagePreferences!.getString("language")??"ko";
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
     memberId = userPreferences!.getString("id")??"";
@@ -43,25 +43,22 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
       body: SafeArea(
           child:  Consumer<SearchProvider>(builder: (context, postProvider, widget) {
             if (!_loaded && _searching ){
+              _loaded = true;
+              _searching = false;
               postProvider.searchPostByTitle(pageSize, 1, orderBy, args["searchWord"], memberId).then((value) {
-                _loaded = true;
-                _searching = false;
+
               });
             }
-            if (_searching)
-              return Center(
-
+            if (_searching) return Center(
                   child: CircularProgressIndicator(
                     color: Theme.of(context).selectedRowColor,
-
                   )
               );
-            else
-              return CustomScrollView(
+            else return CustomScrollView(
                 slivers: [
                   _buildSliverAppBar(_height, args["searchWord"]!),
                   ((userPreferences!.getString("mode1") ?? "card") == "card") ?
-                  _buildList(postProvider, 0.4 * _height, _width) : _buildDividedList(postProvider, 0.4 * _height, _width, args["id"]!)],
+                  _buildList(postProvider, 0.4 * _height, _width,  args["searchWord"]) : _buildDividedList(postProvider, 0.4 * _height, _width)],
               );
           })),
     );
@@ -95,7 +92,7 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
     );
   }
 
-  Widget _buildList(SearchProvider postListProvider, double height, double width) {
+  Widget _buildList(SearchProvider postListProvider, double height, double width, String searchWord) {
     return SliverToBoxAdapter(
         child: ListView.builder(
             primary: false,
@@ -103,7 +100,7 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
             itemCount: postListProvider.searchResults.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
-                return _buildSortWidget("searchWord", 5, postListProvider);
+                return _buildSortWidget(searchWord, 5, postListProvider);
               } else {
                 index = index - 1;
                 return _buildSinglePost(index, height, width, postListProvider);
@@ -111,7 +108,7 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
             }));
   }
 
-  Widget _buildDividedList(SearchProvider postListProvider, double height, double width, String category) {
+  Widget _buildDividedList(SearchProvider postListProvider, double height, double width) {
     return SliverToBoxAdapter(
         child: ListView.builder(
           primary: false,
@@ -142,8 +139,15 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+
         children: [
+          Container(
+            margin:EdgeInsets.only(left: 10),
+      child: Text("검색 결과: ${postListsProvidert.searchResults.length} 건",  style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold
+          ),),),
+          Spacer(),
           Container(
             margin: EdgeInsets.only(left: 5.0),
             child: PopupMenuButton(
@@ -152,9 +156,9 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
                 enabled: true,
                 onSelected: (value) async {
                   if (value == "first1") {
-                    await userPreferences!.setString("mode1", "card");
+                    await userPreferences!.setString("mode3", "card");
                   } else if (value == "first2") {
-                    await userPreferences!.setString("mode1", "list");
+                    await userPreferences!.setString("mode3", "list");
                   }
                   setState(() {});
                 },
@@ -177,9 +181,9 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
                 enabled: true,
                 onSelected: (value) async {
                   if (value == "second1") {
-                    await postListsProvidert.searchPostByTitle(10, 1, "regdate", searchWord, memberId);
+                    await postListsProvidert.searchPostByTitle(10, 1, "latestdate", searchWord, memberId);
                   } else if (value == "second2") {
-                    await postListsProvidert.searchPostByTitle(10, 1, "regdate", searchWord, memberId);
+                    await postListsProvidert.searchPostByTitle(10, 1, "olddate", searchWord, memberId);
                   } else if (value == "second3") {
                     await postListsProvidert.searchPostByTitle(10, 1, "views", searchWord, memberId);
                   }

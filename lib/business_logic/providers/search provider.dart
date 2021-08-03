@@ -13,6 +13,9 @@ class SearchProvider extends ChangeNotifier {
   List<SearchWord> _relatedSearches = [];
 
   Future<bool> searchPostByTitle(int pageSize, int nowPage, String orderBy, String searchWord, String memberId) async {
+    print(orderBy);
+    print(searchWord);
+    print(memberId);
     if (_searchResults.isNotEmpty) _searchResults.clear();
     try {
       Response response = await WebServices.searchPostByTitle(pageSize, nowPage, orderBy, searchWord, memberId);

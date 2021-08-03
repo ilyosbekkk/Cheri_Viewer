@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-  language = languagePreferences!.getString("language")??"en";
+  language = languagePreferences!.getString("language")??"ko";
     if (_homePageProvider.responseCode1 == 200 && _homePageProvider.responseCode2 == 200)
       return ListView.builder(
         primary: false,
@@ -97,8 +97,9 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
       );
-    else if (_homePageProvider.responseCode1 == -1 || _homePageProvider.responseCode2 == -1)
-      return Center(
+
+
+    else if (_homePageProvider.responseCode1 == -1 || _homePageProvider.responseCode2 == -1) return Center(
         child: Column(
           children: [
             Text("${timeOutError[language]}"),
@@ -140,8 +141,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       );
-    } else if (_homePageProvider.responseCode1 == -3 || _homePageProvider.responseCode2 == -3) {
-      return Center(
+    }
+    else if (_homePageProvider.responseCode1 == -3 || _homePageProvider.responseCode2 == -3) {return Center(
         child: Container(
           margin: EdgeInsets.only(top: widget.width! * 0.5),
           child: Column(
@@ -154,16 +155,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-      );
-    } else
-      return Center(
-        child: Container(
+      );}
+    else return Center(child: Container(
             margin: EdgeInsets.only(top: widget.width! * 0.5),
             child: CircularProgressIndicator(
                     color: Theme.of(context).selectedRowColor,
                   )
-                ),
-      );
+                ),);
   }
 
   Widget _buildSinglePost(int index, double height, double width) {

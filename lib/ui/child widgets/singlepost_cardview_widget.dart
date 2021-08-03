@@ -27,8 +27,10 @@ class _CardViewWidgetState extends State<CardViewWidget> {
   }
   @override
   Widget build(BuildContext context) {
-     language = languagePreferences!.getString("language")??"en";
+     language = languagePreferences!.getString("language")??"ko";
 
+
+     print("member id ${memberId}");
 
     return Consumer<CheriProvider>(builder: (context,  cheriProvider,  child) {
       return  Container(
@@ -196,7 +198,7 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                             size: 5.0,
                           )),
                       Text(
-                        "${timeFormatter(widget.post.dateTime)} ${ago[language]}",
+                        "${timeFormatter(widget.post.dateTime, language!)}",
                         style: TextStyle(fontSize: 12),
                       ),
 

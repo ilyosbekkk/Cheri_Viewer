@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:viewerapp/business_logic/services/web%20services.dart';
 import 'package:viewerapp/models/postslist_model.dart';
@@ -13,6 +14,9 @@ class CollectionsProvider extends ChangeNotifier {
   List<Post> openedPosts = [];
 
   Future<bool> fetchSavedPostsList(String memberId, String pageSize, String nowPage, String orderBy) async {
+
+
+    if(savedPosts.isNotEmpty) savedPosts.clear();
     try {
       Response response = await WebServices.fetchBookmarkList(memberId, pageSize, nowPage, orderBy);
 
@@ -46,6 +50,8 @@ class CollectionsProvider extends ChangeNotifier {
   }
 
   Future<bool> fetchOpenedPostsList(String memberId, String pageSize, String nowPage, String orderBy) async {
+    if(openedPosts.isNotEmpty) openedPosts.clear();
+
     try {
       Response response = await WebServices.fetchOpenedCheriList(memberId, pageSize, nowPage, orderBy);
 
@@ -84,6 +90,7 @@ class CollectionsProvider extends ChangeNotifier {
     openedPosts.clear();
     statusCode1 = 0;
     statusCode2= 0;
+    notifyListeners();
 
   }
 }

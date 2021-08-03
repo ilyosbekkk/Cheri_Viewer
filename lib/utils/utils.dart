@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:viewerapp/utils/strings.dart';
 
 
 
@@ -22,7 +23,7 @@ void showToast(String message) {
       timeInSecForIosWeb: 1, backgroundColor: Colors.black54, textColor: Colors.white, fontSize: 16.0);
 }
 
-String timeFormatter(String formattedString) {
+String timeFormatter(String formattedString, String language) {
 
   var nowTime = DateTime.now();
   var postCreationTime = DateTime.parse(formattedString);
@@ -36,23 +37,23 @@ String timeFormatter(String formattedString) {
         if (hoursDiff == 0) {
           int minsDiff = nowTime.minute - postCreationTime.minute;
           if (minsDiff == 0)
-            return "방금";
+            return timeUnit[language]![0];
           else
-            return "$minsDiff 분";
+            return "$minsDiff ${timeUnit[language]![1]}";
         } else {
-          return "$hoursDiff 시간";
+          return "$hoursDiff ${timeUnit[language]![2]}";
         }
       } else {
         if (dayDiff <= 6)
-          return "$dayDiff 일";
+          return "$dayDiff ${timeUnit[language]![3]}";
         else
-          return "${dayDiff ~/ 7} 주";
+          return "${dayDiff ~/ 7} ${timeUnit[language]![4]}";
       }
     } else {
-      return "$monthDiff 개 월";
+      return "$monthDiff ${timeUnit[language]![5]}";
     }
   } else {
-    return "$yearDiff 년";
+    return "$yearDiff ${timeUnit[language]![6]}";
   }
 }
 

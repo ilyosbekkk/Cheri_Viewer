@@ -31,7 +31,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
   }
   @override
   Widget build(BuildContext context) {
-    language = languagePreferences!.getString("language")??"en";
+    language = languagePreferences!.getString("language")??"ko";
     return  Consumer<CheriProvider>(builder: (context, cheriProvider,  child){
       return  InkWell(
         onTap: () {
@@ -121,7 +121,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                             size: 5.0,
                           )),
                       Text(
-                        "${timeFormatter(widget.post.dateTime)}${ago[language]}",
+                        "${timeFormatter(widget.post.dateTime,language!)}}",
                         style: TextStyle(fontSize: 12),
                       ),
                       if(widget.post.checked == "Y")

@@ -37,8 +37,7 @@ class _NavCotrollerState extends State<NavCotroller> {
   MyConnectivity _connectivity = MyConnectivity.instance;
   late String? memberId;
   late  String? accountImgurl;
-  RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   @override
   void didChangeDependencies() {
@@ -61,7 +60,7 @@ class _NavCotrollerState extends State<NavCotroller> {
   }
   @override
   Widget build(BuildContext context) {
-    language = languagePreferences!.getString("language")??"en";
+    language = languagePreferences!.getString("language")??"ko";
      homeProvider = Provider.of<HomeProvider>(context, listen:false);
      searchProvider = Provider.of<SearchProvider>(context, listen: false);
      collectionsProvider = Provider.of<CollectionsProvider>(context, listen: false);
@@ -88,17 +87,19 @@ class _NavCotrollerState extends State<NavCotroller> {
          break;
     }
     return  Scaffold(
-            body: SafeArea(child: CustomScrollView(
-
-                controller: _selectedIndex == 0?  _scrollController:_selectedIndex == 1?_scrollController2:_scrollController3,
-                slivers: [
-                  _buildSliverAppBar(height, accountImgurl),
-
-                  _screens[_selectedIndex]],
-              ),),
+            body: SafeArea(child: SmartRefresher(
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              child: CustomScrollView(
+                controller: _selectedIndex == 0? _scrollController:_selectedIndex == 1?_scrollController2:_scrollController3,
+                  slivers: [
+                    _buildSliverAppBar(height, accountImgurl),
+                    _screens[_selectedIndex]],
+                ),
+            ),),
             bottomNavigationBar: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "홈"),
+                BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label:  "홈"),
                 BottomNavigationBarItem(icon: Icon(Icons.search), label: "검색"),
                 BottomNavigationBarItem(icon: Icon(Icons.bookmark_border), label: "보관함"),
               ],
@@ -132,12 +133,6 @@ class _NavCotrollerState extends State<NavCotroller> {
   }
 
   Widget _buildSliverAppBar(double height, String?  imgUrl) {
-    AppBar appBar = AppBar(
-      title: Text('Demo'),
-    );
-    setState(() {
-      appBarHeight = appBar.preferredSize.height;
-    });
 
     return SliverAppBar(
       shadowColor: Colors.blue,
@@ -178,19 +173,20 @@ class _NavCotrollerState extends State<NavCotroller> {
                 Navigator.pushNamed(context, AuthScreen.route).then((value)  {
                   setState(() {
                     memberId = userPreferences!.getString("id")??"";
-                    accountImgurl = userPreferences!.getString("imgUrl")??"";
+
+                     accountImgurl= userPreferences!.getString("imgUrl")??"";
                   });
                 });
               }else {
-       print("no");
+
                 Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId}).then((value) {
+                  print("34uh4gruy4gyeryrgu24ruyerguyrgeurg");
                   setState(() {
-
-                    language = languagePreferences!.getString("language")??"en";
-
+                    language = languagePreferences!.getString("language")??"ko";
+                    print("language ${language}");
                   });
 
-                  print(accountImgurl);
+
                 });
               }
                 },
@@ -215,7 +211,7 @@ class _NavCotrollerState extends State<NavCotroller> {
                 child: CircleAvatar(
                   radius: 15,
                   backgroundColor: Colors.transparent,
-                  backgroundImage: NetworkImage(imgUrl!),
+                  backgroundImage: NetworkImage("https://cheri.weeknday.com/${imgUrl!}"),
                 ),
               ),
             ),
@@ -246,6 +242,21 @@ class _NavCotrollerState extends State<NavCotroller> {
     });
   }
 
+
+  void _onRefresh() async{
+    if(_selectedIndex == 0)
+    homeProvider.cleanHomeScreen();
+    else if(_selectedIndex == 1)
+    searchProvider.cleanList();
+    else if(_selectedIndex == 2)
+    collectionsProvider.cleanCollections();
+    setState(() {
+
+    });
+
+    await Future.delayed(Duration(milliseconds: 200));
+    _refreshController.refreshCompleted();
+  }
    
   Future<void> initDynamicLinks() async {
     FirebaseDynamicLinks.instance.onLink(

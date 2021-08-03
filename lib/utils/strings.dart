@@ -1,21 +1,25 @@
 //language strings
 String english = "en";
 String korean = "ko";
+
+//Card view & Listview
+Map<String, String> cheriViews = {english: "Views", korean: "조회수"};
+Map<String, List<String>> categories = {english: ["Health", "Life", "Education.Learning", "IT.Content", "Personal Development"], korean: ["건강", "생활", "교육.학습", "IT.컨텐츠", "자기개발"]};
+Map<String, String> bookmarkTab = {english: "Bookmarks", korean: "북마크"};
+Map<String, String> openedTab = {english: "Opened Cheri", korean: "여러본 체리"};
 Map<String, String> homeTitle = {english: "Home", korean: "홈"};
 Map<String, String> searchTitle = {english: "Search", korean: "검색"};
 Map<String, String> storageTitle = {english: "Collections", korean: "보관함"};
-Map<String, String> bookmarkTab = {english: "Bookmarks", korean: "북마크"};
-Map<String, String> openedTab = {english: "Opened", korean: "여러본 체리"};
-Map<String, String> appName = {english: "CheriViewer", korean: "체리뷰버"};
-Map<String, String> cheriViews = {english: "Views", korean: "조회수"};
+Map<String, String> appName = {english: "Cheri Viewer", korean: "체리뷰버"};
 Map<String, String> searchHint = {english: "Please enter cheri name...", korean: "체리 이름을 입력하십시오..."};
-Map<String, List<String>> categories = {english: ["Health", "Life", "Education.Learning", "IT.Content", "Personal Development"], korean: ["건강", "생활", "교육.학습", "IT.컨텐츠", "자기개발"]};
 Map<String, List<String>> menu1 = {english: ["Card view", "List view"], korean: ["카드 형식", "리스트 형식"]};
-Map<String, List<String>> menu2 = {english: ["Date(older)", "Date(latest)", "Views"], korean: ["추가된 날짜(최신순)", "추가된 날짜(오래된순)", "조회순"]};
+Map<String, List<String>> menu2 = {english: ["Date(older)", "Date(latest)", "Views"], korean: ["추가된 날짜(오래된순)", "추가된 날짜(최신순)",  "조회순"]};
 Map<String, String> toastSignIn =  {english:"Please, Sign in first!", korean: "먼저 로그인 하십시오!"};
 Map<String, String> bookmarkSave = {english: "Bookmark has been saved", korean: "북마크에 저장되었습니다."};
 Map<String, String> bookMarkUnsave = {english: "Bookmark has been removed", korean: "북마크에서 삭제되었습니다"};
-Map<String, String> ago = {english: "ago", korean: "전"};
+Map<String, List<String>> timeUnit = {english: [
+  "moment ago", "minute(s) ago", "hour(s) ago", "day(s) ago", "week(s) ago", "month(s) ago", "year(s) ago"],
+  korean: ["방금 전", "분 전", "사간 전", "일 전", "주 전", "개 월 전",  "년 전"]};
 Map<String, String> voiceResult = {english:"Search  result",  korean: "결과"};
 Map<String, String> voiceSearch = {english: "Search", korean: "검색"};
 Map<String,  String> voiceTryAgain = {english: "Try again", korean: "다시 시도하세요"};
@@ -56,6 +60,7 @@ Map<String, String> emptySearchWord = {english: "Search can't be empty", korean:
 Map<String, String> openedCheri = {english:"Opened Cheri", korean: "여러본 체리"};
 Map<String, String> languageChangeError = {english: "Language has not been changed", korean: "언어가 변경되었습니다"};
 Map<String, String> turnonthenet = {english: "Please,turn on the internet", korean: "인터넷 좀 켜주세요!"};
+Map<String, String> bookMarkScreen = {english:"Bookmark", korean:"북마크"};
 
 
 
@@ -75,11 +80,6 @@ const String recentSearches = "/api/viewerapi/my_search_log_list";
 const String relatedSearches = "/api/viewerapi/relation_search_log_list";
 const String bookMarkList = "/api/viewerapi/book_mark_list";
 const String openCheriList = "/api//viewerapi/open_cheri_list";
-
-
-
-
-
 
 
 

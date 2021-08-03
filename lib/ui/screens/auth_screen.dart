@@ -21,7 +21,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    language = languagePreferences!.getString("language")??"en";
+    language = languagePreferences!.getString("language")??"kr";
     return Scaffold(
       body: SafeArea(
         child: Consumer<UserManagementProvider>(builder: (context, authProvider, child) {
@@ -96,17 +96,18 @@ class _AuthScreenState extends State<AuthScreen> {
                       showToast(args[0]["message"]);
                     }
                   });
+
               _controller.addJavaScriptHandler(
-                  handlerName: "naver",
-                  callback: (args) async {
-                   // await authProvider.signInWithNaver();
-                  });
-              _controller.addJavaScriptHandler(
-                  handlerName: "naver_user_info",
-                  callback: (args) {
+                  handlerName: "naver_user_info", callback: (args) {
                     print("naver info: $args");
+                    Navigator.pop(context);
                   });
+
+
+
               _controller.addJavaScriptHandler(handlerName: "email_user_info", callback: (args) {
+                 print("qerofhqeiprhgoierhgir");
+                print(args);
 
                    authProvider.saveUserData(
                        args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"],
@@ -117,8 +118,6 @@ class _AuthScreenState extends State<AuthScreen> {
                      } else
                        showToast("${emailLoginSuccessFailure[language]}");
                    });
-
-
               });
               _controller.addJavaScriptHandler(handlerName: "go_main", callback: (args) {
                 print(args);
@@ -133,7 +132,3 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 }
 
-
-/*
-
- */

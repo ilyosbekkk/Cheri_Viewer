@@ -233,6 +233,9 @@ class HomeProvider extends ChangeNotifier {
     responseCode2 = 0;
     categoriesMessage = "";
     _networkCallDone = false;
+    for(int i = 0; i < _activeCategories.length; i++){
+      _activeCategories[i] = false;
+    }
     notifyListeners();
 
   }

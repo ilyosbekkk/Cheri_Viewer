@@ -56,7 +56,7 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
 
   @override
   Widget build(BuildContext context) {
-      language = languagePreferences!.getString("language")??"en";
+      language = languagePreferences!.getString("language")??"ko";
     if(resultAvailable){
       return Container(
         height: widget._height * 0.4,

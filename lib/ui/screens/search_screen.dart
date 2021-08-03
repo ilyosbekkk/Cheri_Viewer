@@ -48,7 +48,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    language = languagePreferences!.getString("language")??"en";
+    language = languagePreferences!.getString("language")??"ko";
     final modalHeight = (widget.height!.toDouble() - MediaQueryData.fromWindow(window).padding.top);
 
     return Container(
@@ -252,20 +252,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildRelatedSearchesWidget(String relatedSearchWord, SearchProvider searchProvider) {
     return InkWell(
       onTap: () {
-        setState(() {
-          _controller.text = relatedSearchWord;
-
-          _searching = true;
-        });
-        searchProvider.searchPostByTitle(10, 1, "views", relatedSearchWord, _memberId!).then((value) {
-          setState(() {
-            _searching = false;
-            if (searchProvider.searchResults.isEmpty)
-              _noSearchResult = true;
-            else
-              _noSearchResult = false;
-          });
-        });
+        Navigator.pushNamed(context, Searchresultscreen.route,  arguments: {"searchWord":relatedSearchWord });
       },
       child: Container(
         margin: EdgeInsets.only(top: 10),

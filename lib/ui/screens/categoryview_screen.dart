@@ -32,7 +32,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-      language = languagePreferences!.getString("language")??"en";
+      language = languagePreferences!.getString("language")??"ko";
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
     memberId = userPreferences!.getString("id")??"";
@@ -174,9 +174,9 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 enabled: true,
                 onSelected: (value) async {
                   if (value == "second1") {
-                    await postListsProvidert.fetchCategories(10, 1, "regdate", int.parse(category), memberId);
+                    await postListsProvidert.fetchCategories(10, 1, "latestdate", int.parse(category), memberId);
                   } else if (value == "second2") {
-                    await postListsProvidert.fetchCategories(10, 1, "regdate", int.parse(category),  memberId);
+                    await postListsProvidert.fetchCategories(10, 1, "olddate", int.parse(category),  memberId);
                   } else if (value == "second3") {
                     await postListsProvidert.fetchCategories(10, 1, "views", int.parse(category), memberId);
                   }
