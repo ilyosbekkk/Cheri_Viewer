@@ -278,28 +278,10 @@ class _SearchScreenState extends State<SearchScreen> {
       builder: (context) => VoiceRecorderModalBottomSheet(modalHeight),
     ).then((value) {
       if (value != null) {
-        setState(() {
-          _searchActive = true;
-          _controller.text = value;
-          _searching = true;
-        });
-        provider.searchPostByTitle(10, 1, "views", value, _memberId!).then((value) {
-          _searching = false;
-          if (provider.searchResults.isEmpty)
-            _noSearchResult = true;
-          else
-            _noSearchResult = false;
-
-        });
+        Navigator.pushNamed(context, Searchresultscreen.route,  arguments: {"searchWord":value});
       }
-      else {
-        setState(() {
-          _searchActive = false;
-          _searching = false;
-        });
-      }
-
 
     });
+
   }
 }
