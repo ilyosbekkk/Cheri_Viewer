@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:viewerapp/utils/utils.dart';
 
+import 'auth_screen.dart';
+
 class CheriDetailViewScreen extends StatefulWidget {
   static String route = "/cheridetail_screen";
 
@@ -201,27 +203,30 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.account_circle,
-                  size: 30,
+            Container(
+              margin: EdgeInsets.only(left: 15),
+              child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.account_circle,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    String? encrypedId = (userPreferences!.getString("encrypt_id") ?? null);
+                    print(encrypedId);
+
+                    Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId,  "user_id": detailedViewProvider.postsResponse.detailedPosts!.memberId});
+
+                  },
                 ),
-                onPressed: () {
-                  String? encrypedId = (userPreferences!.getString("encrypt_id") ?? null);
-                  print(encrypedId);
-
-                  Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId,  "user_id": detailedViewProvider.postsResponse.detailedPosts!.memberId});
-
-                },
-              ),
-              Text(
-                (detailedViewProvider.detailedPost.nickName != null ? detailedViewProvider.detailedPost.nickName : "")!,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              )
-            ],
+                Text(
+                  (detailedViewProvider.detailedPost.nickName != null ? detailedViewProvider.detailedPost.nickName : "")!,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                )
+              ],
           ),
+            ),
           if (detailedViewProvider.detailedPost.comment != null)
             Row(
               children: [
@@ -266,42 +271,46 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                 ),
               ),
             ),
-          if(memberId != "")
+
           Container(
-            margin: EdgeInsets.only(top: 10),
+            margin: EdgeInsets.only(top: 10, left: 15),
             child: Row(
               children: [
                 Column(
                   children: [
                     IconButton(
                       onPressed: () {
-                        if (detailedViewProvider.detailedPost.saveYn == "Y") {
-                          detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "N", memberId).then((value) {
-                            if (value) {
-                              detailedViewProvider.fetchDetailedViewData(
-                                  cheriId, memberId).then((value) {
-                                    if(value)
-                                      setState(() {
-                                        _cheriState = CheriState.UNSAVED;
-                                        showToast(bookMarkUnsave[language]!);
+                        if(memberId != ""){
+                          if (detailedViewProvider.detailedPost.saveYn == "Y") {
+                            detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "N", memberId).then((value) {
+                              if (value) {
+                                detailedViewProvider.fetchDetailedViewData(
+                                    cheriId, memberId).then((value) {
+                                  if(value)
+                                    setState(() {
+                                      _cheriState = CheriState.UNSAVED;
+                                      showToast(bookMarkUnsave[language]!);
 
-                                      });
-                              });
-                            }
-                          });
-                        } else {
-                          detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "Y", memberId).then((value) {
-                            if (value) detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
-                              if(value)
-                                setState(() {
-                                  _cheriState = CheriState.SAVED;
-                                  showToast(bookmarkSave[language]!);
-
-                                });
+                                    });});
+                              }
                             });
-                          });
+                          } else {
+                            detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "Y", memberId).then((value) {
+                              if (value) detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
+                                if(value)
+                                  setState(() {
+                                    _cheriState = CheriState.SAVED;
+                                    showToast(bookmarkSave[language]!);
+
+                                  });
+                              });
+                            });
+                          }
                         }
-                      },
+                        else {
+                          Navigator.pushNamed(context, AuthScreen.route);
+                        }
+                        },
                       icon: detailedViewProvider.detailedPost.saveYn == "Y"
                           ? Icon(
                               Icons.bookmark,
@@ -354,10 +363,8 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                 style: BorderStyle.solid
               ),
 
-                activeColor: Colors.transparent,
-
-
-                checkColor: Theme.of(context).selectedRowColor,
+               activeColor: Colors.transparent,
+               checkColor: Theme.of(context).selectedRowColor,
                 value: items[index].checkedYn == "Y" ? true : false,
                 onChanged: (bool? value) {
                   String checked = (value == true) ? "Y" : "N";
@@ -374,7 +381,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
           Expanded(
             flex: 4,
             child: Container(
-              margin: memberId != ""? EdgeInsets.only(left: 0):EdgeInsets.only(left: 10),
+              margin: memberId != ""? EdgeInsets.only(left: 0, right: 15):EdgeInsets.only(left: 10, right: 15),
               child: Text(
                 items[index].contents!,
                 maxLines: 5,
