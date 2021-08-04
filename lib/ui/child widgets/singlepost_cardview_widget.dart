@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:viewerapp/ui/screens/auth_screen.dart';
 import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
 import 'package:viewerapp/models/postslist_model.dart';
@@ -129,7 +130,9 @@ class _CardViewWidgetState extends State<CardViewWidget> {
 
                                        });
                                   });
-                                  else showToast(toastSignIn[language]!);
+                                  else {
+                                    Navigator.pushNamed(context, AuthScreen.route);
+                                  };
                                 },
                                 child: Icon(
                                   Icons.bookmark_border,
@@ -149,7 +152,9 @@ class _CardViewWidgetState extends State<CardViewWidget> {
 
                                     }
                                   });
-                                   else showToast(toastSignIn[language]!);
+                                   else {
+                                    Navigator.pushNamed(context, AuthScreen.route);
+                                  };
                                   },
                                 child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor),
                               ),

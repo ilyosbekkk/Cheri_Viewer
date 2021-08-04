@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:viewerapp/models/postslist_model.dart';
+import 'package:viewerapp/ui/screens/auth_screen.dart';
 import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
 import 'package:viewerapp/utils/utils.dart';
 import 'package:viewerapp/utils/strings.dart';
@@ -144,7 +145,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                 child: widget.post.saved == "N"
                     ? InkWell(
                   onTap: () {
-                    if(memberId != null)
+                    if(memberId != "")
                       cheriProvider.saveCheriPost(widget.post.cheriId, "Y", memberId).then((value)  {
                         if(value)
                           setState(() {
@@ -153,7 +154,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
 
                           });
                       });
-                    else showToast(toastSignIn[language]!);
+                    else Navigator.pushNamed(context, AuthScreen.route);
                     },
                   child: Icon(
 
@@ -165,7 +166,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                 )
                     : InkWell(
                   onTap: () {
-                    if(memberId != null)
+                    if(memberId != "")
                       cheriProvider.saveCheriPost(widget.post.cheriId, "N", memberId).then((value){
                         if(value) {
                           setState(() {
@@ -174,7 +175,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                           });
                         }
                       });
-                    else showToast(toastSignIn[language]!);
+                    else  Navigator.pushNamed(context, AuthScreen.route);
                   },
                   child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor,),
                 ),

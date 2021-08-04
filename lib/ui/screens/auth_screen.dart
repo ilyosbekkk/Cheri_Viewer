@@ -106,7 +106,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
 
               _controller.addJavaScriptHandler(handlerName: "email_user_info", callback: (args) {
-                 print("qerofhqeiprhgoierhgir");
                 print(args);
 
                    authProvider.saveUserData(
