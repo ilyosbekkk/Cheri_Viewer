@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:viewerapp/business_logic/providers/collections%20provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/screens/auth_screen.dart';
 import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
@@ -28,7 +29,9 @@ class _ListViewWidgetState extends State<ListViewWidget> {
   void initState() {
 
     super.initState();
-    memberId = userPreferences!.getString("id")??"";
+    memberId = "10475";
+    // userPreferences!.getString("id")??"";
+
   }
   @override
   Widget build(BuildContext context) {
@@ -137,49 +140,54 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                 ],
               ),
               Spacer(),
-              Container(
-                width: 25,
-                height: 25,
-                margin: EdgeInsets.only( right: 8, top: 10),
-                color: Theme.of(context).primaryColorDark,
-                child: widget.post.saved == "N"
-                    ? InkWell(
-                  onTap: () {
-                    if(memberId != "")
-                      cheriProvider.saveCheriPost(widget.post.cheriId, "Y", memberId).then((value)  {
-                        if(value)
-                          setState(() {
-                            widget.post.saved = "Y";
-                            showToast(bookmarkSave[language]!);
+              Consumer<CollectionsProvider>(builder: (context, provider, child){
+                return    Container(
+                  width: 25,
+                  height: 25,
+                  margin: EdgeInsets.only( right: 8, top: 10),
+                  color: Theme.of(context).primaryColorDark,
+                  child: widget.post.saved == "N"
+                      ? InkWell(
+                    onTap: () {
+                      if(memberId != "")
+                        cheriProvider.saveCheriPost(widget.post.cheriId, "Y", memberId).then((value)  {
+                          if(value)
+                            setState(() {
+                              provider.savedPosts.add(widget.post);
+                              widget.post.saved = "Y";
+                              showToast(bookmarkSave[language]!);
 
-                          });
-                      });
-                    else Navigator.pushNamed(context, AuthScreen.route);
+                            });
+                        });
+                      else Navigator.pushNamed(context, AuthScreen.route);
                     },
-                  child: Icon(
+                    child: Icon(
 
-                    Icons.bookmark_border,
-                    color: Theme.of(context).backgroundColor,
+                      Icons.bookmark_border,
+                      color: Theme.of(context).backgroundColor,
 
 
+                    ),
+                  )
+                      : InkWell(
+                    onTap: () {
+                      if(memberId != "")
+                        cheriProvider.saveCheriPost(widget.post.cheriId, "N", memberId).then((value){
+                          if(value) {
+                            setState(() {
+                              provider.savedPosts.removeWhere((element) => element.cheriId == widget.post.cheriId);
+                              widget.post.saved = "N";
+                              showToast(bookMarkUnsave[english]!);
+                            });
+                          }
+                        });
+                      else  Navigator.pushNamed(context, AuthScreen.route);
+                    },
+                    child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor,),
                   ),
-                )
-                    : InkWell(
-                  onTap: () {
-                    if(memberId != "")
-                      cheriProvider.saveCheriPost(widget.post.cheriId, "N", memberId).then((value){
-                        if(value) {
-                          setState(() {
-                            widget.post.saved = "N";
-                            showToast(bookMarkUnsave[english]!);
-                          });
-                        }
-                      });
-                    else  Navigator.pushNamed(context, AuthScreen.route);
-                  },
-                  child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor,),
-                ),
-              ),
+                );
+              })
+           ,
 
             ],
           ),

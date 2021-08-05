@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:viewerapp/business_logic/providers/collections%20provider.dart';
 import 'package:viewerapp/business_logic/providers/detailedview provider.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
 import 'package:viewerapp/ui/screens/search%20result%20screen.dart';
@@ -26,8 +27,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   late double height;
   late double width;
   String? language;
-  bool isDialogTextOpen = false;
-  bool isDialogPictureOpen = false;
+
 
   bool _loaded = false;
   CheriState _cheriState = CheriState.IDLE;
@@ -278,53 +278,54 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
               children: [
                 Column(
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        if(memberId != ""){
-                          if (detailedViewProvider.detailedPost.saveYn == "Y") {
-                            detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "N", memberId).then((value) {
-                              if (value) {
-                                detailedViewProvider.fetchDetailedViewData(
-                                    cheriId, memberId).then((value) {
+                    
+                    Consumer<CollectionsProvider>(builder: (context, provider, child) {
+                      return  IconButton(
+                        onPressed: () {
+                          if(memberId != ""){
+                            if (detailedViewProvider.detailedPost.saveYn == "Y") {
+                              detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "N", memberId).then((value) {
+                                if (value) {
+                                  detailedViewProvider.fetchDetailedViewData(
+                                      cheriId, memberId).then((value) {
+                                    if(value)
+                                      setState(() {
+                                        _cheriState = CheriState.UNSAVED;
+                                        showToast(bookMarkUnsave[language]!);
+
+                                      });});
+                                }
+                              });
+                            } else {
+                              detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "Y", memberId).then((value) {
+                                if (value) detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
                                   if(value)
                                     setState(() {
-                                      _cheriState = CheriState.UNSAVED;
-                                      showToast(bookMarkUnsave[language]!);
+                                      _cheriState = CheriState.SAVED;
+                                      showToast(bookmarkSave[language]!);
 
-                                    });});
-                              }
-                            });
-                          } else {
-                            detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "Y", memberId).then((value) {
-                              if (value) detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
-                                if(value)
-                                  setState(() {
-                                    _cheriState = CheriState.SAVED;
-                                    showToast(bookmarkSave[language]!);
-
-                                  });
+                                    });
+                                });
                               });
-                            });
+                            }
                           }
-                        }
-                        else {
-                          Navigator.pushNamed(context, AuthScreen.route);
-                        }
+                          else {
+                            Navigator.pushNamed(context, AuthScreen.route);
+                          }
                         },
-                      icon: detailedViewProvider.detailedPost.saveYn == "Y"
-                          ? Icon(
-                              Icons.bookmark,
-                              size: 30,
-                            )
-                          : Icon(
-                              Icons.bookmark_border,
-                              size: 30,
-                            ),
-                    ),
-                    Text(
-                      "${bookMarkNumber[language]}",
-                      style: TextStyle(fontSize: 12),
-                    )
+                        icon: detailedViewProvider.detailedPost.saveYn == "Y"
+                            ? Icon(
+                          Icons.bookmark,
+                          size: 30,
+                        )
+                            : Icon(
+                          Icons.bookmark_border,
+                          size: 30,
+                        ),
+                      );
+                    })
+                   ,
+                    Text("${bookMarkNumber[language]}", style: TextStyle(fontSize: 12),)
                   ],
                 ),
                 Column(
@@ -392,18 +393,28 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
           ),
           if ((items[index].comment != null && items[index].comment!.isNotEmpty) || (detailedViewProvider.itemFiles(items[index].itemId!).isNotEmpty))
             IconButton(
-              onPressed: () async {
+              onPressed: ()  {
                 if (items[index].comment == null || items[index].comment!.isEmpty) {
                   print("1");
-                  await showdialog(context, "${noContent[language]}", detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName);
+                   showdialog(context, "${noContent[language]}", detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName).then((value) {
+                     detailedViewProvider.cheriContentOpen = false;
+                   detailedViewProvider.cheriTextOpen = false;
+                   });
                 } else if (detailedViewProvider.itemFiles(items[index].itemId!).isEmpty) {
                   print("2");
 
-                  await showdialog(context, items[index].comment!, placeholdeUrl);
+                   showdialog(context, items[index].comment!, placeholdeUrl).then((value) {
+                     detailedViewProvider.cheriContentOpen = false;
+                     detailedViewProvider.cheriTextOpen = false;
+                   });
                 } else {
                   print("3");
+                  showdialog(context, items[index].comment!, detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName).then((value)  {
+                      detailedViewProvider.cheriContentOpen = false;
+                      detailedViewProvider.cheriTextOpen = false;
 
-                  await showdialog(context, items[index].comment!, detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName);
+
+                    });
                 }
               },
               icon: Icon(Icons.article_outlined),
@@ -420,83 +431,88 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
           return Dialog(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             insetPadding: EdgeInsets.all(10),
-            child: Container(
-              height: 500,
-              child: Scrollbar(
-                thickness: 5,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                "${dialogViewIntroduction[language]}",
-                                style: TextStyle(fontSize: 21),
+            child: Consumer<DetailedViewProvider>( builder: (context, provider,  child){
+              return Container(
+                height: 500,
+                child: Scrollbar(
+                  thickness: 5,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "${dialogViewIntroduction[language]}",
+                                  style: TextStyle(fontSize: 21),
+                                ),
                               ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: IconButton(
-                                  icon: Icon(Icons.clear),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                    icon: Icon(Icons.clear),
+                                    onPressed: () {
+                                      Navigator.pop(context,  _cheriState);
+                                    }),
+                              )
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                        Container(
+                          margin: EdgeInsets.only(left: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "${dialogCategoryIntroduction[language]}",
+                                style: TextStyle(fontSize: 15),
+                              ),
+                              IconButton(
+                                  icon: provider.cheriTextOpen ? Icon(Icons.keyboard_arrow_up) : Icon(Icons.keyboard_arrow_down),
                                   onPressed: () {
-                                    Navigator.pop(context,  _cheriState);
-                                  }),
-                            )
-                          ],
+                                    setState(() {
+                                      provider.cheriTextOpen = !provider.cheriTextOpen;
+                                    });
+                                  })
+                            ],
+                          ),
                         ),
-                      ),
-                      Divider(),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "${dialogCategoryIntroduction[language]}",
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            IconButton(
-                                icon: isDialogTextOpen ? Icon(Icons.keyboard_arrow_up) : Icon(Icons.keyboard_arrow_down),
-                                onPressed: () {
-                                  setState(() {
-                                    isDialogTextOpen = !isDialogTextOpen;
-                                  });
-                                })
-                          ],
+
+                        if(provider.cheriTextOpen)
+                        Container(decoration: BoxDecoration(color: Color.fromRGBO(245, 245, 245, 1), borderRadius: BorderRadius.all(Radius.circular(8))), padding: EdgeInsets.all(10), margin: EdgeInsets.only(left: 10, right: 10), child: Text(contents)),
+                        Divider(),
+                        Container(
+                          margin: EdgeInsets.only(left: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "${dialogRelatedContent[language]}",
+                                style: TextStyle(fontSize: 15),
+                              ),
+                              IconButton(
+                                  icon: provider.cheriContentOpen ? Icon(Icons.keyboard_arrow_up) : Icon(Icons.keyboard_arrow_down),
+                                  onPressed: () {
+                                    setState(() {
+                                      provider.cheriContentOpen= !provider.cheriContentOpen;
+                                    });
+                                  })
+                            ],
+                          ),
                         ),
-                      ),
-                      Container(decoration: BoxDecoration(color: Color.fromRGBO(245, 245, 245, 1), borderRadius: BorderRadius.all(Radius.circular(8))), padding: EdgeInsets.all(10), margin: EdgeInsets.only(left: 10, right: 10), child: Text(contents)),
-                      Divider(),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "${dialogRelatedContent[language]}",
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            IconButton(
-                                icon: isDialogPictureOpen ? Icon(Icons.keyboard_arrow_up) : Icon(Icons.keyboard_arrow_down),
-                                onPressed: () {
-                                  setState(() {
-                                    isDialogPictureOpen = !isDialogPictureOpen;
-                                  });
-                                })
-                          ],
-                        ),
-                      ),
-                      Container(margin: EdgeInsets.all(10), child: saveFileName != placeholdeUrl ? Image.network("https://cheri.weeknday.com/upload/detailfile/${saveFileName}") : Image.network(placeholdeUrl)),
-                    ],
+                        if(provider.cheriContentOpen)
+                          Container(margin: EdgeInsets.all(10), child: saveFileName != placeholdeUrl ? Image.network("https://cheri.weeknday.com/upload/detailfile/${saveFileName}") : Image.network(placeholdeUrl)),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },),
           );
         });
   }

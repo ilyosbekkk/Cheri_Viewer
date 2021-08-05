@@ -9,8 +9,9 @@ class DetailedViewProvider extends ChangeNotifier {
   List<Item> _items = [];
   List<File> _files = [];
   late DetailedPostResponse postsResponse;
-
   late bool _loaded;
+  bool _cheriTextOpen = false;
+  bool  _cheriContentOpen = false;
 
   Future<bool> fetchDetailedViewData(String cheriId, memberId) async {
     _loaded = false;
@@ -87,4 +88,18 @@ class DetailedViewProvider extends ChangeNotifier {
   Intro get detailedPost => _detailedPost;
 
   bool get loaded => _loaded;
+
+  bool get cheriContentOpen => _cheriContentOpen;
+
+  set cheriContentOpen(bool value) {
+    _cheriContentOpen = value;
+    notifyListeners();
+  }
+
+  bool get cheriTextOpen => _cheriTextOpen;
+
+  set cheriTextOpen(bool value) {
+    _cheriTextOpen = value;
+    notifyListeners();
+  }
 }

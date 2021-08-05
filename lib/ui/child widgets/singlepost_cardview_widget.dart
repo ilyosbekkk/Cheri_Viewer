@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
+import 'package:viewerapp/business_logic/providers/collections%20provider.dart';
 import 'package:viewerapp/ui/screens/auth_screen.dart';
 import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
@@ -23,7 +25,8 @@ class _CardViewWidgetState extends State<CardViewWidget> {
   @override
   void initState() {
     super.initState();
-     memberId = userPreferences!.getString("id")??"";
+     memberId = "10475";
+        // userPreferences!.getString("id")??"";
 
   }
   @override
@@ -32,6 +35,7 @@ class _CardViewWidgetState extends State<CardViewWidget> {
 
 
      print("member id ${memberId}");
+     var provider = Provider.of<CollectionsProvider>(context, listen: false);
 
     return Consumer<CheriProvider>(builder: (context,  cheriProvider,  child) {
       return  Container(
@@ -43,9 +47,11 @@ class _CardViewWidgetState extends State<CardViewWidget> {
 
             Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": widget.post.cheriId, "memberId": memberId}).then((value) {
                 if(value == CheriState.SAVED) {
+                   provider.savedPosts.add(widget.post);
                   widget.post.saved = "Y";
                 }
                 else if(value == CheriState.UNSAVED) {
+                  provider.savedPosts.removeWhere((element) => element.cheriId == widget.post.cheriId);
                   widget.post.saved = "N";
                 }
                 setState(() {
@@ -53,10 +59,7 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                 });
 
               });
-
-
-
-          },
+            },
           child: Card(
             elevation: 10.0,
             shape: RoundedRectangleBorder(
@@ -78,9 +81,7 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                             topRight: Radius.circular(10)
                           ),
                           child: FadeInImage.assetNetwork(
-                            imageErrorBuilder: (context, error, stackTrace) => Image.asset('assets/images/placeholder.png')
-                            ,
-
+                            imageErrorBuilder: (context, error, stackTrace) => Image.asset('assets/images/placeholder.png'),
                             placeholder: 'assets/images/placeholder.png',
                             image: widget.post.imgUrl,
                             fit: BoxFit.cover,
@@ -92,7 +93,6 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                           children: [
                             InkWell(
                               onTap: () {
-                                // Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id": post.categoryId, "title": post.category});
                               },
                               child: Container(
                                 alignment: Alignment.center,
@@ -112,53 +112,64 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                                 ),
                               ),
                             ),
-                            Container(
-                              alignment: Alignment.center,
-                              width: 30,
-                              height: 30,
-                              margin: EdgeInsets.only(top: 16.0, right: 8),
-                              color: Theme.of(context).primaryColorDark,
-                              child: widget.post.saved == "N"
-                                  ? InkWell(
-                                onTap: ()  {
-                                  if(memberId != "")
-                                  cheriProvider.saveCheriPost(widget.post.cheriId, "Y", memberId!).then((value)  {
-                                     if(value)
-                                       setState(() {
-                                         widget.post.saved = "Y";
-                                         showToast(bookmarkSave[language]!);
 
-                                       });
-                                  });
-                                  else {
-                                    Navigator.pushNamed(context, AuthScreen.route);
-                                  };
-                                },
-                                child: Icon(
-                                  Icons.bookmark_border,
-                                  color: Theme.of(context).backgroundColor,
+
+
+
+
+                            Container(
+                                alignment: Alignment.center,
+                                width: 30,
+                                height: 30,
+                                margin: EdgeInsets.only(top: 16.0, right: 8),
+                                color: Theme.of(context).primaryColorDark,
+                                child: widget.post.saved == "N"
+                                    ?
+                                InkWell(
+                                  onTap: ()  {
+                                    if(memberId != "")
+                                      cheriProvider.saveCheriPost(widget.post.cheriId, "Y", memberId!).then((value)  {
+                                        if(value)
+                                          setState(() {
+                                            provider.savedPosts.add(widget.post);
+                                            widget.post.saved = "Y";
+                                            showToast(bookmarkSave[language]!);
+
+                                          });
+                                      });
+                                    else {
+                                      Navigator.pushNamed(context, AuthScreen.route);
+                                    }
+                                  },
+                                  child: Icon(
+                                    Icons.bookmark_border,
+                                    color: Theme.of(context).backgroundColor,
+                                  ),
+                                )
+                                    : InkWell(
+                                  onTap: () async {
+                                    if(memberId != "")
+                                      cheriProvider.saveCheriPost(widget.post.cheriId, "N", memberId!).then((value){
+                                        if(value) {
+                                          setState(() {
+                                            provider.savedPosts.removeWhere((element) => element.cheriId == widget.post.cheriId);
+                                            widget.post.saved = "N";
+                                            showToast(bookMarkUnsave[language]!);
+                                          });
+
+
+                                        }
+                                      });
+                                    else {
+                                      Navigator.pushNamed(context, AuthScreen.route);
+                                    }
+                                  },
+                                  child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor),
                                 ),
                               )
-                                  : InkWell(
-                                onTap: () async {
-                                  if(memberId != "")
-                                  cheriProvider.saveCheriPost(widget.post.cheriId, "N", memberId!).then((value){
-                                    if(value) {
-                                      setState(() {
-                                        widget.post.saved = "N";
-                                        showToast(bookMarkUnsave[language]!);
-                                      });
+                           ,
 
 
-                                    }
-                                  });
-                                   else {
-                                    Navigator.pushNamed(context, AuthScreen.route);
-                                  };
-                                  },
-                                child: Icon(Icons.bookmark, color: Theme.of(context).backgroundColor),
-                              ),
-                            ),
                           ],
                         ),
                       ],

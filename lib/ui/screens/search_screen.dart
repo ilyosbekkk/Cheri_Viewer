@@ -209,9 +209,6 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-
-
-
   Widget _buildRecentSearchResultWidget(String recentSearchWord, SearchProvider searchProvider) {
     return Container(
       margin: EdgeInsets.only(top: 10),

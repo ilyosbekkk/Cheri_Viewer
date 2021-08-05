@@ -61,17 +61,13 @@ class UserManagementProvider extends ChangeNotifier {
       }
   }
 
-  Future<void> signInWithNaver() async {
-    String credentials;
+  Future<Map<String,String>> signInWithNaver() async {
+
     NaverLoginResult res = await FlutterNaverLogin.logIn();
     print(res);
     final naverAccessToken = await FlutterNaverLogin.currentAccessToken;
     String accessToken = naverAccessToken.accessToken;
-    String siteId = res.account.id;
-    String email = res.account.email;
-    String name = res.account.name;
-    String  photoUrl = res.account.profileImage;
-
+    return {"access_token": accessToken};
   }
 
   Future<bool> saveUserData(String? id,  String? email, String?  imgUrl,  String? name,  String? encryptedId) async {
