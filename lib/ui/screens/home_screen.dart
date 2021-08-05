@@ -43,8 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    memberId = "10475";
-    // userPreferences!.getString("id")??"";
+    memberId =  userPreferences!.getString("id")??"";
 
 
     _homePageProvider = Provider.of<HomeProvider>(context, listen: true);

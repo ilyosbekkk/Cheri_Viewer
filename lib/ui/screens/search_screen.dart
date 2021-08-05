@@ -139,7 +139,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
               onChanged: (searchWord) {
                 homePageProvider.cleanList();
-                homePageProvider.fetchRelatedSearches(_memberId!, searchWord).then((value) {});
+                homePageProvider.fetchRelatedSearches(searchWord).then((value) {});
                 setState(() {
                   _noSearchResult = false;
                 });

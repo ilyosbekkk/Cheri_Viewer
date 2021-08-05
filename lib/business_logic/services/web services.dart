@@ -67,9 +67,9 @@ class WebServices {
     return response;
   }
 
-  static Future<http.Response> fetchRelatedSearches(String memberId, String searchWord) async {
+  static Future<http.Response> fetchRelatedSearches( String searchWord) async {
     final url = Uri.https(baseUrl, relatedSearches);
-    final body = {'member_id': memberId, 'search_word': searchWord};
+    final body = {'search_word': searchWord};
     http.Response response = await http.post(url, headers: headers, body: body);
 
     return response;

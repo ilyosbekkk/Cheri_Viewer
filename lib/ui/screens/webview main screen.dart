@@ -72,11 +72,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         case  "log_out":{
                          provider.logout().then((value)  {
                            if(value) {
+                             print("you  logged out man, congrats!!!");
                              Navigator.pop(context);
                              showToast("${logoutMessage[language]}");
                            }
-                           else
+                           else {
+                             print("you  logged out man, congratergwitrgh2io4u5s!!!");
+
                              showToast("${logoutFailure[language]}");
+                           }
                          });
                          break;
                         }

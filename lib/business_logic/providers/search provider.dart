@@ -61,11 +61,11 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> fetchRelatedSearches(String memberId, String searchWord) async {
+  Future<bool> fetchRelatedSearches(String searchWord) async {
     bool result = false;
     if (_relatedSearches.isNotEmpty) _relatedSearches.clear();
     try {
-      Response response = await WebServices.fetchRelatedSearches(memberId, searchWord);
+      Response response = await WebServices.fetchRelatedSearches(searchWord);
       Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
       if (response.statusCode == 200) {
         Search search = Search.fromJson(decodedResponse);

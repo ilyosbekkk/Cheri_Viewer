@@ -42,8 +42,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
   void didChangeDependencies() {
 
     super.didChangeDependencies();
-    memberId = "10475";
-    // userPreferences!.getString("id")??"";
+    memberId = userPreferences!.getString("id")??"";
 
     _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
 
