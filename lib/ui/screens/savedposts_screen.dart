@@ -306,11 +306,18 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                 enabled: true,
                 onSelected: (value) async {
                   if (value == "second1") {
-                    await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "latestdate");
+
+                    mode == Button.BOOKMARK?
+                    await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "latestdate"):
+                    await postListsProvidert.fetchOpenedPostsList(memberId, "10", "1", "latestdate");
                   } else if (value == "second2") {
-                    await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "olddate");
+                    mode == Button.BOOKMARK?
+                    await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "olddate"):
+                    await postListsProvidert.fetchOpenedPostsList(memberId, "10", "1", "olddate");
                   } else if (value == "second3") {
-                    await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "views");
+                    mode == Button.BOOKMARK?
+                    await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "views"):
+                    await postListsProvidert.fetchOpenedPostsList(memberId, "10", "1", "views");
                   }
                   setState(() {});
                 },

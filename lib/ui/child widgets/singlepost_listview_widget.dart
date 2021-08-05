@@ -124,7 +124,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                             size: 5.0,
                           )),
                       Text(
-                        "${timeFormatter(widget.post.dateTime,language!)}}",
+                        "${timeFormatter(widget.post.dateTime,language!)}",
                         style: TextStyle(fontSize: 12),
                       ),
                       if(widget.post.checked == "Y")
