@@ -95,8 +95,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
               _controller.addJavaScriptHandler(handlerName: "naver_user_info", callback: (args) {
                   authProvider.saveUserData(args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"], args[0]["NAME"], args[0]["encrypt_id"]).then((value) {
-                    if(value)
-                      Navigator.pop(context);
+                    if(value) Navigator.pop(context);
                     else showToast("Unexpected error happened, Please  try again");
                   });
 
