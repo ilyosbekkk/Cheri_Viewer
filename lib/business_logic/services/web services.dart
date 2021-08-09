@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:viewerapp/utils/strings.dart';
 
@@ -91,4 +93,18 @@ class WebServices {
 
     return response;
   }
+
+  static Future<http.Response> fetchDeviceVersion() async {
+    String os = "idle";
+    final url = Uri.https(baseUrl, fetchDeviceLatestVersion);
+    if(Platform.isAndroid)
+      os = "android";
+    else if (Platform.isIOS)
+      os = "ios";
+    final body = {'os': os, 'app_name': 'cheri_viewer'};
+    http.Response response = await http.post(url, headers: headers, body: body);
+
+    return response;
+  }
+
 }

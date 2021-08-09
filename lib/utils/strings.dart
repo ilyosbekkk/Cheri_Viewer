@@ -80,6 +80,7 @@ const String recentSearches = "/api/viewerapi/my_search_log_list";
 const String relatedSearches = "/api/viewerapi/relation_search_log_list";
 const String bookMarkList = "/api/viewerapi/book_mark_list";
 const String openCheriList = "/api//viewerapi/open_cheri_list";
+const String  fetchDeviceLatestVersion = "/api/viewerapi/version";
 
 
 

@@ -74,6 +74,12 @@ class HomeProvider extends ChangeNotifier {
   }
 
 
+  Future<bool> fetchLatestVersion() async{
+    var  response = await  WebServices.fetchDeviceVersion();
+    print(response.body);
+    return false;
+
+  }
   void fetchPostList2(int pageSize, int  nowPage,  String orderBy, int  category, String memberId){
 
   }

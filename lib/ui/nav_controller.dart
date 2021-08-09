@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viewerapp/business_logic/providers/collections%20provider.dart';
 import 'package:viewerapp/business_logic/providers/home%20provider.dart';
 import 'package:viewerapp/business_logic/providers/search%20provider.dart';
+import 'package:viewerapp/business_logic/services/web%20services.dart';
 import 'package:viewerapp/ui/screens/webview main screen.dart';
 import 'package:viewerapp/ui/screens/search_screen.dart';
 import 'package:viewerapp/ui/screens/savedposts_screen.dart';
@@ -40,11 +44,56 @@ class _NavCotrollerState extends State<NavCotroller> {
   void didChangeDependencies() {
     super.didChangeDependencies();
   }
+
+
+
   @override
   void initState() {
     super.initState();
-    this.initDynamicLinks();
+
+    PackageInfo.fromPlatform().then((value1) {
+      WebServices.fetchDeviceVersion().then((value2) {
+        String versionFromWeb = jsonDecode(value2.body)["data"]["VERSION"];
+        print(versionFromWeb);
+        print(value1.version);
+        print(versionFromWeb);
+        if(value1.version != versionFromWeb){
+          WidgetsBinding.instance!.addPostFrameCallback((_) async {
+            await showDialog(
+              barrierDismissible: false ,
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: Text('Your app  is outdated!', style: TextStyle(
+                    fontSize: 20
+                  ),),
+                  content: Column(
+                    mainAxisSize:MainAxisSize.min ,
+                    children: [
+                      Text("Please update you app!"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+
+                        MaterialButton(onPressed: (){
+                          Navigator.pop(context);
+                        }, child: Text("Cancel",), textColor: Colors.white,  color: Theme.of(context).selectedRowColor, ),
+                        MaterialButton(onPressed: (){
+
+                        }, child: Text("Update"), textColor: Colors.white, color: Theme.of(context).selectedRowColor,),
+                      ],)
+                    ],
+                  ),
+                )
+            );
+          });
+        }
+        else print("u r using the latest version");
+
+      });});
+
+
   }
+
 
   @override
   Widget build(BuildContext context) {
