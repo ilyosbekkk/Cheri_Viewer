@@ -87,7 +87,12 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
 
                     color: Theme.of(context).selectedRowColor,
                     child: Text("로그인"), onPressed: (){
-                  Navigator.pushNamed(context, AuthScreen.route);
+                  Navigator.pushNamed(context, AuthScreen.route).then((value)  {
+                    setState(() {
+                      print("weifuhweIufgerugouergouqerouqegroqeroqeroguerg");
+                      memberId = userPreferences!.getString("id")??"";
+                    });
+                  });
                 })
               ],
             )),
@@ -310,11 +315,13 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> with SingleTickerPr
                     mode == Button.BOOKMARK?
                     await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "latestdate"):
                     await postListsProvidert.fetchOpenedPostsList(memberId, "10", "1", "latestdate");
-                  } else if (value == "second2") {
+                  }
+                  else if (value == "second2") {
                     mode == Button.BOOKMARK?
                     await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "olddate"):
                     await postListsProvidert.fetchOpenedPostsList(memberId, "10", "1", "olddate");
-                  } else if (value == "second3") {
+                  }
+                  else if (value == "second3") {
                     mode == Button.BOOKMARK?
                     await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "views"):
                     await postListsProvidert.fetchOpenedPostsList(memberId, "10", "1", "views");

@@ -6,7 +6,6 @@ import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/screens/categoryview_screen.dart';
 import 'package:viewerapp/utils/utils.dart';
 import '../../business_logic/providers/home provider.dart';
-
 import '../../models/postslist_model.dart';
 import '../../utils/strings.dart';
 

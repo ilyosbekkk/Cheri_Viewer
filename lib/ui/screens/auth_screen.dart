@@ -22,6 +22,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     language = languagePreferences!.getString("language")??"ko";
+
     return Scaffold(
       body: SafeArea(
         child: Consumer<UserManagementProvider>(builder: (context, authProvider, child) {

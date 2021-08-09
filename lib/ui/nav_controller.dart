@@ -1,4 +1,3 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,8 +32,6 @@ class _NavCotrollerState extends State<NavCotroller> {
   ScrollController _scrollController2 = ScrollController();
   ScrollController _scrollController3 = ScrollController();
   double appBarHeight = 0;
-  Map _source = {ConnectivityResult.none: false};
-  MyConnectivity _connectivity = MyConnectivity.instance;
   late String? memberId;
   late  String? accountImgurl;
   RefreshController _refreshController = RefreshController(initialRefresh: false);
@@ -46,18 +43,9 @@ class _NavCotrollerState extends State<NavCotroller> {
   @override
   void initState() {
     super.initState();
-
     this.initDynamicLinks();
-    _connectivity.initialise();
-    _connectivity.myStream.listen((source) {
-      setState(() => _source = source);
-    });
   }
-  @override
-  void dispose() {
-    _connectivity.disposeStream();
-    super.dispose();
-  }
+
   @override
   Widget build(BuildContext context) {
     language = languagePreferences!.getString("language")??"ko";
@@ -70,22 +58,7 @@ class _NavCotrollerState extends State<NavCotroller> {
      print("memberId :${memberId}");
     accountImgurl = userPreferences!.getString("imgUrl")??"";
     _screens = [_buildHomeScreen(height, width), _buildSearchScreen(height, width), _buildStorageBoxScreen(height, width, memberId)];
-    String string;
-    switch (_source.keys.toList()[0]) {
-      case ConnectivityResult.none:
-        string = "Offline";
-        showToast("${turnonthenet[language]}");
-        print(string);
-        break;
-      case ConnectivityResult.mobile:
-        string = "Mobile: Online";
-        print(string);
-        break;
-      case ConnectivityResult.wifi:
-        string = "WiFi: Online";
-        print(string);
-         break;
-    }
+
     return  Scaffold(
             body: SafeArea(child: SmartRefresher(
               controller: _refreshController,
