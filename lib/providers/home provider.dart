@@ -7,7 +7,7 @@ import 'package:viewerapp/models/categories_model.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:flutter/foundation.dart';
 
-import '../services/web services.dart';
+import 'package:viewerapp/services/web%20services.dart';
 
 class HomeProvider extends ChangeNotifier {
   bool _showSubCategories1 = false;

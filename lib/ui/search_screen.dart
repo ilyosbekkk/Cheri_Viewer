@@ -1,17 +1,14 @@
+import 'package:viewerapp/providers/search%20provider.dart';
 import 'package:viewerapp/ui/child%20widgets/voice%20recorder%20modal%20bottom%20sheet.dart';
-import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
-import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
-import 'package:viewerapp/business_logic/providers/search provider.dart';
+
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:viewerapp/models/postslist_model.dart';
-import 'package:viewerapp/ui/screens/auth_screen.dart';
-import 'package:viewerapp/ui/screens/search%20result%20screen.dart';
+
+import 'package:viewerapp/ui/search%20result%20screen.dart';
 import 'package:viewerapp/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import '../../utils/strings.dart';
+import '../utils/strings.dart';
 import 'dart:ui';
 
 class SearchScreen extends StatefulWidget {

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart';
-import 'package:viewerapp/business_logic/services/web services.dart';
+import 'package:viewerapp/services/web%20services.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/models/search%20model.dart';
 

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
-import 'package:viewerapp/business_logic/providers/user%20management%20provider.dart';
+import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
 
-import '../nav_controller.dart';
 
 
 class ProfileScreen extends StatefulWidget {

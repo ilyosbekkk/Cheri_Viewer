@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
-import 'package:viewerapp/business_logic/providers/collections%20provider.dart';
-import 'package:viewerapp/ui/screens/auth_screen.dart';
+import 'package:viewerapp/providers/cheri%20provider.dart';
+import 'package:viewerapp/providers/collections%20provider.dart';
+import 'package:viewerapp/ui/auth_screen.dart';
 import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
 import 'package:viewerapp/models/postslist_model.dart';
-import 'package:viewerapp/ui/screens/cheri_detail_screen.dart';
-import 'package:viewerapp/business_logic/providers/cheri provider.dart';
+import 'package:viewerapp/ui/cheri_detail_screen.dart';
 
 class CardViewWidget extends StatefulWidget {
   double height;

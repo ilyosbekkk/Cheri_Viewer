@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:viewerapp/providers/home%20provider.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
-import 'package:viewerapp/ui/screens/categoryview_screen.dart';
+import 'package:viewerapp/ui/categoryview_screen.dart';
 import 'package:viewerapp/utils/utils.dart';
-import '../../business_logic/providers/home provider.dart';
-import '../../models/postslist_model.dart';
-import '../../utils/strings.dart';
+import '../models/postslist_model.dart';
+import '../utils/strings.dart';
 
 class HomeScreen extends StatefulWidget {
   double? height;

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:viewerapp/business_logic/providers/collections%20provider.dart';
-import 'package:viewerapp/business_logic/providers/detailedview provider.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
-import 'package:viewerapp/ui/screens/search%20result%20screen.dart';
-import 'package:viewerapp/ui/screens/webview%20main%20screen.dart';
+import 'package:viewerapp/providers/collections%20provider.dart';
+import 'package:viewerapp/providers/detailedview%20provider.dart';
+import 'package:viewerapp/ui/search%20result%20screen.dart';
+import 'package:viewerapp/ui/webview%20main%20screen.dart';
 import 'package:viewerapp/utils/strings.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';

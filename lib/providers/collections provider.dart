@@ -4,14 +4,19 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:viewerapp/business_logic/services/web%20services.dart';
+import 'package:viewerapp/services/web%20services.dart';
+
 import 'package:viewerapp/models/postslist_model.dart';
 
 class CollectionsProvider extends ChangeNotifier {
   List<Post> savedPosts = [];
+  List<Post> searchSavedPosts = [];
+  List<Post> searchOpenedPosts = [];
   int statusCode1 = 0;
   int statusCode2 = 0;
   List<Post> openedPosts = [];
+
+  bool  networkCallDone = false;
 
   Future<bool> fetchSavedPostsList(String memberId, String pageSize, String nowPage, String orderBy) async {
 
@@ -85,11 +90,33 @@ class CollectionsProvider extends ChangeNotifier {
     }
   }
 
+
+ void searchSaved(String searchWord){
+    if(searchSavedPosts.isNotEmpty) searchSavedPosts.clear();
+    for(int i = 0; i < savedPosts.length; i++){
+      if(savedPosts[i].title.contains(searchWord) &&  searchWord.isNotEmpty)
+         searchSavedPosts.add(savedPosts[i]);
+    }
+
+    notifyListeners();
+  }
+
+  void searchOpened(String searchWord){
+    if(searchOpenedPosts.isNotEmpty) searchOpenedPosts.clear();
+    for(int i = 0; i < openedPosts.length; i++){
+      if(openedPosts[i].title.contains(searchWord) && searchWord.isNotEmpty)
+        searchOpenedPosts.add(openedPosts[i]);
+    }
+    notifyListeners();
+
+  }
+
   void cleanCollections(){
     savedPosts.clear();
     openedPosts.clear();
     statusCode1 = 0;
     statusCode2= 0;
+    networkCallDone = false;
     notifyListeners();
 
   }

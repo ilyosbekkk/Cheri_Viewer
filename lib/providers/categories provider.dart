@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:flutter/foundation.dart';
 import 'package:viewerapp/models/postslist_model.dart';
-import 'package:viewerapp/business_logic/services/web services.dart';
+import 'package:viewerapp/services/web%20services.dart';
 
 class CategoriesProvider extends ChangeNotifier {
   List<Post> _categories = [];

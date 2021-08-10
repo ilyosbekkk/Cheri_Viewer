@@ -5,18 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:viewerapp/business_logic/providers/collections%20provider.dart';
-import 'package:viewerapp/business_logic/providers/home%20provider.dart';
-import 'package:viewerapp/business_logic/providers/search%20provider.dart';
-import 'package:viewerapp/business_logic/services/web%20services.dart';
-import 'package:viewerapp/ui/screens/webview main screen.dart';
-import 'package:viewerapp/ui/screens/search_screen.dart';
-import 'package:viewerapp/ui/screens/savedposts_screen.dart';
-import 'package:viewerapp/utils/strings.dart';
+import 'package:viewerapp/providers/collections%20provider.dart';
+import 'package:viewerapp/providers/home%20provider.dart';
+import 'package:viewerapp/providers/search%20provider.dart';
+
+import 'package:viewerapp/services/web%20services.dart';
+import 'package:viewerapp/ui/search_screen.dart';
+import 'package:viewerapp/ui/savedposts_screen.dart';
+import 'package:viewerapp/ui/webview%20main%20screen.dart';
 import 'package:viewerapp/utils/utils.dart';
 
-import 'screens/auth_screen.dart';
-import 'screens/home_screen.dart';
+import 'auth_screen.dart';
+import 'home_screen.dart';
 
 class NavCotroller extends StatefulWidget {
   static String route = "/";
