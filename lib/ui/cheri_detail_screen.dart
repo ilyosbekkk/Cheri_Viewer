@@ -28,12 +28,10 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   String? language;
   bool _loaded = false;
   CheriState _cheriState = CheriState.IDLE;
-  @override
-  void initState() {
 
-    super.initState();
 
-  }
+
+
   @override
   Widget build(BuildContext context) {
     language =  languagePreferences!.getString("language")??"ko";
@@ -42,9 +40,6 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     final  args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
     String cheriId = args["cheriId"]!;
     String memberId = userPreferences!.getString("id")??"";
-
-
-
 
     return Scaffold(
       body: WillPopScope(

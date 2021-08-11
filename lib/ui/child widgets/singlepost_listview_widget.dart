@@ -9,6 +9,8 @@ import 'package:viewerapp/ui/cheri_detail_screen.dart';
 import 'package:viewerapp/utils/utils.dart';
 import 'package:viewerapp/utils/strings.dart';
 
+import '../categoryview_screen.dart';
+
 class ListViewWidget extends StatefulWidget {
 
   double  height;
@@ -95,13 +97,18 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Container(
-                    width: widget.width*0.5,
-                    margin: EdgeInsets.only( top: 10.0),
-                    child: Text(
-                      widget.post.title,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                      maxLines: 1,
+                  InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id":widget.post.categoryId, "title": widget.post.category});
+                      },
+                    child: Container(
+                      width: widget.width*0.5,
+                      margin: EdgeInsets.only( top: 10.0),
+                      child: Text(
+                        widget.post.title,
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                      ),
                     ),
                   ),
                   Container(

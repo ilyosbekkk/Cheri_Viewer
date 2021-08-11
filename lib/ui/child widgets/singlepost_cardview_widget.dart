@@ -9,6 +9,8 @@ import 'package:viewerapp/utils/utils.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/ui/cheri_detail_screen.dart';
 
+import '../categoryview_screen.dart';
+
 class CardViewWidget extends StatefulWidget {
   double height;
   double width;
@@ -31,9 +33,6 @@ class _CardViewWidgetState extends State<CardViewWidget> {
   @override
   Widget build(BuildContext context) {
      language = languagePreferences!.getString("language")??"ko";
-
-
-     print("member id ${memberId}");
      var provider = Provider.of<CollectionsProvider>(context, listen: false);
 
     return Consumer<CheriProvider>(builder: (context,  cheriProvider,  child) {
@@ -43,7 +42,6 @@ class _CardViewWidgetState extends State<CardViewWidget> {
         width: double.infinity,
         child: InkWell(
           onTap: () {
-
             Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": widget.post.cheriId, "memberId": memberId}).then((value) {
                 if(value == CheriState.SAVED) {
                    provider.savedPosts.add(widget.post);
@@ -54,10 +52,8 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                   widget.post.saved = "N";
                 }
                 setState(() {
-
                 });
-
-              });
+            });
             },
           child: Card(
             elevation: 10.0,
@@ -92,7 +88,8 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                           children: [
                             InkWell(
                               onTap: () {
-                              },
+                                Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id":widget.post.categoryId, "title": widget.post.category});
+                                },
                               child: Container(
                                 alignment: Alignment.center,
                                 height: 30,
