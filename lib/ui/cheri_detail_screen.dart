@@ -41,7 +41,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     width = MediaQuery.of(context).size.width;
     final  args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
     String cheriId = args["cheriId"]!;
-    String memberId = args["memberId"]!;
+    String memberId = userPreferences!.getString("id")??"";
 
 
 
@@ -56,8 +56,9 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
         },
         child: SafeArea(child: Consumer<DetailedViewProvider>(builder: (context, detailedProvider, child) {
           if (!_loaded) {
-            detailedProvider.fetchDetailedViewData(cheriId, memberId).then((value) {});
             _loaded = true;
+            detailedProvider.fetchDetailedViewData(cheriId, memberId).then((value) {});
+
           }
           return CustomScrollView(
             controller: _scrollController,
@@ -304,7 +305,12 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                             }
                           }
                           else {
-                            Navigator.pushNamed(context, AuthScreen.route);
+                            Navigator.pushNamed(context, AuthScreen.route).then((value) {
+                              setState(() {
+                                print("efuheriguerg");
+                                _loaded = false;
+                              });
+                            });
                           }
                         },
                         icon: detailedViewProvider.detailedPost.saveYn == "Y"

@@ -233,7 +233,7 @@ class _NavCotrollerState extends State<NavCotroller> {
                 child: CircleAvatar(
                   radius: 15,
                   backgroundColor: Colors.transparent,
-                  backgroundImage: NetworkImage("https://cheri.weeknday.com/${imgUrl!}"),
+                  backgroundImage: NetworkImage("${imgUrl!}"),
                 ),
               ),
             ),
