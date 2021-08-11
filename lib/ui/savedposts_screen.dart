@@ -173,7 +173,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   onPressed: () async {
-                    print("referge");
+
                     _collectionsProvider.fetchSavedPostsList(_userManagementProvider.userId ?? "", "20", "1", "views").then((value) {});
                       _collectionsProvider.fetchOpenedPostsList(_userManagementProvider.userId ?? "", "20", "1", "views").then((value) {});
 
@@ -283,8 +283,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
     );
   }
 
-  Widget _buildSortWidget(
-      String memberId, CollectionsProvider postListsProvidert) {
+  Widget _buildSortWidget(String memberId, CollectionsProvider postListsProvidert) {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: Row(
@@ -293,7 +292,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
           Container(
               margin: EdgeInsets.only(left: 10),
               child: Text(
-                "${voiceResult[language]}:${mode == Button.BOOKMARK ? _collectionsProvider.savedPosts.length : _collectionsProvider.openedPosts.length} ${count[language]}",
+                "${mode == Button.BOOKMARK ? _collectionsProvider.savedPosts.length : _collectionsProvider.openedPosts.length} ${count[language]}",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               )),
           Spacer(),
@@ -313,8 +312,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                         ? Theme.of(context).selectedRowColor
                         : Colors.black,
                   ))),
-         if(!_searchMode)
-          Container(
+          if(!_searchMode)Container(
             margin: EdgeInsets.only(left: 5.0),
             child: PopupMenuButton(
                 child: Container(
@@ -342,8 +340,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                       )
                     ]),
           ),
-          if(!_searchMode)
-            Container(
+          if(!_searchMode)Container(
             margin: EdgeInsets.only(left: 10.0, right: 10),
             child: PopupMenuButton(
                 elevation: 10,
@@ -398,13 +395,12 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                       ),
                     ]),
           ),
-        ],
+                  ],
       ),
     );
   }
 
-  Widget _buildPostWidget(double height, double width, index,
-      CollectionsProvider collectionsProvider) {
+  Widget _buildPostWidget(double height, double width, index, CollectionsProvider collectionsProvider) {
     List<Post> posts = [];
     if (mode == Button.BOOKMARK) {
       if (_searchMode)

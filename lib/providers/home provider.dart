@@ -80,12 +80,13 @@ class HomeProvider extends ChangeNotifier {
     return false;
 
   }
-  void fetchPostList2(int pageSize, int  nowPage,  String orderBy, int  category, String memberId){
 
-  }
   Future<bool> fetchCategoriesList() async {
     try {
       Response response = await WebServices.fetchCategoriesList("cheri");
+
+      print("categories");
+      print(response.body);
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 

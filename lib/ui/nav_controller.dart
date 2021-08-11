@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:viewerapp/providers/collections%20provider.dart';
 import 'package:viewerapp/providers/home%20provider.dart';
 import 'package:viewerapp/providers/search%20provider.dart';
@@ -61,24 +63,31 @@ class _NavCotrollerState extends State<NavCotroller> {
               barrierDismissible: false ,
                 context: context,
                 builder: (_) => AlertDialog(
-                  title: Text('Your app  is outdated!', style: TextStyle(
-                    fontSize: 20
-                  ),),
+                  title: Center(
+                    child: Text("최신 버전 업데이트", style: TextStyle(
+                        fontSize: 20,  fontWeight: FontWeight.bold
+                    ),),
+                  ),
                   content: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize:MainAxisSize.min ,
                     children: [
-                      Text("Please update you app!"),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
+                      Container(
+                        alignment: Alignment.center,
+                        child: Text("최신버전 앱으로 업데이트 위해 스토어로 이동합니다.", style: TextStyle(
+                        ), textAlign: TextAlign.center,),
+                      ),
+                      Container(
+                        width: double.maxFinite,
+                        margin: const EdgeInsets.only(top: 10),
+                        child: CupertinoButton(
+                            color: Colors.orange,
+                            child: Text("확인"),
+                            onPressed: () async{
+                              await launch("https://play.google.com/store/apps/details?id=com.cheristoryboard.viewerapp");
+                            }),
+                      )
 
-                        MaterialButton(onPressed: (){
-                          Navigator.pop(context);
-                        }, child: Text("Cancel",), textColor: Colors.white,  color: Theme.of(context).selectedRowColor, ),
-                        MaterialButton(onPressed: (){
-
-                        }, child: Text("Update"), textColor: Colors.white, color: Theme.of(context).selectedRowColor,),
-                      ],)
                     ],
                   ),
                 )
