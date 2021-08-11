@@ -26,13 +26,8 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   late double height;
   late double width;
   String? language;
-
-
   bool _loaded = false;
   CheriState _cheriState = CheriState.IDLE;
-
-
-
   @override
   void initState() {
 
@@ -481,9 +476,11 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                             ],
                           ),
                         ),
-
                         if(provider.cheriTextOpen)
-                        Container(decoration: BoxDecoration(color: Color.fromRGBO(245, 245, 245, 1), borderRadius: BorderRadius.all(Radius.circular(8))), padding: EdgeInsets.all(10), margin: EdgeInsets.only(left: 10, right: 10), child: Text(contents)),
+                        Container(
+                          width: double.maxFinite,
+                            decoration: BoxDecoration(
+                                color: Color.fromRGBO(245, 245, 245, 1), borderRadius: BorderRadius.all(Radius.circular(8))), padding: EdgeInsets.all(10), margin: EdgeInsets.only(left: 10, right: 10), child: Text(contents)),
                         Divider(),
                         Container(
                           margin: EdgeInsets.only(left: 10),
