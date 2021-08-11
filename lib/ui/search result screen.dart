@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/providers/search%20provider.dart';
+import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
 
@@ -24,8 +25,9 @@ class Searchresultscreen extends StatefulWidget {
 class _SearchresultscreenState extends State<Searchresultscreen> {
   late double _height;
   late double _width;
+  late String memberId;
   bool _loaded = false;
-  late  String memberId;
+  UserManagementProvider _userManagementProvider = UserManagementProvider();
   String? language;
   bool _searching = true;
   var scrollConttoller = ScrollController();
@@ -33,10 +35,13 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
 
   @override
   Widget build(BuildContext context) {
+    _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
+
     language = languagePreferences!.getString("language")??"ko";
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
-    memberId = userPreferences!.getString("id")??"";
+    String memberId = _userManagementProvider.userId??"";
+
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     return Scaffold(

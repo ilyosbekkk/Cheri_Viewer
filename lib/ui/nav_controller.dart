@@ -8,6 +8,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viewerapp/providers/collections%20provider.dart';
 import 'package:viewerapp/providers/home%20provider.dart';
 import 'package:viewerapp/providers/search%20provider.dart';
+import 'package:viewerapp/providers/user%20management%20provider.dart';
 
 import 'package:viewerapp/services/web%20services.dart';
 import 'package:viewerapp/ui/search_screen.dart';
@@ -30,14 +31,14 @@ class _NavCotrollerState extends State<NavCotroller> {
   String? language;
   var _screens = [];
   HomeProvider homeProvider = HomeProvider();
+  UserManagementProvider _userManagementProvider = UserManagementProvider();
   CollectionsProvider collectionsProvider = CollectionsProvider();
   SearchProvider searchProvider = SearchProvider();
   ScrollController _scrollController = ScrollController();
   ScrollController _scrollController2 = ScrollController();
   ScrollController _scrollController3 = ScrollController();
   double appBarHeight = 0;
-  late String? memberId;
-  late  String? accountImgurl;
+
   RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   @override
@@ -54,9 +55,6 @@ class _NavCotrollerState extends State<NavCotroller> {
     PackageInfo.fromPlatform().then((value1) {
       WebServices.fetchDeviceVersion().then((value2) {
         String versionFromWeb = jsonDecode(value2.body)["data"]["VERSION"];
-        print(versionFromWeb);
-        print(value1.version);
-        print(versionFromWeb);
         if(value1.version != versionFromWeb){
           WidgetsBinding.instance!.addPostFrameCallback((_) async {
             await showDialog(
@@ -88,7 +86,6 @@ class _NavCotrollerState extends State<NavCotroller> {
           });
         }
         else print("u r using the latest version");
-
       });});
 
 
@@ -101,12 +98,13 @@ class _NavCotrollerState extends State<NavCotroller> {
      homeProvider = Provider.of<HomeProvider>(context, listen:false);
      searchProvider = Provider.of<SearchProvider>(context, listen: false);
      collectionsProvider = Provider.of<CollectionsProvider>(context, listen: false);
+    _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
+
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-     memberId = userPreferences!.getString("id")??"";
-     print("memberId :${memberId}");
-    accountImgurl = userPreferences!.getString("imgUrl")??"";
-    _screens = [_buildHomeScreen(height, width), _buildSearchScreen(height, width), _buildStorageBoxScreen(height, width, memberId)];
+
+
+    _screens = [_buildHomeScreen(height, width), _buildSearchScreen(height, width), _buildStorageBoxScreen(height, width, _userManagementProvider.userId??"")];
 
     return  Scaffold(
             body: SafeArea(child: SmartRefresher(
@@ -115,7 +113,7 @@ class _NavCotrollerState extends State<NavCotroller> {
               child: CustomScrollView(
                 controller: _selectedIndex == 0? _scrollController:_selectedIndex == 1?_scrollController2:_scrollController3,
                   slivers: [
-                    _buildSliverAppBar(height, accountImgurl),
+                    _buildSliverAppBar(height, _userManagementProvider.imgUrl??""),
                     _screens[_selectedIndex]],
                 ),
             ),),
@@ -192,13 +190,7 @@ class _NavCotrollerState extends State<NavCotroller> {
 
               if (encrypedId == null) {
                print("yes");
-                Navigator.pushNamed(context, AuthScreen.route).then((value)  {
-                  setState(() {
-                    memberId = userPreferences!.getString("id")??"";
-
-                     accountImgurl= userPreferences!.getString("imgUrl")??"";
-                  });
-                });
+                Navigator.pushNamed(context, AuthScreen.route);
               }else {
 
                 Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId}).then((value) {
@@ -222,9 +214,7 @@ class _NavCotrollerState extends State<NavCotroller> {
             margin: EdgeInsets.only(right: 10),
             child: InkWell(
               onTap: () {
-                String? encrypedId = (userPreferences!.getString("encrypt_id") ?? null);
-                print(encrypedId);
-
+                String? encrypedId = (_userManagementProvider.encryptedId ?? null);
                 Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId,  "user_id": null});
               },
               child: CircleAvatar(

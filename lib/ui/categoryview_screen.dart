@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/providers/categories%20provider.dart';
+import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
 
@@ -25,8 +26,8 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
   late double _height;
   late double _width;
   bool _loaded = false;
-  late  String memberId;
   String? language;
+  UserManagementProvider userManagementProvider = UserManagementProvider();
   var scrollConttoller = ScrollController();
 
 
@@ -35,21 +36,21 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
       language = languagePreferences!.getString("language")??"ko";
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
-    memberId = userPreferences!.getString("id")??"";
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+     userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
 
-    return Scaffold(
+
+      return Scaffold(
       body: SafeArea(
         child:  Consumer<CategoriesProvider>(builder: (context, postProvider, widget) {
               if (!_loaded) {
-                postProvider.fetchCategories(pageSize, 1, orderBy, int.parse(args["id"]!), memberId).then((value) {
+                postProvider.fetchCategories(pageSize, 1, orderBy, int.parse(args["id"]!), userManagementProvider.userId??"").then((value) {
                   _loaded = true;
                 });
               }
               if (postProvider.categoryLoading)
                 return Center(
-
-                  child:
+                    child:
 
                   CircularProgressIndicator(
                     color: Theme.of(context).selectedRowColor,
@@ -92,7 +93,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
     );
   }
 
-  Widget _buildList(CategoriesProvider postListProvider, double height, double width, String category) {
+  Widget _buildList(CategoriesProvider postListProvider, double height, double width, String category, ) {
     return SliverToBoxAdapter(
         child: ListView.builder(
             primary: false,
@@ -174,11 +175,11 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                 enabled: true,
                 onSelected: (value) async {
                   if (value == "second1") {
-                    await postListsProvidert.fetchCategories(10, 1, "latestdate", int.parse(category), memberId);
+                    await postListsProvidert.fetchCategories(10, 1, "latestdate", int.parse(category),  userManagementProvider.userId??"" );
                   } else if (value == "second2") {
-                    await postListsProvidert.fetchCategories(10, 1, "olddate", int.parse(category),  memberId);
+                    await postListsProvidert.fetchCategories(10, 1, "olddate", int.parse(category),  userManagementProvider.userId??"");
                   } else if (value == "second3") {
-                    await postListsProvidert.fetchCategories(10, 1, "views", int.parse(category), memberId);
+                    await postListsProvidert.fetchCategories(10, 1, "views", int.parse(category), userManagementProvider.userId??"");
                   }
                   setState(() {});
                 },

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/providers/home%20provider.dart';
+import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/categoryview_screen.dart';
 import 'package:viewerapp/utils/utils.dart';
@@ -28,8 +29,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   HomeProvider _homePageProvider = HomeProvider();
+  UserManagementProvider _userManagementProvider = UserManagementProvider();
   int initialPage = 1;
-  String? memberId;
+
   int currentLength = 0;
   String?  language;
 
@@ -42,13 +44,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    memberId =  userPreferences!.getString("id")??"";
+
+     _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
 
 
     _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
     if (!_homePageProvider.networkCallDone) {
       _homePageProvider.networkCallDone = true;
-      _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberId ?? "").then((value) {});
+      _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, _userManagementProvider.userId ?? "").then((value) {});
       _homePageProvider.fetchCategoriesList().then((value) {});
     }
     if (!_homePageProvider.scrollControllerRegistered) {
@@ -56,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
       widget._scrollController!.addListener(() {
         if (widget._scrollController!.position.pixels == widget._scrollController!.position.maxScrollExtent) {
           initialPage = initialPage + 1;
-          _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberId ?? "").then((value) {});
+          _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, _userManagementProvider.userId ?? "").then((value) {});
         }
       });
     }
@@ -65,7 +68,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
   language = languagePreferences!.getString("language")??"ko";
-    if (_homePageProvider.responseCode1 == 200 && _homePageProvider.responseCode2 == 200)
+
+  if (_homePageProvider.responseCode1 == 200 && _homePageProvider.responseCode2 == 200)
       return ListView.builder(
         primary: false,
         shrinkWrap: true,
@@ -105,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Text("${timeOutError[language]}"),
             MaterialButton(
               onPressed: () {
-                if (_homePageProvider.responseCode1 == -1) _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberId!).then((value) {});
+                if (_homePageProvider.responseCode1 == -1) _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, _userManagementProvider.userId??"").then((value) {});
                 if (_homePageProvider.responseCode2 == -1) _homePageProvider.fetchCategoriesList().then((value) {});
               },
               child: Text("try again"),
@@ -132,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 textColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 onPressed: () {
-                  if (_homePageProvider.responseCode1 == -2) _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, memberId!).then((value) {});
+                  if (_homePageProvider.responseCode1 == -2) _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category,_userManagementProvider.userId??"").then((value) {});
                   if (_homePageProvider.responseCode2 == -2) _homePageProvider.fetchCategoriesList().then((value) {});
                 },
                 child: Text("${reloadButton[language]}"),

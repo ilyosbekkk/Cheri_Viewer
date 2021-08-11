@@ -1,4 +1,5 @@
 import 'package:viewerapp/providers/search%20provider.dart';
+import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/ui/child%20widgets/voice%20recorder%20modal%20bottom%20sheet.dart';
 
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -28,10 +29,11 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController _controller = TextEditingController();
-   String? _memberId;
+   late String _memberId;
+   UserManagementProvider _userManagementProvider = UserManagementProvider();
   bool _searchActive = false;
   bool _searching = false;
-  bool _loaded = false;
+
   bool _noSearchResult = false;
   String?  language;
 
@@ -39,7 +41,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _memberId = userPreferences!.getString("id")??"";
+
 
   }
 
@@ -47,14 +49,19 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     language = languagePreferences!.getString("language")??"ko";
     final modalHeight = (widget.height!.toDouble() - MediaQueryData.fromWindow(window).padding.top);
-
+    _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
+    _memberId = _userManagementProvider.userId??"";
     return Container(
         margin: EdgeInsets.only(left: widget.width!.toDouble() * 0.025, top: 10),
         child: Consumer<SearchProvider>(
           builder: (context, searchProvider, child) {
-            if (!_loaded && _memberId != "") {
-              searchProvider.fetchRecentSearches(_memberId!).then((value) {});
-              _loaded = true;
+
+
+            if(_memberId == "")
+              searchProvider.recentSearches.clear();
+            if (!searchProvider.loaded && _memberId != "") {
+              searchProvider.fetchRecentSearches(_memberId).then((value) {});
+              searchProvider.loaded = true;
             }
             return _buildWidgetsList(searchProvider, modalHeight);
           },

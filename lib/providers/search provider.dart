@@ -11,6 +11,7 @@ class SearchProvider extends ChangeNotifier {
   List<Post> _searchResults = [];
   List<SearchWord> _recentSearches = [];
   List<SearchWord> _relatedSearches = [];
+  bool loaded  = false;
 
   Future<bool> searchPostByTitle(int pageSize, int nowPage, String orderBy, String searchWord, String memberId) async {
     print(orderBy);
@@ -69,7 +70,7 @@ class SearchProvider extends ChangeNotifier {
       Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
       if (response.statusCode == 200) {
         Search search = Search.fromJson(decodedResponse);
-        print("related searches:");
+      ;
         print(decodedResponse);
         _relatedSearches.addAll(search.searchWords!);
         result = true;
@@ -90,6 +91,9 @@ class SearchProvider extends ChangeNotifier {
 
   void cleanList() {
     if (_searchResults.isNotEmpty) _searchResults.clear();
+    if (_relatedSearches.isNotEmpty) _relatedSearches.clear();
+    if (_recentSearches.isNotEmpty) _recentSearches.clear();
+    loaded = false;
     notifyListeners();
   }
 

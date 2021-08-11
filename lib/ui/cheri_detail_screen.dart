@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
 import 'package:viewerapp/providers/collections%20provider.dart';
 import 'package:viewerapp/providers/detailedview%20provider.dart';
+import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/ui/search%20result%20screen.dart';
 import 'package:viewerapp/ui/webview%20main%20screen.dart';
 import 'package:viewerapp/utils/strings.dart';
@@ -31,7 +32,6 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
 
 
 
-
   @override
   Widget build(BuildContext context) {
     language =  languagePreferences!.getString("language")??"ko";
@@ -39,7 +39,9 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     width = MediaQuery.of(context).size.width;
     final  args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
     String cheriId = args["cheriId"]!;
-    String memberId = userPreferences!.getString("id")??"";
+    var _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
+
+
 
     return Scaffold(
       body: WillPopScope(
@@ -52,12 +54,12 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
         child: SafeArea(child: Consumer<DetailedViewProvider>(builder: (context, detailedProvider, child) {
           if (!_loaded) {
             _loaded = true;
-            detailedProvider.fetchDetailedViewData(cheriId, memberId).then((value) {});
+            detailedProvider.fetchDetailedViewData(cheriId, _userManagementProvider.userId??"").then((value) {});
 
           }
           return CustomScrollView(
             controller: _scrollController,
-            slivers: [_buildSliverAppBar(height, detailedProvider), _buildList(detailedProvider, width, memberId, cheriId)],
+            slivers: [_buildSliverAppBar(height, detailedProvider), _buildList(detailedProvider, width, _userManagementProvider.userId??"", cheriId)],
           );
         })),
       ),

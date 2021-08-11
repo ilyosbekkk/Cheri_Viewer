@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/providers/cheri%20provider.dart';
 import 'package:viewerapp/providers/collections%20provider.dart';
+import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/ui/auth_screen.dart';
 import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
@@ -22,18 +22,22 @@ class CardViewWidget extends StatefulWidget {
 }
 
 class _CardViewWidgetState extends State<CardViewWidget> {
-  String? memberId;
+
+  UserManagementProvider _userManagementProvider = UserManagementProvider();
   String? language;
+  late String memberId;
   @override
   void initState() {
     super.initState();
-     memberId =  userPreferences!.getString("id")??"";
 
   }
   @override
   Widget build(BuildContext context) {
      language = languagePreferences!.getString("language")??"ko";
      var provider = Provider.of<CollectionsProvider>(context, listen: false);
+     _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
+
+     memberId = _userManagementProvider.userId??"";
 
     return Consumer<CheriProvider>(builder: (context,  cheriProvider,  child) {
       return  Container(
@@ -124,7 +128,7 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                                 InkWell(
                                   onTap: ()  {
                                     if(memberId != "")
-                                      cheriProvider.saveCheriPost(widget.post.cheriId, "Y", memberId!).then((value)  {
+                                      cheriProvider.saveCheriPost(widget.post.cheriId, "Y", memberId).then((value)  {
                                         if(value)
                                           setState(() {
                                             provider.savedPosts.add(widget.post);
@@ -200,7 +204,7 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                   child: Row(
                     children: [
                       Text(
-                        "${cheriViews[language]}:${widget.post.views}",
+                        "${cheriViews[language]} ${widget.post.views}",
                         style: TextStyle(fontSize: 12),
                       ),
                       Container(

@@ -61,6 +61,7 @@ Map<String, String> openedCheri = {english:"Opened Cheri", korean: "열어본 �
 Map<String, String> languageChangeError = {english: "Language has not been changed", korean: "언어가 변경되었습니다"};
 Map<String, String> turnonthenet = {english: "Please,turn on the internet", korean: "인터넷 좀 켜주세요!"};
 Map<String, String> bookMarkScreen = {english:"Bookmark", korean:"북마크"};
+Map<String, String> count = {english:"", korean:"건"};
 
 
 

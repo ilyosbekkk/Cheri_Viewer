@@ -83,7 +83,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                   Container(
                     alignment: Alignment.center,
                     height: 25,
-                    width: 70,
+                    width: 90,
                     margin: EdgeInsets.only(top: 10.0),
                     decoration: BoxDecoration(
                       color: Theme.of(context).primaryColorDark,
@@ -99,6 +99,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                   ),
                   InkWell(
                     onTap: (){
+                      print("ergiyqeurygqueryguyqreg");
                       Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id":widget.post.categoryId, "title": widget.post.category});
                       },
                     child: Container(
@@ -121,7 +122,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                   Row(
                     children: [
                       Text(
-                        "${cheriViews[language]}:${widget.post.views}",
+                        "${cheriViews[language]} ${widget.post.views}",
                         style: TextStyle(fontSize: 12),
                       ),
                       Container(

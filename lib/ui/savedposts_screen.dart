@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
 import 'package:viewerapp/providers/collections%20provider.dart';
+import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
 
@@ -22,7 +23,8 @@ class StorageBoxScreen extends StatefulWidget {
 
   StorageBoxScreen.scroll(this._scrollController);
 
-  void jumpToTheTop() => _scrollController!.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+  void jumpToTheTop() => _scrollController!.animateTo(0,
+      duration: Duration(milliseconds: 500), curve: Curves.easeIn);
 
   @override
   _StorageBoxScreenState createState() => _StorageBoxScreenState();
@@ -32,30 +34,34 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
   bool _searchMode = false;
   Button mode = Button.BOOKMARK;
   CollectionsProvider _collectionsProvider = CollectionsProvider();
+  UserManagementProvider _userManagementProvider = UserManagementProvider();
+
   TextEditingController _controller = TextEditingController();
   bool netwrokCallDone = false;
-  late String memberId;
   String? language;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    memberId = userPreferences!.getString("id") ?? "";
-
-
   }
 
   @override
   Widget build(BuildContext context) {
-    _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
+    _collectionsProvider =
+        Provider.of<CollectionsProvider>(context, listen: true);
+    _userManagementProvider =
+        Provider.of<UserManagementProvider>(context, listen: true);
+    String memberId = _userManagementProvider.userId ?? "";
 
-    if (! _collectionsProvider.networkCallDone) {
+    if (!_collectionsProvider.networkCallDone && memberId.isNotEmpty) {
       _collectionsProvider.networkCallDone = true;
-      if ((_collectionsProvider.statusCode1 == 0 || _collectionsProvider.statusCode1 == -2)) {
-        _collectionsProvider.fetchSavedPostsList(memberId, "20", "1", "views").then((value) {});
+      if ((_collectionsProvider.statusCode1 == 0 ||
+          _collectionsProvider.statusCode1 == -2)) {
+        _collectionsProvider.fetchSavedPostsList(_userManagementProvider.userId ?? "", "20", "1", "views").then((value) {});
       }
-      if ((_collectionsProvider.statusCode2 == 0 || _collectionsProvider.statusCode2 == -2)) {
-        _collectionsProvider.fetchOpenedPostsList(memberId, "20", "1", "views").then((value) {});
+      if ((_collectionsProvider.statusCode2 == 0 ||
+          _collectionsProvider.statusCode2 == -2)) {
+        _collectionsProvider.fetchOpenedPostsList(_userManagementProvider.userId ?? "", "20", "1", "views").then((value) {});
       }
     }
     language = languagePreferences!.getString("language") ?? "ko";
@@ -67,7 +73,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
         count = count + _collectionsProvider.searchSavedPosts.length;
       else
         count = count + _collectionsProvider.savedPosts.length;
-    } else if (mode == Button.OPEN_CHERI && _collectionsProvider.savedPosts.isNotEmpty) {
+    } else if (mode == Button.OPEN_CHERI &&
+        _collectionsProvider.savedPosts.isNotEmpty) {
       if (_searchMode)
         count = count + _collectionsProvider.searchOpenedPosts.length;
       else
@@ -90,7 +97,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                     color: Theme.of(context).selectedRowColor,
                     child: Text("로그인"),
                     onPressed: () {
-                      Navigator.pushNamed(context, AuthScreen.route).then((value) {
+                      Navigator.pushNamed(context, AuthScreen.route)
+                          .then((value) {
                         setState(() {
                           memberId = userPreferences!.getString("id") ?? "";
                         });
@@ -100,7 +108,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
             )),
       );
     } else {
-      if (_collectionsProvider.statusCode1 == 200 && _collectionsProvider.statusCode2 == 200)
+      if (_collectionsProvider.statusCode1 == 200 &&
+          _collectionsProvider.statusCode2 == 200)
         return ListView.builder(
             primary: false,
             shrinkWrap: true,
@@ -117,25 +126,34 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                   index = index - 3;
                 else
                   index = index - 2;
-                return _buildPostWidget(widget.height!.toDouble(), widget.width!.toDouble(), index, _collectionsProvider);
+                return _buildPostWidget(widget.height!.toDouble(),
+                    widget.width!.toDouble(), index, _collectionsProvider);
               }
             });
-      else if (_collectionsProvider.statusCode1 == -1 || _collectionsProvider.statusCode2 == -1)
+      else if (_collectionsProvider.statusCode1 == -1 ||
+          _collectionsProvider.statusCode2 == -1)
         return Center(
           child: Column(
             children: [
               Text("TimeOut happened:("),
               MaterialButton(
                 onPressed: () {
-                  _collectionsProvider.fetchSavedPostsList(memberId, pageSize.toString(), "1", orderBy).then((value) {});
-                  _collectionsProvider.fetchOpenedPostsList(memberId, pageSize.toString(), "1", orderBy).then((value) {});
+                  _collectionsProvider
+                      .fetchSavedPostsList(
+                          memberId, pageSize.toString(), "1", orderBy)
+                      .then((value) {});
+                  _collectionsProvider
+                      .fetchOpenedPostsList(
+                          memberId, pageSize.toString(), "1", orderBy)
+                      .then((value) {});
                 },
                 child: Text("try again"),
               )
             ],
           ),
         );
-      else if (_collectionsProvider.statusCode1 == -2 || _collectionsProvider.statusCode2 == -2) {
+      else if (_collectionsProvider.statusCode1 == -2 ||
+          _collectionsProvider.statusCode2 == -2) {
         return Center(
           child: Container(
             margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
@@ -152,15 +170,22 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                 MaterialButton(
                   color: Theme.of(context).selectedRowColor,
                   textColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  onPressed: () {},
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  onPressed: () async {
+                    print("referge");
+                    _collectionsProvider.fetchSavedPostsList(_userManagementProvider.userId ?? "", "20", "1", "views").then((value) {});
+                      _collectionsProvider.fetchOpenedPostsList(_userManagementProvider.userId ?? "", "20", "1", "views").then((value) {});
+
+                      },
                   child: Text("Reload Page"),
                 )
               ],
             ),
           ),
         );
-      } else if (_collectionsProvider.statusCode1 == -3 || _collectionsProvider.statusCode2 == -3) {
+      } else if (_collectionsProvider.statusCode1 == -3 ||
+          _collectionsProvider.statusCode2 == -3) {
         return Center(
           child: Container(
             margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
@@ -213,7 +238,10 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                   ),
                   left: BorderSide(color: Colors.transparent, width: 0.5),
                   right: BorderSide(color: Colors.transparent, width: 0.0),
-                  bottom: mode == Button.BOOKMARK ? BorderSide(width: 2, color: Theme.of(context).selectedRowColor) : BorderSide(color: Colors.grey),
+                  bottom: mode == Button.BOOKMARK
+                      ? BorderSide(
+                          width: 2, color: Theme.of(context).selectedRowColor)
+                      : BorderSide(color: Colors.grey),
                 ),
               ),
               alignment: Alignment.center,
@@ -237,13 +265,17 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                   top: BorderSide(color: Colors.transparent, width: 0.5),
                   left: BorderSide(color: Colors.transparent, width: 0.0),
                   right: BorderSide(color: Colors.transparent, width: 0.5),
-                  bottom: mode == Button.OPEN_CHERI ? BorderSide(width: 2, color: Theme.of(context).selectedRowColor) : BorderSide(color: Colors.grey),
+                  bottom: mode == Button.OPEN_CHERI
+                      ? BorderSide(
+                          width: 2, color: Theme.of(context).selectedRowColor)
+                      : BorderSide(color: Colors.grey),
                 ),
               ),
               alignment: Alignment.center,
               height: 60,
               width: widget.width!.toDouble() / 2,
-              child: Text("${openedCheri[language]}", style: TextStyle(fontSize: 15)),
+              child: Text("${openedCheri[language]}",
+                  style: TextStyle(fontSize: 15)),
             ),
           )
         ],
@@ -251,7 +283,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
     );
   }
 
-  Widget _buildSortWidget(String memberId, CollectionsProvider postListsProvidert) {
+  Widget _buildSortWidget(
+      String memberId, CollectionsProvider postListsProvidert) {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: Row(
@@ -260,7 +293,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
           Container(
               margin: EdgeInsets.only(left: 10),
               child: Text(
-                "${voiceResult[language]}:${mode == Button.BOOKMARK ? _collectionsProvider.savedPosts.length : _collectionsProvider.openedPosts.length}",
+                "${voiceResult[language]}:${mode == Button.BOOKMARK ? _collectionsProvider.savedPosts.length : _collectionsProvider.openedPosts.length} ${count[language]}",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               )),
           Spacer(),
@@ -276,14 +309,18 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                   height: 25,
                   child: SvgPicture.asset(
                     "assets/icons/search.svg",
-                    color: _searchMode ? Theme.of(context).selectedRowColor : Colors.black,
+                    color: _searchMode
+                        ? Theme.of(context).selectedRowColor
+                        : Colors.black,
                   ))),
-
+         if(!_searchMode)
           Container(
             margin: EdgeInsets.only(left: 5.0),
-            child:
-           !_searchMode? PopupMenuButton(
-                child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/list.svg")),
+            child: PopupMenuButton(
+                child: Container(
+                    width: 30,
+                    height: 30,
+                    child: SvgPicture.asset("assets/icons/list.svg")),
                 elevation: 10,
                 enabled: true,
                 onSelected: (value) async {
@@ -303,26 +340,48 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                         child: Text(menu1[language]![1]),
                         value: "first2",
                       )
-                    ]):Container(),
+                    ]),
           ),
-
+          if(!_searchMode)
             Container(
             margin: EdgeInsets.only(left: 10.0, right: 10),
-            child:
-
-           !_searchMode? PopupMenuButton(
+            child: PopupMenuButton(
                 elevation: 10,
-                child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/options.svg")),
+                child: Container(
+                    width: 30,
+                    height: 30,
+                    child: SvgPicture.asset("assets/icons/options.svg")),
                 enabled: true,
                 onSelected: (value) async {
-                  if (value == "second1") {
-                    mode == Button.BOOKMARK ? await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "latestdate") : await postListsProvidert.fetchOpenedPostsList(memberId, "10", "1", "latestdate");
-                  } else if (value == "second2") {
-                    mode == Button.BOOKMARK ? await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "olddate") : await postListsProvidert.fetchOpenedPostsList(memberId, "10", "1", "olddate");
-                  } else if (value == "second3") {
-                    mode == Button.BOOKMARK ? await postListsProvidert.fetchSavedPostsList(memberId, "10", "1", "views") : await postListsProvidert.fetchOpenedPostsList(memberId, "10", "1", "views");
+
+
+                  if(!_searchMode) {
+                    if (value == "second1") {
+                      mode == Button.BOOKMARK
+                          ? await postListsProvidert.fetchSavedPostsList(
+                          memberId, "10", "1", "latestdate")
+                          : await postListsProvidert.fetchOpenedPostsList(
+                          memberId, "10", "1", "latestdate");
+                    }
+                    else if (value == "second2") {
+                      mode == Button.BOOKMARK
+                          ? await postListsProvidert.fetchSavedPostsList(
+                          memberId, "10", "1", "olddate")
+                          : await postListsProvidert.fetchOpenedPostsList(
+                          memberId, "10", "1", "olddate");
+                    }
+                    else if (value == "second3") {
+                      mode == Button.BOOKMARK
+                          ? await postListsProvidert.fetchSavedPostsList(
+                          memberId, "10", "1", "views")
+                          : await postListsProvidert.fetchOpenedPostsList(
+                          memberId, "10", "1", "views");
+                    }
+                    setState(() {});
                   }
-                  setState(() {});
+                  else {
+
+                  }
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(
@@ -337,14 +396,15 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                         child: Text(menu2[language]![2]),
                         value: "second3",
                       ),
-                    ]):Container(),
+                    ]),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPostWidget(double height, double width, index, CollectionsProvider collectionsProvider) {
+  Widget _buildPostWidget(double height, double width, index,
+      CollectionsProvider collectionsProvider) {
     List<Post> posts = [];
     if (mode == Button.BOOKMARK) {
       if (_searchMode)
@@ -367,62 +427,51 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
   Widget _buildSearchWidget() {
     return Container(
       margin: EdgeInsets.only(left: 10, top: 10),
-
-
-
-        child:  Container(
-          margin: EdgeInsets.only(left: 10.0, right: 10.0),
-              height: widget.height!.toDouble() * 0.05,
-              child: TextField(
-                controller: _controller,
-                onSubmitted: (searchWord) {
-                  setState(() {
-                    _searchMode = false;
-                  });
-                },
-
-                onChanged: (word){
-                  if(mode == Button.BOOKMARK){
-                    _collectionsProvider.searchSaved(word);
-                  }
-                  else if(mode == Button.OPEN_CHERI){
-                    _collectionsProvider.searchOpened(word);
-
-                  }
-                },
-                autofocus: true,
-                textAlign: TextAlign.start,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-
-                    onPressed: (){
-                      _controller.clear();
-                      if(mode == Button.BOOKMARK){
-                        _collectionsProvider.searchSaved("");
-                      }
-                      else if(mode == Button.OPEN_CHERI){
-                        _collectionsProvider.searchOpened("");
-
-                      }
-
-                    },
-                    icon: Icon(Icons.clear,color: Theme.of(context).selectedRowColor),),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide(width: 1, color: Color.fromRGBO(175, 27, 63, 1)),
-                  ),
-                  contentPadding: EdgeInsets.only(left: 10.0),
-                  hintText: searchHint[korean],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
+      child: Container(
+        margin: EdgeInsets.only(left: 10.0, right: 10.0),
+        height: widget.height!.toDouble() * 0.05,
+        child: TextField(
+          controller: _controller,
+          onSubmitted: (searchWord) {
+            setState(() {
+              _searchMode = false;
+            });
+          },
+          onChanged: (word) {
+            if (mode == Button.BOOKMARK) {
+              _collectionsProvider.searchSaved(word);
+            } else if (mode == Button.OPEN_CHERI) {
+              _collectionsProvider.searchOpened(word);
+            }
+          },
+          autofocus: true,
+          textAlign: TextAlign.start,
+          decoration: InputDecoration(
+            suffixIcon: IconButton(
+              onPressed: () {
+                _controller.clear();
+                if (mode == Button.BOOKMARK) {
+                  _collectionsProvider.searchSaved("");
+                } else if (mode == Button.OPEN_CHERI) {
+                  _collectionsProvider.searchOpened("");
+                }
+              },
+              icon:
+                  Icon(Icons.clear, color: Theme.of(context).selectedRowColor),
             ),
-
-
-
-
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              borderSide:
+                  BorderSide(width: 1, color: Color.fromRGBO(175, 27, 63, 1)),
+            ),
+            contentPadding: EdgeInsets.only(left: 10.0),
+            hintText: searchHint[korean],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

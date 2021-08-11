@@ -35,7 +35,7 @@ void main() async {
   ];
 
 
-    runApp(
+  runApp(
         MultiProvider(
           providers: providers,
           child: MyApp(),
@@ -47,8 +47,14 @@ void main() async {
 class MyApp extends StatelessWidget {
 
 
+
+
+
+
   @override
   Widget build(BuildContext context) {
+    var _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
+    _userManagementProvider.setUserCredentials();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',

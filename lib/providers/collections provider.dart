@@ -115,6 +115,8 @@ class CollectionsProvider extends ChangeNotifier {
     savedPosts.clear();
     openedPosts.clear();
     statusCode1 = 0;
+    searchSavedPosts.clear();
+    searchOpenedPosts.clear();
     statusCode2= 0;
     networkCallDone = false;
     notifyListeners();

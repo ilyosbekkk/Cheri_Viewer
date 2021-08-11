@@ -10,6 +10,13 @@ import 'package:viewerapp/utils/utils.dart';
 
 class UserManagementProvider extends ChangeNotifier {
 
+
+  String? userId;
+  String? userEmail;
+  String? imgUrl;
+  String? name;
+  String? encryptedId;
+
   Future<Map<String, String>> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = (await GoogleSignIn().signIn())!;
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -79,13 +86,42 @@ class UserManagementProvider extends ChangeNotifier {
       bool setEncryptedId = await userPreferences!.setString("encrypt_id", encryptedId);
 
       if (setId && setEmail && setImgUrl && setName && setEncryptedId) {
+        setUserCredentials();
         return true;
       }
     }
     return false;
   }
 
+  void setUserCredentials(){
+    userId =  userPreferences!.getString("id");
+    userEmail = userPreferences!.getString("email");
+    imgUrl = userPreferences!.getString("imgUrl");
+    name = userPreferences!.getString("name");
+    encryptedId = userPreferences!.getString("encrypt_id");
+    notifyListeners();
+  }
+
   Future<bool> logout() async {
-    return await userPreferences!.clear();
+    bool  isDelete =  await userPreferences!.clear();
+
+    if(isDelete){
+      userId =  userPreferences!.getString("id");
+      userEmail = userPreferences!.getString("email");
+      imgUrl = userPreferences!.getString("imgUrl");
+      name = userPreferences!.getString("name");
+      encryptedId = userPreferences!.getString("encrypt_id");
+      notifyListeners();
+    }
+
+
+    return isDelete;
+  }
+
+  Future<bool> langChange(String newLang) async {
+    bool langchange = await languagePreferences!.setString("language",newLang);
+    notifyListeners();
+   return  langchange;
   }
 }
+
