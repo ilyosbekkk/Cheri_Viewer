@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
@@ -54,6 +55,8 @@ class _NavCotrollerState extends State<NavCotroller> {
   void initState() {
     super.initState();
 
+
+    if(Platform.isAndroid)
     PackageInfo.fromPlatform().then((value1) {
       WebServices.fetchDeviceVersion().then((value2) {
         String versionFromWeb = jsonDecode(value2.body)["data"]["VERSION"];

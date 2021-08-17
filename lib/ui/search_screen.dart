@@ -237,14 +237,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 )),
           ),
-          Expanded(
-              flex: 1,
-              child: IconButton(
-                  icon: Icon(
-                    Icons.clear,
-                    size: 15,
-                  ),
-                  onPressed: () {}))
+
         ],
       ),
     );

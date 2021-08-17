@@ -5,9 +5,6 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
-  - connectivity (0.0.1):
-    - Flutter
-    - Reachability
   - Firebase/Auth (8.3.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 8.3.0)
@@ -16,7 +13,7 @@ PODS:
   - Firebase/DynamicLinks (8.3.0):
     - Firebase/CoreOnly
     - FirebaseDynamicLinks (~> 8.3.0)
-  - firebase_auth (1.2.0):
+  - firebase_auth (3.0.1):
     - Firebase/Auth (= 8.3.0)
     - firebase_core
     - Flutter
@@ -36,7 +33,7 @@ PODS:
     - FirebaseCoreDiagnostics (~> 8.0)
     - GoogleUtilities/Environment (~> 7.4)
     - GoogleUtilities/Logger (~> 7.4)
-  - FirebaseCoreDiagnostics (8.4.0):
+  - FirebaseCoreDiagnostics (8.5.0):
     - GoogleDataTransport (~> 9.0)
     - GoogleUtilities/Environment (~> 7.4)
     - GoogleUtilities/Logger (~> 7.4)
@@ -99,17 +96,17 @@ PODS:
     - Flutter
   - kakao_flutter_sdk (0.7.0):
     - Flutter
-  - KakaoSDKAuth (2.5.5):
-    - KakaoSDKCommon (= 2.5.5)
-  - KakaoSDKCommon (2.5.5):
-    - KakaoSDKCommon/Common (= 2.5.5)
-    - KakaoSDKCommon/Network (= 2.5.5)
-  - KakaoSDKCommon/Common (2.5.5)
-  - KakaoSDKCommon/Network (2.5.5):
+  - KakaoSDKAuth (2.5.6):
+    - KakaoSDKCommon (= 2.5.6)
+  - KakaoSDKCommon (2.5.6):
+    - KakaoSDKCommon/Common (= 2.5.6)
+    - KakaoSDKCommon/Network (= 2.5.6)
+  - KakaoSDKCommon/Common (2.5.6)
+  - KakaoSDKCommon/Network (2.5.6):
     - Alamofire (~> 5.1)
-    - KakaoSDKCommon/Common (= 2.5.5)
-  - KakaoSDKUser (2.5.5):
-    - KakaoSDKAuth (= 2.5.5)
+    - KakaoSDKCommon/Common (= 2.5.6)
+  - KakaoSDKUser (2.5.6):
+    - KakaoSDKAuth (= 2.5.6)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -124,7 +121,6 @@ PODS:
   - path_provider (0.0.1):
     - Flutter
   - PromisesObjC (2.0.0)
-  - Reachability (3.2)
   - share (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
@@ -141,7 +137,6 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_dynamic_links (from `.symlinks/plugins/firebase_dynamic_links/ios`)
@@ -184,13 +179,10 @@ SPEC REPOS:
     - naveridlogin-sdk-ios
     - OrderedSet
     - PromisesObjC
-    - Reachability
     - Toast
     - Try
 
 EXTERNAL SOURCES:
-  connectivity:
-    :path: ".symlinks/plugins/connectivity/ios"
   firebase_auth:
     :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_core:
@@ -233,14 +225,13 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
-  connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   Firebase: 817b9171d0d51dccc458b94a5e8edff6b1dd323d
-  firebase_auth: df8e844886023808b14a45fd087e9b94dcad1579
+  firebase_auth: 3b08d67bda60758347d15584fd0a7a4cf5f6496f
   firebase_core: 72374607c8c6f5a0adc0559e5c5bf57deda975e3
   firebase_dynamic_links: 63d25b8afb1257210012a703b2029b425f0b62c7
   FirebaseAuth: fd12c82de44e7ad3b821610c387b8251f03aa0f9
   FirebaseCore: a6dba751680d7033b9d3831e1cfc95ead0605118
-  FirebaseCoreDiagnostics: cad03be1904b975f845e632f2720c3337da27faf
+  FirebaseCoreDiagnostics: 7bf55d386f9fc690d971b70a582142321a390eb8
   FirebaseDynamicLinks: 5ab1f7988e31b5b267a2e034659e43cef4fff613
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
@@ -256,9 +247,9 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 36689134877faeb055b27dfa4ccc9ceaa42e029e
   image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
   kakao_flutter_sdk: e9ce9223c809eba9a9c375fb134ca608400ca9a1
-  KakaoSDKAuth: 7474cf67d199a9c2ec6a46e4ed8398cf34c1262d
-  KakaoSDKCommon: fb2c9223a86d6f65a8ba73bbaad7cec6a2b09630
-  KakaoSDKUser: 7bb1c38bbd4608bd4e7eebbd4eda130338364fb3
+  KakaoSDKAuth: 1e1fa737e78eed3f301ab5c164526781a37a42f9
+  KakaoSDKCommon: cdf340a8f671eef75f4ca012003cb350af3c4b6d
+  KakaoSDKUser: f488aa4699b3fd3a836ab5c7e25e2cb4cea190c1
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   naveridlogin-sdk-ios: b9d7c20677981177ed994ecb1c8c2b49f223277d
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
@@ -266,7 +257,6 @@ SPEC CHECKSUMS:
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
-  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   speech_to_text: b43a7d99aef037bd758ed8e45d79bbac035d2dfe
@@ -275,6 +265,6 @@ SPEC CHECKSUMS:
   Try: 5ef669ae832617b3cee58cb2c6f99fb767a4ff96
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: 697fa511022a5c1abaca0c699b37909d8ee8a23a
+PODFILE CHECKSUM: 17e8588cc5a1da5c1200ee0b2953a7c3c88c16fc
 
 COCOAPODS: 1.10.0
