@@ -1,6 +1,0 @@
-framework module flutter_naver_login {
-  umbrella header "flutter_naver_login-umbrella.h"
-
-  export *
-  module * { export * }
-}
