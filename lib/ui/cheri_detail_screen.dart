@@ -393,23 +393,21 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
             IconButton(
               onPressed: ()  {
                 if (items[index].comment == null || items[index].comment!.isEmpty) {
-                  print("1");
+
                    showdialog(context, "${noContent[language]}", detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName).then((value) {
-                     detailedViewProvider.cheriContentOpen = false;
-                   detailedViewProvider.cheriTextOpen = false;
+                     detailedViewProvider.cheriContentOpen = true;
+                   detailedViewProvider.cheriTextOpen = true;
                    });
                 } else if (detailedViewProvider.itemFiles(items[index].itemId!).isEmpty) {
-                  print("2");
-
-                   showdialog(context, items[index].comment!, placeholdeUrl).then((value) {
-                     detailedViewProvider.cheriContentOpen = false;
-                     detailedViewProvider.cheriTextOpen = false;
+                  showdialog(context, items[index].comment!, placeholdeUrl).then((value) {
+                     detailedViewProvider.cheriContentOpen = true;
+                     detailedViewProvider.cheriTextOpen = true;
                    });
                 } else {
                   print("3");
                   showdialog(context, items[index].comment!, detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName).then((value)  {
-                      detailedViewProvider.cheriContentOpen = false;
-                      detailedViewProvider.cheriTextOpen = false;
+                      detailedViewProvider.cheriContentOpen = true;
+                      detailedViewProvider.cheriTextOpen = true;
 
 
                     });
@@ -423,6 +421,12 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   }
 
   Future<void> showdialog(BuildContext context, String contents, String saveFileName) async {
+
+
+
+    print(saveFileName);
+
+
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -506,7 +510,10 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                           ),
                         ),
                         if(provider.cheriContentOpen)
-                          Container(margin: EdgeInsets.all(10), child: Image.network("https://cheri.weeknday.com/upload/detailfile/$saveFileName") ),
+                          Container(margin: EdgeInsets.all(10), child:
+
+                          saveFileName != placeholdeUrl?   Image.network("https://cheri.weeknday.com/upload/detailfile/$saveFileName"):Image.network(placeholdeUrl) ),
+
                       ],
                     ),
                   ),

@@ -51,21 +51,28 @@ class _SearchScreenState extends State<SearchScreen> {
     final modalHeight = (widget.height!.toDouble() - MediaQueryData.fromWindow(window).padding.top);
     _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
     _memberId = _userManagementProvider.userId??"";
-    return Container(
-        margin: EdgeInsets.only(left: widget.width!.toDouble() * 0.025, top: 10),
-        child: Consumer<SearchProvider>(
-          builder: (context, searchProvider, child) {
+    return GestureDetector(
+      onTap: (){
+        FocusScope.of(context).unfocus();
+      }
+
+       ,
+      child: Container(
+          margin: EdgeInsets.only(left: widget.width!.toDouble() * 0.025, top: 10),
+          child: Consumer<SearchProvider>(
+            builder: (context, searchProvider, child) {
 
 
-            if(_memberId == "")
-              searchProvider.recentSearches.clear();
-            if (!searchProvider.loaded && _memberId != "") {
-              searchProvider.fetchRecentSearches(_memberId).then((value) {});
-              searchProvider.loaded = true;
-            }
-            return _buildWidgetsList(searchProvider, modalHeight);
-          },
-        ));
+              if(_memberId == "")
+                searchProvider.recentSearches.clear();
+              if (!searchProvider.loaded && _memberId != "") {
+                searchProvider.fetchRecentSearches(_memberId).then((value) {});
+                searchProvider.loaded = true;
+              }
+              return _buildWidgetsList(searchProvider, modalHeight);
+            },
+          )),
+    );
   }
 
   Widget _buildWidgetsList(SearchProvider searchProvider, double modalHeight) {

@@ -10,8 +10,8 @@ class DetailedViewProvider extends ChangeNotifier {
   List<File> _files = [];
   late DetailedPostResponse postsResponse;
   late bool _loaded;
-  bool _cheriTextOpen = false;
-  bool  _cheriContentOpen = false;
+  bool _cheriTextOpen = true;
+  bool  _cheriContentOpen = true;
 
   Future<bool> fetchDetailedViewData(String cheriId, memberId) async {
     _loaded = false;
@@ -22,15 +22,28 @@ class DetailedViewProvider extends ChangeNotifier {
 
       Response response = await WebServices.fetchDetailedViewData(cheriId, memberId);
       Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+
+
       postsResponse = DetailedPostResponse.fromJson(decodedResponse);
-      print("idddd: ${postsResponse.encryptedId}");
-      print("decoded response");
-      print(decodedResponse);
+
+
+
+
+
       if (postsResponse.msg == "success") {
+
         _loaded = true;
         _detailedPost = postsResponse.detailedPosts!;
+
+
+
         _items.addAll(postsResponse.items);
         _files.addAll(postsResponse.files);
+
+
+        for(int i = 0; i<_files.length; i++){
+          print(_files[i].saveFileName);
+        }
         notifyListeners();
         return true;
       }
@@ -75,7 +88,11 @@ class DetailedViewProvider extends ChangeNotifier {
 
   List<File>  itemFiles(String itemId) {
      List<File> files = [];
-     
+
+     print("file length");
+     print(_files.length);
+
+
      for(int i = 0; i<_files.length; i++) {
        if(_files[i].itemId == itemId) {
          files.add(_files[i]);

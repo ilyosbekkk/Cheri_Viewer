@@ -23,7 +23,7 @@ class DetailedPostResponse {
 
     List<File> filesList = list2.map((i) => File.fromJson(i)).toList();
 
-    print("item data:");
+    print("file  data:");
     print(parsedJson["item_data"]);
     return DetailedPostResponse(parsedJson["code"], parsedJson["msg"], dataList, itemsList, filesList, parsedJson["encrypt_id"]);
   }
@@ -153,6 +153,9 @@ class File {
   File.create(this._itemId, this._filePath, this._uploadFileName, this._saveFileName, this._fileExtension, this._mimeTypeMain, this._mimeTypeSub, this._fileSize);
 
   factory File.fromJson(Map<String, dynamic> parsedJson) {
+
+
+
     return File.create(parsedJson["CHERI_ITEM_ID"], parsedJson["FILE_PATH"], parsedJson["UPLOAD_FILE_NAME"], parsedJson["SAVE_FILE_NAME"], parsedJson["FILE_EXTENSION"], parsedJson["MIME_TYPE_MAIN"], parsedJson["MIME_TYPE_SUB"], parsedJson["FILE_SIZE"]);
   }
 
