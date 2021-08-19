@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:viewerapp/providers/cheri%20provider.dart';
-import 'package:viewerapp/providers/collections%20provider.dart';
+import 'package:viewerapp/providers/cheri%20%20individual%20post%20%20provider.dart';
+import 'package:viewerapp/providers/saved%20posts%20screen%20provider.dart';
+
 import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/ui/auth_screen.dart';
 import 'package:viewerapp/utils/strings.dart';

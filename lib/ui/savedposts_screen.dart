@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:viewerapp/models/postslist_model.dart';
-import 'package:viewerapp/providers/collections%20provider.dart';
+import 'package:viewerapp/providers/saved%20posts%20screen%20provider.dart';
 import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_cardview_widget.dart';
 import 'package:viewerapp/ui/child%20widgets/singlepost_listview_widget.dart';
@@ -425,7 +425,6 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
       margin: EdgeInsets.only(left: 10, top: 10),
       child: Container(
         margin: EdgeInsets.only(left: 10.0, right: 10.0),
-        height: widget.height!.toDouble() * 0.05,
         child: TextField(
           controller: _controller,
           onSubmitted: (searchWord) {
@@ -452,8 +451,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                   _collectionsProvider.searchOpened("");
                 }
               },
-              icon:
-                  Icon(Icons.clear, color: Theme.of(context).selectedRowColor),
+              icon: Icon(Icons.clear, color: Theme.of(context).selectedRowColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),

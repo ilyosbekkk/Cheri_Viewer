@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:viewerapp/models/postslist_model.dart';
-import 'package:viewerapp/providers/cheri%20provider.dart';
-import 'package:viewerapp/providers/collections%20provider.dart';
+import 'package:viewerapp/providers/cheri%20%20individual%20post%20%20provider.dart';
+import 'package:viewerapp/providers/saved%20posts%20screen%20provider.dart';
+
 import 'package:viewerapp/ui/auth_screen.dart';
 import 'package:viewerapp/ui/cheri_detail_screen.dart';
 import 'package:viewerapp/utils/utils.dart';

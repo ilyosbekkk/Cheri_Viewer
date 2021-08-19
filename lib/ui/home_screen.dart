@@ -30,36 +30,32 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   HomeProvider _homePageProvider = HomeProvider();
   UserManagementProvider _userManagementProvider = UserManagementProvider();
-  int initialPage = 1;
+
 
   int currentLength = 0;
   String?  language;
 
-   @override
-  void initState() {
-     super.initState();
 
-   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
+
      _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
+     _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
 
-
-    _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
     if (!_homePageProvider.networkCallDone) {
       _homePageProvider.networkCallDone = true;
-      _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, _userManagementProvider.userId ?? "").then((value) {});
+      _homePageProvider.fetchPostsList(pageSize, _homePageProvider.initialPage, orderBy, category, _userManagementProvider.userId ?? "").then((value) {});
       _homePageProvider.fetchCategoriesList().then((value) {});
     }
     if (!_homePageProvider.scrollControllerRegistered) {
       _homePageProvider.scrollControllerRegistered = true;
       widget._scrollController!.addListener(() {
-        if (widget._scrollController!.position.pixels == widget._scrollController!.position.maxScrollExtent) {
-          initialPage = initialPage + 1;
-          _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, _userManagementProvider.userId ?? "").then((value) {});
+        if (widget._scrollController!.position.pixels == widget._scrollController!.position.maxScrollExtent && _homePageProvider.responseCode1 != 0) {
+          _homePageProvider.initialPage =_homePageProvider.initialPage + 1;
+          _homePageProvider.fetchPostsList(pageSize, _homePageProvider.initialPage, orderBy, category, _userManagementProvider.userId ?? "").then((value) {});
         }
       });
     }
@@ -94,7 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: CircularProgressIndicator(
                       color: Theme.of(context).selectedRowColor,
                     )));
-          } else {
+          }
+          else {
             return _homePageProvider.allPosts.length != 0
                 ? _buildSinglePost(index - 1, 0.4 * widget.height!.toDouble(), widget.width!.toDouble())
                 : Center(child: Container(margin: EdgeInsets.only(top: widget.width! * 0.5), child: Text("List is empty:(")));
@@ -109,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Text("${timeOutError[language]}"),
             MaterialButton(
               onPressed: () {
-                if (_homePageProvider.responseCode1 == -1) _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category, _userManagementProvider.userId??"").then((value) {});
+                if (_homePageProvider.responseCode1 == -1) _homePageProvider.fetchPostsList(pageSize, _homePageProvider.initialPage, orderBy, category, _userManagementProvider.userId??"").then((value) {});
                 if (_homePageProvider.responseCode2 == -1) _homePageProvider.fetchCategoriesList().then((value) {});
               },
               child: Text("try again"),
@@ -136,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 textColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 onPressed: () {
-                  if (_homePageProvider.responseCode1 == -2) _homePageProvider.fetchPostsList(pageSize, initialPage, orderBy, category,_userManagementProvider.userId??"").then((value) {});
+                  if (_homePageProvider.responseCode1 == -2) _homePageProvider.fetchPostsList(pageSize, _homePageProvider.initialPage, orderBy, category,_userManagementProvider.userId??"").then((value) {});
                   if (_homePageProvider.responseCode2 == -2) _homePageProvider.fetchCategoriesList().then((value) {});
                 },
                 child: Text("${reloadButton[language]}"),
@@ -146,7 +143,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
-    else if (_homePageProvider.responseCode1 == -3 || _homePageProvider.responseCode2 == -3) {return Center(
+    else if (_homePageProvider.responseCode1 == -3 || _homePageProvider.responseCode2 == -3) {
+      return Center(
         child: Container(
           margin: EdgeInsets.only(top: widget.width! * 0.5),
           child: Column(

@@ -1,4 +1,4 @@
-import 'package:viewerapp/providers/search%20provider.dart';
+import 'package:viewerapp/providers/search%20screen%20provider.dart';
 import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/ui/child%20widgets/voice%20recorder%20modal%20bottom%20sheet.dart';
 

@@ -8,9 +8,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:viewerapp/providers/collections%20provider.dart';
 import 'package:viewerapp/providers/home%20provider.dart';
-import 'package:viewerapp/providers/search%20provider.dart';
+import 'package:viewerapp/providers/saved%20posts%20screen%20provider.dart';
+import 'package:viewerapp/providers/search%20screen%20provider.dart';
 import 'package:viewerapp/providers/user%20management%20provider.dart';
 
 import 'package:viewerapp/services/web%20services.dart';
@@ -44,18 +44,11 @@ class _NavCotrollerState extends State<NavCotroller> {
 
   RefreshController _refreshController = RefreshController(initialRefresh: false);
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
 
 
   @override
   void initState() {
     super.initState();
-
-
     if(Platform.isAndroid)
     PackageInfo.fromPlatform().then((value1) {
       WebServices.fetchDeviceVersion().then((value2) {
@@ -99,14 +92,12 @@ class _NavCotrollerState extends State<NavCotroller> {
         }
         else print("u r using the latest version");
       });});
-
-
   }
 
 
   @override
   Widget build(BuildContext context) {
-    language = languagePreferences!.getString("language")??"ko";
+     language = languagePreferences!.getString("language")??"ko";
      homeProvider = Provider.of<HomeProvider>(context, listen:false);
      searchProvider = Provider.of<SearchProvider>(context, listen: false);
      collectionsProvider = Provider.of<CollectionsProvider>(context, listen: false);
@@ -201,12 +192,12 @@ class _NavCotrollerState extends State<NavCotroller> {
               print(encrypedId);
 
               if (encrypedId == null) {
-               print("yes");
-                Navigator.pushNamed(context, AuthScreen.route);
+                Navigator.pushNamed(context, AuthScreen.route).then((value) {
+
+                });
               }else {
 
                 Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId}).then((value) {
-                  print("34uh4gruy4gyeryrgu24ruyerguyrgeurg");
                   setState(() {
                     language = languagePreferences!.getString("language")??"ko";
                     print("language ${language}");
@@ -265,7 +256,6 @@ class _NavCotrollerState extends State<NavCotroller> {
       _selectedIndex = index;
     });
   }
-
 
   void _onRefresh() async{
     if(_selectedIndex == 0)

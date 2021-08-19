@@ -1,9 +1,9 @@
-import 'package:viewerapp/providers/categories%20provider.dart';
-import 'package:viewerapp/providers/cheri%20provider.dart';
-import 'package:viewerapp/providers/collections%20provider.dart';
-import 'package:viewerapp/providers/detailedview%20provider.dart';
+import 'package:viewerapp/providers/category%20screen%20%20provider.dart';
+import 'package:viewerapp/providers/cheri%20%20individual%20post%20%20provider.dart';
+import 'package:viewerapp/providers/detailedview%20screen%20provider.dart';
 import 'package:viewerapp/providers/home%20provider.dart';
-import 'package:viewerapp/providers/search%20provider.dart';
+import 'package:viewerapp/providers/saved%20posts%20screen%20provider.dart';
+import 'package:viewerapp/providers/search%20screen%20provider.dart';
 import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/ui/cheri_detail_screen.dart';
 import 'package:viewerapp/ui/categoryview_screen.dart';

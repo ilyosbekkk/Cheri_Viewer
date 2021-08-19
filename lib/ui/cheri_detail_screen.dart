@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
-import 'package:viewerapp/providers/collections%20provider.dart';
-import 'package:viewerapp/providers/detailedview%20provider.dart';
+import 'package:viewerapp/providers/detailedview%20screen%20provider.dart';
+import 'package:viewerapp/providers/saved%20posts%20screen%20provider.dart';
+
 import 'package:viewerapp/providers/user%20management%20provider.dart';
 import 'package:viewerapp/ui/search%20result%20screen.dart';
 import 'package:viewerapp/ui/webview%20main%20screen.dart';
@@ -505,7 +506,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                           ),
                         ),
                         if(provider.cheriContentOpen)
-                          Container(margin: EdgeInsets.all(10), child: saveFileName != placeholdeUrl ? Image.network("https://cheri.weeknday.com/upload/detailfile/${saveFileName}") : Image.network(placeholdeUrl)),
+                          Container(margin: EdgeInsets.all(10), child: Image.network("https://cheri.weeknday.com/upload/detailfile/$saveFileName") ),
                       ],
                     ),
                   ),
@@ -519,3 +520,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
 
 
 }
+
+/*
+: Image.network(placeholdeUrl)
+ */

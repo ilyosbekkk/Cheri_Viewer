@@ -12,7 +12,7 @@ class CheriProvider extends ChangeNotifier {
       print(state);
       Response response = await WebServices.saveCheriPost(cheriId!, memberId, state);
       if (response.statusCode == 200) {
-        print("heyyyy");
+
         print(response.body);
         return true;
       } else
