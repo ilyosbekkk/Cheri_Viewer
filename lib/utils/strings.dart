@@ -62,11 +62,9 @@ Map<String, String> languageChangeError = {english: "Language has not been chang
 Map<String, String> turnonthenet = {english: "Please,turn on the internet", korean: "인터넷 좀 켜주세요!"};
 Map<String, String> bookMarkScreen = {english:"Bookmark", korean:"북마크"};
 Map<String, String> count = {english:"", korean:"건"};
-
-
-
-
-
+Map<String, String> noResult = {english:"No results for the searched word!", korean:"검색됀 체리가 없습니다!"};
+Map<String, String> back = {english:"Go back", korean:"돌아가기"};
+Map<String, String> noRecentSearches = {english:"No recent searches!", korean:"최근 검색어가 없습니다!"};
 
 
 //api urls
@@ -82,8 +80,6 @@ const String relatedSearches = "/api/viewerapi/relation_search_log_list";
 const String bookMarkList = "/api/viewerapi/book_mark_list";
 const String openCheriList = "/api//viewerapi/open_cheri_list";
 const String  fetchDeviceLatestVersion = "/api/viewerapi/version";
-
-
 
 //others
 const String placeholdeUrl = "https://www.orcajourney.com/wp-content/uploads/2020/08/placeholder.png";

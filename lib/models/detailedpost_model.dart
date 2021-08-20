@@ -92,6 +92,11 @@ class Intro {
 
   String? get memberId => _memberId;
 
+
+  set saveYn(String? value) {
+    _saveYn = value;
+  }
+
   factory Intro.fromJson(Map<String, dynamic> parsedJson) {
     return Intro.create(parsedJson["CHERI_ID"], parsedJson["TITLE"], parsedJson["CATEGORY_ID"], parsedJson["SHARE"], parsedJson["REG_DATE"], parsedJson["PICTURE_ID"], parsedJson["VIEWS"], parsedJson["CATEGORY"], parsedJson["PICTURE"], parsedJson["NAME"], parsedJson["SAVECOUNT"], parsedJson["SAVE_YN"], parsedJson["hashtag"], parsedJson["COMMENT"], parsedJson["MEMBER_ID"]);
   }
@@ -135,6 +140,10 @@ class Item {
   String? get contents => _contents;
 
   String? get itemId => _itemId;
+
+  set checkedYn(String? value) {
+    _checkedYn = value;
+  }
 
   factory Item.fromJson(Map<String, dynamic> parsedJson) {
     return Item(parsedJson["ITEM_ID"], parsedJson["CONTENTS"], parsedJson["order"], parsedJson["CHECKED_YN"], parsedJson["IMPORTANT_YN"], parsedJson["REG_DATE"], parsedJson["COMMENT"], parsedJson["FILE_NAME"], parsedJson["FILE_PATH"], parsedJson["FILE_CHECK"], parsedJson["REFERENCE"], parsedJson["SAVE_FILE_NAME"]);

@@ -49,9 +49,9 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
           child:  Consumer<SearchProvider>(builder: (context, postProvider, widget) {
             if (!_loaded && _searching ){
               _loaded = true;
-              _searching = false;
-              postProvider.searchPostByTitle(pageSize, 1, orderBy, args["searchWord"], memberId).then((value) {
 
+              postProvider.searchPostByTitle(pageSize, 1, orderBy, args["searchWord"], memberId).then((value) {
+                _searching = false;
               });
             }
             if (_searching) return Center(
@@ -59,9 +59,32 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
                     color: Theme.of(context).selectedRowColor,
                   )
               );
+            else if(postProvider.searchResults.length == 0)
+              return Center(
+                child:Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                        margin: EdgeInsets.only(bottom: 10, left: 10.0, right:10.0),
+                        child: Text('${noResult[language]}',  style: TextStyle(fontSize: 20), textAlign: TextAlign.center,)
+
+                    )
+
+                        ,
+                    CupertinoButton(
+                        color: Theme.of(context).selectedRowColor,
+                        child: Text("${back[language]}"),
+                        onPressed: () {
+                        Navigator.pop(context);
+                        })
+                  ],
+                )
+              );
             else return CustomScrollView(
                 slivers: [
                   _buildSliverAppBar(_height, args["searchWord"]!),
+
                   ((userPreferences!.getString("mode1") ?? "card") == "card") ?
                   _buildList(postProvider, 0.4 * _height, _width,  args["searchWord"]) : _buildDividedList(postProvider, 0.4 * _height, _width)],
               );

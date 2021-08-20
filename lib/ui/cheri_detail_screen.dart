@@ -31,8 +31,6 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   bool _loaded = false;
   CheriState _cheriState = CheriState.IDLE;
 
-
-
   @override
   Widget build(BuildContext context) {
     language =  languagePreferences!.getString("language")??"ko";
@@ -279,14 +277,12 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                             if (detailedViewProvider.detailedPost.saveYn == "Y") {
                               detailedViewProvider.saveCheriPost(detailedViewProvider.detailedPost.cherId, "N", memberId).then((value) {
                                 if (value) {
-                                  detailedViewProvider.fetchDetailedViewData(
-                                      cheriId, memberId).then((value) {
-                                    if(value)
-                                      setState(() {
-                                        _cheriState = CheriState.UNSAVED;
-                                        showToast(bookMarkUnsave[language]!);
+                                  setState(() {
+                                      detailedViewProvider.detailedPost.saveYn ="N";
+                                    _cheriState = CheriState.UNSAVED;
+                                    showToast(bookMarkUnsave[language]!);
 
-                                      });});
+                                  });
                                 }
                               });
                             } else {
@@ -294,6 +290,8 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                                 if (value) detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
                                   if(value)
                                     setState(() {
+                                      detailedViewProvider.detailedPost.saveYn ="Y";
+
                                       _cheriState = CheriState.SAVED;
                                       showToast(bookmarkSave[language]!);
 
@@ -305,7 +303,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                           else {
                             Navigator.pushNamed(context, AuthScreen.route).then((value) {
                               setState(() {
-                                print("efuheriguerg");
+
                                 _loaded = false;
                               });
                             });
@@ -367,11 +365,13 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                 value: items[index].checkedYn == "Y" ? true : false,
                 onChanged: (bool? value) {
                   String checked = (value == true) ? "Y" : "N";
-
                   detailedViewProvider.updateCheckListItem(items[index].itemId!, checked, memberId, detailedViewProvider.detailedPost.cherId??"").then((value) {
                     if (value) {
-                      detailedViewProvider.fetchDetailedViewData(cheriId, memberId).then((value) {
-                        if (value) print("saved!");
+                      setState(() {
+                        if(items[index].checkedYn == "Y")
+                          items[index].checkedYn = "N";
+                        else  items[index].checkedYn = "Y";
+
                       });
                     }
                   });
@@ -524,10 +524,6 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
         });
   }
 
-
-
 }
 
-/*
-: Image.network(placeholdeUrl)
- */
+

@@ -106,7 +106,7 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Column(
            children: [
              Icon(Icons.announcement_rounded,  color: Theme.of(context).selectedRowColor,size: 30,),
-             Text("No recent searches", style: TextStyle(
+             Text("${noRecentSearches[language]}", style: TextStyle(
                fontSize: 20
              ),)
            ],

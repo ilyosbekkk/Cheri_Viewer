@@ -31,7 +31,7 @@ class NavCotroller extends StatefulWidget {
 
 class _NavCotrollerState extends State<NavCotroller> {
   int _selectedIndex = 0;
-  String? language;
+  late  String language;
   var _screens = [];
   HomeProvider homeProvider = HomeProvider();
   UserManagementProvider _userManagementProvider = UserManagementProvider();
@@ -122,7 +122,7 @@ class _NavCotrollerState extends State<NavCotroller> {
             ),),
             bottomNavigationBar: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label:  "홈"),
+                BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "홈"),
                 BottomNavigationBarItem(icon: Icon(Icons.search), label: "검색"),
                 BottomNavigationBarItem(icon: Icon(Icons.bookmark_border), label: "보관함"),
               ],
