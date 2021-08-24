@@ -540,7 +540,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
         alignment: Alignment.center,
         margin: EdgeInsets.only(top: 50),
         child: Text(
-          "${noResult[language]}",
+          "${noSavedPosts[language]}",
           style: TextStyle(
               fontSize: 20, color: Theme.of(context).selectedRowColor),
         ));

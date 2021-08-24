@@ -65,6 +65,7 @@ Map<String, String> count = {english:"", korean:"건"};
 Map<String, String> noResult = {english:"No results for the searched word!", korean:"검색됀 체리가 없습니다!"};
 Map<String, String> back = {english:"Go back", korean:"돌아가기"};
 Map<String, String> noRecentSearches = {english:"No recent searches!", korean:"최근 검색어가 없습니다!"};
+Map<String, String> noSavedPosts = {english:"No saved posts found", korean:"저장된 체리가 없습니다!"};
 
 
 //api urls

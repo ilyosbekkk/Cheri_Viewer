@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:viewerapp/models/detailedpost_model.dart';
+import 'package:viewerapp/providers/cheri%20%20individual%20post%20%20provider.dart';
 import 'package:viewerapp/providers/detailedview%20screen%20provider.dart';
+import 'package:viewerapp/providers/home%20provider.dart';
 import 'package:viewerapp/providers/saved%20posts%20screen%20provider.dart';
 
 import 'package:viewerapp/providers/user%20management%20provider.dart';
@@ -25,6 +27,8 @@ class CheriDetailViewScreen extends StatefulWidget {
 
 class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
   ScrollController _scrollController = ScrollController();
+  var homeProvider = HomeProvider();
+  var postProvider = CheriProvider();
   late double height;
   late double width;
   String? language;
@@ -39,6 +43,8 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
     final  args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
     String cheriId = args["cheriId"]!;
     var _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
+    homeProvider = Provider.of<HomeProvider>(context, listen: true);
+    postProvider = Provider.of<CheriProvider>(context, listen: true);
 
 
 
@@ -61,7 +67,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
             slivers: [_buildSliverAppBar(height, detailedProvider), _buildList(detailedProvider, width, _userManagementProvider.userId??"", cheriId)],
           );
         })),
-      ),
+      )
     );
   }
 
@@ -143,7 +149,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                 image: AssetImage("assets/images/placeholder.png"),
           colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
 
-          fit: BoxFit.cover,
+    fit: BoxFit.cover,
               ),
       ),
       height: 185,
@@ -152,7 +158,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
         children: [
           Container(
             height: 25,
-            width: 70,
+            width: 150,
             alignment: Alignment.center,
             decoration: BoxDecoration(border: Border.all(color: Colors.white), borderRadius: BorderRadius.all(Radius.circular(5))),
             child: Text(
@@ -162,10 +168,13 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
             ),
           ),
           Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.only(left: 10, right: 10),
             child: detailedViewProvider.detailedPost.title != null
                 ? Text(
                     detailedViewProvider.detailedPost.title!,
                     style: TextStyle(fontSize: 20, color: Colors.white),
+              textAlign: TextAlign.center,
                   )
                 : Center(
 
@@ -283,6 +292,9 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                                     showToast(bookMarkUnsave[language]!);
 
                                   });
+                                  //
+                                  // homeProvider.updatePost(detailedViewProvider.detailedPost.cherId??"", "N");
+                                  // postProvider.update();
                                 }
                               });
                             } else {
@@ -291,11 +303,12 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                                   if(value)
                                     setState(() {
                                       detailedViewProvider.detailedPost.saveYn ="Y";
-
                                       _cheriState = CheriState.SAVED;
                                       showToast(bookmarkSave[language]!);
 
                                     });
+                                  // homeProvider.updatePost(detailedViewProvider.detailedPost.cherId??"", "Y");
+                                  // postProvider.update();
                                 });
                               });
                             }
@@ -303,7 +316,6 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                           else {
                             Navigator.pushNamed(context, AuthScreen.route).then((value) {
                               setState(() {
-
                                 _loaded = false;
                               });
                             });

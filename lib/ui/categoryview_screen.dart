@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -29,49 +27,84 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
   String? language;
   UserManagementProvider userManagementProvider = UserManagementProvider();
   var scrollConttoller = ScrollController();
+  bool isScrollControllerRegistered = false;
+  int initPage = 1;
 
+@override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+   scrollConttoller.dispose();
 
+}
   @override
   Widget build(BuildContext context) {
-      language = languagePreferences!.getString("language")??"ko";
+    language = languagePreferences!.getString("language") ?? "ko";
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-     userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
+    userManagementProvider =
+        Provider.of<UserManagementProvider>(context, listen: true);
 
+    return Scaffold(
+      body: SafeArea(child: Consumer<CategoriesProvider>(
+          builder: (context, postProvider, widget) {
+        if (!isScrollControllerRegistered) {
+          print("rtwguhwrtiuhgwrthurtiphwrtpih");
+          isScrollControllerRegistered = true;
+          scrollConttoller.addListener(() {
+            if (scrollConttoller.position.pixels == scrollConttoller.position.maxScrollExtent) {
+              initPage += 1;
+              print("gfargaregrrthqrt");
+              postProvider
+                  .fetchCategories(
+                      pageSize,
+                      initPage,
+                      orderBy,
+                      int.parse(args["id"]!),
+                      userManagementProvider.userId ?? "")
+                  .then((value) {});
+            }
+          });
+        }
 
-      return Scaffold(
-      body: SafeArea(
-        child:  Consumer<CategoriesProvider>(builder: (context, postProvider, widget) {
-              if (!_loaded) {
-                postProvider.fetchCategories(pageSize, 1, orderBy, int.parse(args["id"]!), userManagementProvider.userId??"").then((value) {
-                  _loaded = true;
-                });
-              }
-              if (postProvider.categoryLoading)
-                return Center(
-                    child:
-
-                  CircularProgressIndicator(
-                    color: Theme.of(context).selectedRowColor,
-
-                  )
-                );
-              else
-                return CustomScrollView(
-                  slivers: [_buildSliverAppBar(_height, args["title"]!), ((userPreferences!.getString("mode1") ?? "card") == "card") ? _buildList(postProvider, 0.4 * _height, _width, args["id"]!) : _buildDividedList(postProvider, 0.4 * _height, _width, args["id"]!)],
-                );
-            })),
+        if (!_loaded) {
+          postProvider
+              .fetchCategories(pageSize, 1, orderBy, int.parse(args["id"]!),
+                  userManagementProvider.userId ?? "")
+              .then((value) {
+            _loaded = true;
+          });
+        }
+        if (postProvider.categoryLoading)
+          return Center(
+              child: CircularProgressIndicator(
+            color: Theme.of(context).selectedRowColor,
+          ));
+        else
+          return CustomScrollView(
+            slivers: [
+              _buildSliverAppBar(_height, args["title"]!),
+              ((userPreferences!.getString("mode1") ?? "card") == "card")
+                  ? _buildList(postProvider, 0.4 * _height, _width, args["id"]!)
+                  : _buildDividedList(
+                      postProvider, 0.4 * _height, _width, args["id"]!)
+            ],
+          );
+      })),
     );
-
   }
+
+
 
   Widget _buildSliverAppBar(double height, String title) {
     return SliverAppBar(
       shadowColor: Colors.blue,
       elevation: 5,
       centerTitle: true,
-      shape: ((userPreferences!.getString("mode1") ?? "card") == "card") ? Border(bottom: BorderSide(color: Colors.black, width: 0.5)) : Border(bottom: BorderSide(color: Colors.black, width: 0.0)),
+      shape: ((userPreferences!.getString("mode1") ?? "card") == "card")
+          ? Border(bottom: BorderSide(color: Colors.black, width: 0.5))
+          : Border(bottom: BorderSide(color: Colors.black, width: 0.0)),
       floating: true,
       backgroundColor: Color.fromRGBO(250, 250, 250, 1),
       title: Text(
@@ -93,50 +126,80 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
     );
   }
 
-  Widget _buildList(CategoriesProvider postListProvider, double height, double width, String category, ) {
+  Widget _buildList(
+    CategoriesProvider postListProvider,
+    double height,
+    double width,
+    String category,
+  ) {
     return SliverToBoxAdapter(
         child: ListView.builder(
+
             primary: false,
             shrinkWrap: true,
             itemCount: postListProvider.categories.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
-                return _buildSortWidget("searchWord", 5, postListProvider, category);
-              } else {
+                return _buildSortWidget(
+                    "searchWord", 5, postListProvider, category);
+              }
+
+              else if (index == postListProvider.categories.length) {
+                return Center(
+                    child: Container(
+                        margin: EdgeInsets.all(10),
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).selectedRowColor,
+                        )));
+              }
+
+              else {
                 index = index - 1;
                 return _buildSinglePost(index, height, width, postListProvider);
               }
             }));
   }
 
-  Widget _buildDividedList(CategoriesProvider postListProvider, double height, double width, String category) {
+  Widget _buildDividedList(CategoriesProvider postListProvider, double height,
+      double width, String category) {
     return SliverToBoxAdapter(
         child: ListView.builder(
       primary: false,
+      controller: scrollConttoller,
       shrinkWrap: true,
       itemCount: postListProvider.categories.length + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
           return _buildSortWidget("searchWord", 5, postListProvider, category);
-        } else {
+        } else if (index == postListProvider.categories.length) {
+          return Center(
+              child: Container(
+                  margin: EdgeInsets.all(10),
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).selectedRowColor,
+                  )));
+        }
+
+        else {
           index = index - 1;
           return _buildSinglePost(index, height, width, postListProvider);
         }
       },
-
     ));
   }
 
-  Widget _buildSinglePost(int index, double height, double width, CategoriesProvider categoriesProvider) {
+  Widget _buildSinglePost(int index, double height, double width,
+      CategoriesProvider categoriesProvider) {
     List<Post> posts = categoriesProvider.categories;
     String mode = userPreferences!.getString("mode1") ?? "card";
     if (mode == "card")
-      return CardViewWidget(height, width,  posts[index]);
+      return CardViewWidget(height, width, posts[index]);
     else
-      return ListViewWidget(height, width,  posts[index]);
+      return ListViewWidget(height, width, posts[index]);
   }
 
-  Widget _buildSortWidget(String searchWord, int count, CategoriesProvider postListsProvidert, String category) {
+  Widget _buildSortWidget(String searchWord, int count,
+      CategoriesProvider postListsProvidert, String category) {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: Row(
@@ -145,7 +208,10 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
           Container(
             margin: EdgeInsets.only(left: 5.0),
             child: PopupMenuButton(
-                child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/list.svg")),
+                child: Container(
+                    width: 30,
+                    height: 30,
+                    child: SvgPicture.asset("assets/icons/list.svg")),
                 elevation: 10,
                 enabled: true,
                 onSelected: (value) async {
@@ -171,15 +237,33 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
             margin: EdgeInsets.only(left: 10.0, right: 10),
             child: PopupMenuButton(
                 elevation: 10,
-                child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/options.svg")),
+                child: Container(
+                    width: 30,
+                    height: 30,
+                    child: SvgPicture.asset("assets/icons/options.svg")),
                 enabled: true,
                 onSelected: (value) async {
                   if (value == "second1") {
-                    await postListsProvidert.fetchCategories(10, 1, "latestdate", int.parse(category),  userManagementProvider.userId??"" );
+                    await postListsProvidert.fetchCategories(
+                        10,
+                        1,
+                        "latestdate",
+                        int.parse(category),
+                        userManagementProvider.userId ?? "");
                   } else if (value == "second2") {
-                    await postListsProvidert.fetchCategories(10, 1, "olddate", int.parse(category),  userManagementProvider.userId??"");
+                    await postListsProvidert.fetchCategories(
+                        10,
+                        1,
+                        "olddate",
+                        int.parse(category),
+                        userManagementProvider.userId ?? "");
                   } else if (value == "second3") {
-                    await postListsProvidert.fetchCategories(10, 1, "views", int.parse(category), userManagementProvider.userId??"");
+                    await postListsProvidert.fetchCategories(
+                        10,
+                        1,
+                        "views",
+                        int.parse(category),
+                        userManagementProvider.userId ?? "");
                   }
                   setState(() {});
                 },
@@ -202,5 +286,4 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
       ),
     );
   }
-
 }

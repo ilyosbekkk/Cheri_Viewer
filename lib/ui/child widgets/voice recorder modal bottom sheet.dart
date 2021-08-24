@@ -79,46 +79,54 @@ class _VoiceRecorderModalBottomSheetState extends State<VoiceRecorderModalBottom
             Text('${voiceResult[language]}: "$word1"',  style: TextStyle(
               fontSize: 18
             ),),
-            ElevatedButton.icon(
-              icon: Icon(Icons.search),
+            Container(
+              width: 200,
+              child: ElevatedButton.icon(
+
+                icon: Icon(Icons.search),
 
 
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).selectedRowColor),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).selectedRowColor),
 
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-
-                    )
-              )),
-              onPressed: () {
-                Navigator.pop(context, word1);
-              },
-              label: Text("${voiceSearch[language]}"),
-
-            ),
-            ElevatedButton.icon(
-              icon: Icon(Icons.refresh),
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).selectedRowColor),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
 
                       )
-                  )),
-              onPressed: () async {
-                await startListening();
+                )),
+                onPressed: () {
+                  Navigator.pop(context, word1);
+                },
+                label: Text("${voiceSearch[language]}"),
 
-                setState(() {
-                  resultAvailable = false;
-                  word1 = "";
+              ),
+            ),
+            Container(
+              width: 200,
 
-                });
-              },
-              label: Text("${voiceTryAgain[language]}"),
+              child: ElevatedButton.icon(
+                icon: Icon(Icons.refresh),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).selectedRowColor),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
 
+                        )
+                    )),
+                onPressed: () async {
+                  await startListening();
+
+                  setState(() {
+                    resultAvailable = false;
+                    word1 = "";
+
+                  });
+                },
+                label: Text("${voiceTryAgain[language]}"),
+
+              ),
             ),
             Spacer()
           ],

@@ -14,9 +14,10 @@ class SearchProvider extends ChangeNotifier {
   bool loaded  = false;
 
   Future<bool> searchPostByTitle(int pageSize, int nowPage, String orderBy, String searchWord, String memberId) async {
-    print(orderBy);
-    print(searchWord);
-    print(memberId);
+
+
+    print("searching by $orderBy");
+
     if (_searchResults.isNotEmpty) _searchResults.clear();
     try {
       Response response = await WebServices.searchPostByTitle(pageSize, nowPage, orderBy, searchWord, memberId);

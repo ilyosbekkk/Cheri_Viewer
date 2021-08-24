@@ -159,11 +159,7 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                                             provider.savedPosts.removeWhere((element) => element.cheriId == widget.post.cheriId);
                                             widget.post.saved = "N";
                                             showToast(bookMarkUnsave[language]!);
-                                            _collectionsProvider.update();
-
-                                          });
-
-
+                                            _collectionsProvider.update();});
                                         }
                                       });
                                     else {

@@ -37,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
+    print("efygqiueryfgiuqyerf");
 
      _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
      _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
@@ -69,7 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
         itemBuilder: (BuildContext ctx, index) {
           if (index == 0) {
             return _buildCategories(widget.width!.toDouble());
-          } else if (index == _homePageProvider.allPosts.length) {
+          }
+          else if (index == _homePageProvider.allPosts.length) {
             if (currentLength == _homePageProvider.allPosts.length)
               return Center(
                   child: Container(

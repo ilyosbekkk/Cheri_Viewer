@@ -15,7 +15,7 @@ class HomeProvider extends ChangeNotifier {
   int responseCode1 = 0;
   int responseCode2 = 0;
   String categoriesMessage = "";
-  bool  _networkCallDone = false;
+  bool _networkCallDone = false;
   bool _scrollControllerRegistered = false;
   List<Post> allPosts = [];
   int initialPage = 1;
@@ -35,17 +35,14 @@ class HomeProvider extends ChangeNotifier {
   int lastButtonIndex = -1;
   List<bool> _activeCategories = [false, false, false, false, false, false];
 
-  Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy, int category, String memberId ) async {
-
-
-
-
-
+  Future<bool> fetchPostsList(int pageSize, int nowPage, String orderBy,
+      int category, String memberId) async {
     try {
-
-      Response response = await WebServices.fetchPosts(pageSize, nowPage, orderBy, category, memberId);
+      Response response = await WebServices.fetchPosts(
+          pageSize, nowPage, orderBy, category, memberId);
       if (response.statusCode == 200) {
-        Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+        Map<String, dynamic> decodedResponse =
+            json.decode(utf8.decode(response.bodyBytes));
         PostsResponse postsResponse = PostsResponse.fromJson(decodedResponse);
 
         allPosts.addAll(postsResponse.data);
@@ -75,21 +72,19 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
-
-  Future<bool> fetchLatestVersion() async{
-    var  response = await  WebServices.fetchDeviceVersion();
+  Future<bool> fetchLatestVersion() async {
+    var response = await WebServices.fetchDeviceVersion();
 
     return false;
-
   }
 
   Future<bool> fetchCategoriesList() async {
     try {
       Response response = await WebServices.fetchCategoriesList("cheri");
 
-
       if (response.statusCode == 200) {
-        Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+        Map<String, dynamic> decodedResponse =
+            json.decode(utf8.decode(response.bodyBytes));
 
         Categories categories = Categories.fromJson(decodedResponse);
         subCategories1.clear();
@@ -213,6 +208,20 @@ class HomeProvider extends ChangeNotifier {
     return [];
   }
 
+  void updatePost(String  id, String checked){
+    print("updating...");
+    print("${allPosts.where((element) => element.cheriId == id).single.title}");
+    print("${allPosts.where((element) => element.cheriId == id).single.checked}");
+
+    allPosts.where((element) => element.cheriId == id).single.checked = checked;
+    print("${allPosts.where((element) => element.cheriId == id).single.checked}");
+
+    print("done!");
+
+
+    notifyListeners();
+  }
+
   bool get showSubCategories1 => _showSubCategories1;
 
   bool get showSubCategories2 => _showSubCategories2;
@@ -223,16 +232,14 @@ class HomeProvider extends ChangeNotifier {
 
   set networkCallDone(bool value) {
     _networkCallDone = value;
-
   }
 
   bool get scrollControllerRegistered => _scrollControllerRegistered;
   set scrollControllerRegistered(bool value) {
     _scrollControllerRegistered = value;
-
-
   }
-  void  cleanHomeScreen(){
+
+  void cleanHomeScreen() {
     allPosts.clear();
     activeIndex = -1;
     initialPage = 1;
@@ -242,14 +249,11 @@ class HomeProvider extends ChangeNotifier {
     responseCode2 = 0;
     categoriesMessage = "";
     _networkCallDone = false;
-    for(int i = 0; i < _activeCategories.length; i++){
+    for (int i = 0; i < _activeCategories.length; i++) {
       _activeCategories[i] = false;
     }
     notifyListeners();
-
   }
-
-
 
 
 }

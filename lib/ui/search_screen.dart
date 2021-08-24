@@ -275,6 +275,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void _showModalBottomSheet( SearchProvider provider, double modalHeight) {
     showMaterialModalBottomSheet(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       context: context,
       builder: (context) => VoiceRecorderModalBottomSheet(modalHeight),
     ).then((value) {

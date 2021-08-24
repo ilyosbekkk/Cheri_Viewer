@@ -25,7 +25,7 @@ class Searchresultscreen extends StatefulWidget {
 class _SearchresultscreenState extends State<Searchresultscreen> {
   late double _height;
   late double _width;
-  late String memberId;
+
   bool _loaded = false;
   UserManagementProvider _userManagementProvider = UserManagementProvider();
   String? language;
@@ -40,7 +40,7 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
     language = languagePreferences!.getString("language")??"ko";
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
-    String memberId = _userManagementProvider.userId??"";
+
 
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
@@ -49,8 +49,7 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
           child:  Consumer<SearchProvider>(builder: (context, postProvider, widget) {
             if (!_loaded && _searching ){
               _loaded = true;
-
-              postProvider.searchPostByTitle(pageSize, 1, orderBy, args["searchWord"], memberId).then((value) {
+              postProvider.searchPostByTitle(pageSize, 1, orderBy, args["searchWord"], _userManagementProvider.userId??"").then((value) {
                 _searching = false;
               });
             }
@@ -156,14 +155,14 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
 
   Widget _buildSinglePost(int index, double height, double width, SearchProvider categoriesProvider) {
     List<Post> posts = categoriesProvider.searchResults;
-    String mode = userPreferences!.getString("mode1") ?? "card";
+    String mode = userPreferences!.getString("mode3") ?? "card";
     if (mode == "card")
       return CardViewWidget(height, width,  posts[index]);
     else
       return ListViewWidget(height, width,  posts[index]);
   }
 
-  Widget _buildSortWidget(String searchWord, int count, SearchProvider postListsProvidert) {
+  Widget _buildSortWidget(String searchWord, int count, SearchProvider postListsProvider) {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: Row(
@@ -171,7 +170,7 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
         children: [
           Container(
             margin:EdgeInsets.only(left: 10),
-      child: Text("검색 결과: ${postListsProvidert.searchResults.length} 건",  style: TextStyle(
+      child: Text("검색 결과: ${postListsProvider.searchResults.length} 건",  style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold
           ),),),
@@ -209,11 +208,13 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
                 enabled: true,
                 onSelected: (value) async {
                   if (value == "second1") {
-                    await postListsProvidert.searchPostByTitle(10, 1, "latestdate", searchWord, memberId);
-                  } else if (value == "second2") {
-                    await postListsProvidert.searchPostByTitle(10, 1, "olddate", searchWord, memberId);
-                  } else if (value == "second3") {
-                    await postListsProvidert.searchPostByTitle(10, 1, "views", searchWord, memberId);
+                    await postListsProvider.searchPostByTitle(10, 1, "latestdate", searchWord, _userManagementProvider.userId??"");
+                  }
+                  else if (value == "second2") {
+                    await postListsProvider.searchPostByTitle(10, 1, "olddate", searchWord, _userManagementProvider.userId??"");
+                  }
+                  else if (value == "second3") {
+                    await postListsProvider.searchPostByTitle(10, 1, "views", searchWord, _userManagementProvider.userId??"");
                   }
                   setState(() {});
                 },
