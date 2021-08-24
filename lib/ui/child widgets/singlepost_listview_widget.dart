@@ -35,6 +35,8 @@ class _ListViewWidgetState extends State<ListViewWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
+
     language = languagePreferences!.getString("language") ?? "ko";
     return Consumer<CheriProvider>(builder: (context, cheriProvider, child) {
       return InkWell(
@@ -169,6 +171,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                                     provider.savedPosts.add(widget.post);
                                     widget.post.saved = "Y";
                                     showToast(bookmarkSave[language]!);
+                                    _collectionsProvider.update();
                                   });
                               });
                             else
@@ -192,6 +195,8 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                                         element.cheriId == widget.post.cheriId);
                                     widget.post.saved = "N";
                                     showToast(bookMarkUnsave[english]!);
+                                    _collectionsProvider.update();
+
                                   });
                                 }
                               });

@@ -25,6 +25,7 @@ class CardViewWidget extends StatefulWidget {
 class _CardViewWidgetState extends State<CardViewWidget> {
 
   UserManagementProvider _userManagementProvider = UserManagementProvider();
+  CollectionsProvider _collectionsProvider = CollectionsProvider();
   String? language;
   late String memberId;
   @override
@@ -37,6 +38,7 @@ class _CardViewWidgetState extends State<CardViewWidget> {
      language = languagePreferences!.getString("language")??"ko";
      var provider = Provider.of<CollectionsProvider>(context, listen: false);
      _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
+     _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
 
      memberId = _userManagementProvider.userId??"";
 
@@ -132,10 +134,11 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                                       cheriProvider.saveCheriPost(widget.post.cheriId, "Y", memberId).then((value)  {
                                         if(value)
                                           setState(() {
+
                                             provider.savedPosts.add(widget.post);
                                             widget.post.saved = "Y";
                                             showToast(bookmarkSave[language]!);
-
+                                            _collectionsProvider.update();
                                           });
                                       });
                                     else {
@@ -150,12 +153,14 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                                     : InkWell(
                                   onTap: () async {
                                     if(memberId != "")
-                                      cheriProvider.saveCheriPost(widget.post.cheriId, "N", memberId!).then((value){
+                                      cheriProvider.saveCheriPost(widget.post.cheriId, "N", memberId).then((value){
                                         if(value) {
                                           setState(() {
                                             provider.savedPosts.removeWhere((element) => element.cheriId == widget.post.cheriId);
                                             widget.post.saved = "N";
                                             showToast(bookMarkUnsave[language]!);
+                                            _collectionsProvider.update();
+
                                           });
 
 

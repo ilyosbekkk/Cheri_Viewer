@@ -36,14 +36,10 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
   CollectionsProvider _collectionsProvider = CollectionsProvider();
   UserManagementProvider _userManagementProvider = UserManagementProvider();
 
-  TextEditingController _controller = TextEditingController();
+  TextEditingController _textControllerB = TextEditingController();
+  TextEditingController _textControllerO = TextEditingController();
   bool netwrokCallDone = false;
   String? language;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,29 +53,44 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
       _collectionsProvider.networkCallDone = true;
       if ((_collectionsProvider.statusCode1 == 0 ||
           _collectionsProvider.statusCode1 == -2)) {
-        _collectionsProvider.fetchSavedPostsList(_userManagementProvider.userId ?? "", "20", "1", "views").then((value) {});
+        _collectionsProvider
+            .fetchSavedPostsList(
+                _userManagementProvider.userId ?? "", "20", "1", "views")
+            .then((value) {});
       }
       if ((_collectionsProvider.statusCode2 == 0 ||
           _collectionsProvider.statusCode2 == -2)) {
-        _collectionsProvider.fetchOpenedPostsList(_userManagementProvider.userId ?? "", "20", "1", "views").then((value) {});
+        _collectionsProvider
+            .fetchOpenedPostsList(
+                _userManagementProvider.userId ?? "", "20", "1", "views")
+            .then((value) {});
       }
     }
     language = languagePreferences!.getString("language") ?? "ko";
     int? count = 2;
     if (_searchMode) count = count + 1;
 
-    if (mode == Button.BOOKMARK && _collectionsProvider.savedPosts.isNotEmpty) {
+    if (mode == Button.BOOKMARK) {
       if (_searchMode)
-        count = count + _collectionsProvider.searchSavedPosts.length;
+        count = _collectionsProvider.searchSavedPosts.isNotEmpty
+            ? count + _collectionsProvider.searchSavedPosts.length
+            : count + 1;
       else
-        count = count + _collectionsProvider.savedPosts.length;
-    } else if (mode == Button.OPEN_CHERI &&
-        _collectionsProvider.savedPosts.isNotEmpty) {
-      if (_searchMode)
-        count = count + _collectionsProvider.searchOpenedPosts.length;
-      else
-        count = count + _collectionsProvider.openedPosts.length;
+        count = _collectionsProvider.savedPosts.isNotEmpty
+            ? count + _collectionsProvider.savedPosts.length
+            : count + 1;
     }
+  else  if (mode == Button.OPEN_CHERI) {
+      if (_searchMode)
+        count = _collectionsProvider.searchOpenedPosts.isNotEmpty
+            ? count + _collectionsProvider.searchOpenedPosts.length
+            : count + 1;
+      else
+        count = _collectionsProvider.openedPosts.isNotEmpty
+            ? count + _collectionsProvider.openedPosts.length
+            : count + 1;
+    }
+
     if (memberId == "") {
       return Center(
         child: Container(
@@ -126,8 +137,48 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                   index = index - 3;
                 else
                   index = index - 2;
-                return _buildPostWidget(widget.height!.toDouble(),
-                    widget.width!.toDouble(), index, _collectionsProvider);
+
+                if (mode == Button.BOOKMARK) {
+                  if (_searchMode) {
+                    if (_collectionsProvider.searchSavedPosts.isEmpty)
+                      return _buildEmptyMessageBuilder();
+                    else
+                      return _buildPostWidget(
+                          widget.height!.toDouble(),
+                          widget.width!.toDouble(),
+                          index,
+                          _collectionsProvider);
+                  } else {
+                    if (_collectionsProvider.savedPosts.isEmpty)
+                      return _buildEmptyMessageBuilder();
+                    else
+                      return _buildPostWidget(
+                          widget.height!.toDouble(),
+                          widget.width!.toDouble(),
+                          index,
+                          _collectionsProvider);
+                  }
+                } else {
+                  if (_searchMode) {
+                    if (_collectionsProvider.searchOpenedPosts.isEmpty)
+                      return _buildEmptyMessageBuilder();
+                    else
+                      return _buildPostWidget(
+                          widget.height!.toDouble(),
+                          widget.width!.toDouble(),
+                          index,
+                          _collectionsProvider);
+                  } else {
+                    if (_collectionsProvider.openedPosts.isEmpty)
+                      return _buildEmptyMessageBuilder();
+                    else
+                      return _buildPostWidget(
+                          widget.height!.toDouble(),
+                          widget.width!.toDouble(),
+                          index,
+                          _collectionsProvider);
+                  }
+                }
               }
             });
       else if (_collectionsProvider.statusCode1 == -1 ||
@@ -173,11 +224,21 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   onPressed: () async {
-
-                    _collectionsProvider.fetchSavedPostsList(_userManagementProvider.userId ?? "", "20", "1", "views").then((value) {});
-                      _collectionsProvider.fetchOpenedPostsList(_userManagementProvider.userId ?? "", "20", "1", "views").then((value) {});
-
-                      },
+                    _collectionsProvider
+                        .fetchSavedPostsList(
+                            _userManagementProvider.userId ?? "",
+                            "20",
+                            "1",
+                            "views")
+                        .then((value) {});
+                    _collectionsProvider
+                        .fetchOpenedPostsList(
+                            _userManagementProvider.userId ?? "",
+                            "20",
+                            "1",
+                            "views")
+                        .then((value) {});
+                  },
                   child: Text("Reload Page"),
                 )
               ],
@@ -283,7 +344,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
     );
   }
 
-  Widget _buildSortWidget(String memberId, CollectionsProvider postListsProvidert) {
+  Widget _buildSortWidget(
+      String memberId, CollectionsProvider postListsProvidert) {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: Row(
@@ -299,6 +361,9 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
           InkWell(
               onTap: () {
                 setState(() {
+
+                  _textControllerB.clear();
+                  _textControllerO.clear();
                   _searchMode = !_searchMode;
                 });
               },
@@ -312,95 +377,91 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                         ? Theme.of(context).selectedRowColor
                         : Colors.black,
                   ))),
-          if(!_searchMode)Container(
-            margin: EdgeInsets.only(left: 5.0),
-            child: PopupMenuButton(
-                child: Container(
-                    width: 30,
-                    height: 30,
-                    child: SvgPicture.asset("assets/icons/list.svg")),
-                elevation: 10,
-                enabled: true,
-                onSelected: (value) async {
-                  if (value == "first1") {
-                    await userPreferences!.setString("mode2", "card");
-                  } else if (value == "first2") {
-                    await userPreferences!.setString("mode2", "list");
-                  }
-                  setState(() {});
-                },
-                itemBuilder: (context) => [
-                      PopupMenuItem(
-                        child: Text(menu1[language]![0]),
-                        value: "first1",
-                      ),
-                      PopupMenuItem(
-                        child: Text(menu1[language]![1]),
-                        value: "first2",
-                      )
-                    ]),
-          ),
-          if(!_searchMode)Container(
-            margin: EdgeInsets.only(left: 10.0, right: 10),
-            child: PopupMenuButton(
-                elevation: 10,
-                child: Container(
-                    width: 30,
-                    height: 30,
-                    child: SvgPicture.asset("assets/icons/options.svg")),
-                enabled: true,
-                onSelected: (value) async {
-
-
-                  if(!_searchMode) {
-                    if (value == "second1") {
-                      mode == Button.BOOKMARK
-                          ? await postListsProvidert.fetchSavedPostsList(
-                          memberId, "10", "1", "latestdate")
-                          : await postListsProvidert.fetchOpenedPostsList(
-                          memberId, "10", "1", "latestdate");
-                    }
-                    else if (value == "second2") {
-                      mode == Button.BOOKMARK
-                          ? await postListsProvidert.fetchSavedPostsList(
-                          memberId, "10", "1", "olddate")
-                          : await postListsProvidert.fetchOpenedPostsList(
-                          memberId, "10", "1", "olddate");
-                    }
-                    else if (value == "second3") {
-                      mode == Button.BOOKMARK
-                          ? await postListsProvidert.fetchSavedPostsList(
-                          memberId, "10", "1", "views")
-                          : await postListsProvidert.fetchOpenedPostsList(
-                          memberId, "10", "1", "views");
+          if (!_searchMode)
+            Container(
+              margin: EdgeInsets.only(left: 5.0),
+              child: PopupMenuButton(
+                  child: Container(
+                      width: 30,
+                      height: 30,
+                      child: SvgPicture.asset("assets/icons/list.svg")),
+                  elevation: 10,
+                  enabled: true,
+                  onSelected: (value) async {
+                    if (value == "first1") {
+                      await userPreferences!.setString("mode2", "card");
+                    } else if (value == "first2") {
+                      await userPreferences!.setString("mode2", "list");
                     }
                     setState(() {});
-                  }
-                  else {
-
-                  }
-                },
-                itemBuilder: (context) => [
-                      PopupMenuItem(
-                        child: Text(menu2[language]![0]),
-                        value: "second1",
-                      ),
-                      PopupMenuItem(
-                        child: Text(menu2[language]![1]),
-                        value: "second2",
-                      ),
-                      PopupMenuItem(
-                        child: Text(menu2[language]![2]),
-                        value: "second3",
-                      ),
-                    ]),
-          ),
-                  ],
+                  },
+                  itemBuilder: (context) => [
+                        PopupMenuItem(
+                          child: Text(menu1[language]![0]),
+                          value: "first1",
+                        ),
+                        PopupMenuItem(
+                          child: Text(menu1[language]![1]),
+                          value: "first2",
+                        )
+                      ]),
+            ),
+          if (!_searchMode)
+            Container(
+              margin: EdgeInsets.only(left: 10.0, right: 10),
+              child: PopupMenuButton(
+                  elevation: 10,
+                  child: Container(
+                      width: 30,
+                      height: 30,
+                      child: SvgPicture.asset("assets/icons/options.svg")),
+                  enabled: true,
+                  onSelected: (value) async {
+                    if (!_searchMode) {
+                      if (value == "second1") {
+                        mode == Button.BOOKMARK
+                            ? await postListsProvidert.fetchSavedPostsList(
+                                memberId, "10", "1", "latestdate")
+                            : await postListsProvidert.fetchOpenedPostsList(
+                                memberId, "10", "1", "latestdate");
+                      } else if (value == "second2") {
+                        mode == Button.BOOKMARK
+                            ? await postListsProvidert.fetchSavedPostsList(
+                                memberId, "10", "1", "olddate")
+                            : await postListsProvidert.fetchOpenedPostsList(
+                                memberId, "10", "1", "olddate");
+                      } else if (value == "second3") {
+                        mode == Button.BOOKMARK
+                            ? await postListsProvidert.fetchSavedPostsList(
+                                memberId, "10", "1", "views")
+                            : await postListsProvidert.fetchOpenedPostsList(
+                                memberId, "10", "1", "views");
+                      }
+                      setState(() {});
+                    } else {}
+                  },
+                  itemBuilder: (context) => [
+                        PopupMenuItem(
+                          child: Text(menu2[language]![0]),
+                          value: "second1",
+                        ),
+                        PopupMenuItem(
+                          child: Text(menu2[language]![1]),
+                          value: "second2",
+                        ),
+                        PopupMenuItem(
+                          child: Text(menu2[language]![2]),
+                          value: "second3",
+                        ),
+                      ]),
+            ),
+        ],
       ),
     );
   }
 
-  Widget _buildPostWidget(double height, double width, index, CollectionsProvider collectionsProvider) {
+  Widget _buildPostWidget(double height, double width, index,
+      CollectionsProvider collectionsProvider) {
     List<Post> posts = [];
     if (mode == Button.BOOKMARK) {
       if (_searchMode)
@@ -426,7 +487,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
       child: Container(
         margin: EdgeInsets.only(left: 10.0, right: 10.0),
         child: TextField(
-          controller: _controller,
+          controller:mode==Button.BOOKMARK? _textControllerB:_textControllerO,
           onSubmitted: (searchWord) {
             setState(() {
               _searchMode = false;
@@ -444,14 +505,19 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
           decoration: InputDecoration(
             suffixIcon: IconButton(
               onPressed: () {
-                _controller.clear();
+
                 if (mode == Button.BOOKMARK) {
+
+                  _textControllerB.clear();
                   _collectionsProvider.searchSaved("");
                 } else if (mode == Button.OPEN_CHERI) {
+
+                  _textControllerO.clear();
                   _collectionsProvider.searchOpened("");
                 }
               },
-              icon: Icon(Icons.clear, color: Theme.of(context).selectedRowColor),
+              icon:
+                  Icon(Icons.clear, color: Theme.of(context).selectedRowColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -467,6 +533,17 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildEmptyMessageBuilder() {
+    return Container(
+        alignment: Alignment.center,
+        margin: EdgeInsets.only(top: 50),
+        child: Text(
+          "${noResult[language]}",
+          style: TextStyle(
+              fontSize: 20, color: Theme.of(context).selectedRowColor),
+        ));
   }
 }
 

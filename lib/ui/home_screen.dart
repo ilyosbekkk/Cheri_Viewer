@@ -31,12 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
   HomeProvider _homePageProvider = HomeProvider();
   UserManagementProvider _userManagementProvider = UserManagementProvider();
 
-
   int currentLength = 0;
   String?  language;
-
-
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

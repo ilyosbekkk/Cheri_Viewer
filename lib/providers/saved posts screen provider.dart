@@ -122,4 +122,7 @@ class CollectionsProvider extends ChangeNotifier {
     notifyListeners();
 
   }
+  void update(){
+    notifyListeners();
+  }
 }
