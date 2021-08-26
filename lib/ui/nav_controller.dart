@@ -17,6 +17,7 @@ import 'package:viewerapp/services/web%20services.dart';
 import 'package:viewerapp/ui/search_screen.dart';
 import 'package:viewerapp/ui/savedposts_screen.dart';
 import 'package:viewerapp/ui/webview%20main%20screen.dart';
+import 'package:viewerapp/utils/strings.dart';
 import 'package:viewerapp/utils/utils.dart';
 
 import 'auth_screen.dart';
@@ -31,7 +32,7 @@ class NavCotroller extends StatefulWidget {
 
 class _NavCotrollerState extends State<NavCotroller> {
   int _selectedIndex = 0;
-  late  String language;
+    String? language;
   var _screens = [];
   HomeProvider homeProvider = HomeProvider();
   UserManagementProvider _userManagementProvider = UserManagementProvider();
@@ -103,6 +104,7 @@ class _NavCotrollerState extends State<NavCotroller> {
      collectionsProvider = Provider.of<CollectionsProvider>(context, listen: false);
     _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
 
+
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
@@ -121,10 +123,10 @@ class _NavCotrollerState extends State<NavCotroller> {
                 ),
             ),),
             bottomNavigationBar: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "홈"),
-                BottomNavigationBarItem(icon: Icon(Icons.search), label: "검색"),
-                BottomNavigationBarItem(icon: Icon(Icons.bookmark_border), label: "보관함"),
+              items:  <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: language == english?"Home":"홈"),
+                BottomNavigationBarItem(icon: Icon(Icons.search), label: language == english?"Search":"검색"),
+                BottomNavigationBarItem(icon: Icon(Icons.bookmark_border), label: language == english?"Collection":"보관함"),
               ],
               onTap: _onItemSelected,
               selectedItemColor: Theme.of(context).selectedRowColor,
@@ -149,9 +151,8 @@ class _NavCotrollerState extends State<NavCotroller> {
   }
 
   Widget _buildStorageBoxScreen(double height, double width, String? memberId) {
-
     return SliverToBoxAdapter(
-      child: StorageBoxScreen(height, width ),
+      child: StorageBoxScreen(height, width, _scrollController3 ),
     );
   }
 

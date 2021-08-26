@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -25,18 +23,30 @@ class Searchresultscreen extends StatefulWidget {
 class _SearchresultscreenState extends State<Searchresultscreen> {
   late double _height;
   late double _width;
-
-  bool _loaded = false;
+  String sortWord = "views";
   UserManagementProvider _userManagementProvider = UserManagementProvider();
+  SearchProvider _searchProvider = SearchProvider();
   String? language;
-  bool _searching = true;
-  var scrollConttoller = ScrollController();
+  int initPage = 1;
+  var scrollController = ScrollController();
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    scrollController.dispose();
+    _searchProvider.resultDone = false;
+    _searchProvider.searching = true;
+    _searchProvider.isControllerRegistered = false;
+    _searchProvider.searchResults.clear();
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
     _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
-
+    _searchProvider = Provider.of<SearchProvider>(context, listen: true);
     language = languagePreferences!.getString("language")??"ko";
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
@@ -44,16 +54,33 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
 
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
+    print(args["searchWord"]);
+
     return Scaffold(
       body: SafeArea(
           child:  Consumer<SearchProvider>(builder: (context, postProvider, widget) {
-            if (!_loaded && _searching ){
-              _loaded = true;
-              postProvider.searchPostByTitle(pageSize, 1, orderBy, args["searchWord"], _userManagementProvider.userId??"").then((value) {
-                _searching = false;
+            if(!postProvider.isControllerRegistered){
+              postProvider.isControllerRegistered = true;
+              scrollController.addListener(() {
+
+                if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+                  initPage += 1;
+                  postProvider.searchPostByTitle(pageSize, initPage, sortWord, args["searchWord"], _userManagementProvider.userId??"").then((value) {
+
+                  });
+                }
               });
             }
-            if (_searching) return Center(
+
+
+            if (!_searchProvider.resultDone && _searchProvider.searching ){
+              _searchProvider.resultDone = true;
+              postProvider.searchPostByTitle(pageSize, 1, sortWord, args["searchWord"], _userManagementProvider.userId??"").then((value) {
+                _searchProvider.searching  = false;
+              });
+            }
+            if (_searchProvider.searching )
+              return Center(
                   child: CircularProgressIndicator(
                     color: Theme.of(context).selectedRowColor,
                   )
@@ -81,9 +108,9 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
                 )
               );
             else return CustomScrollView(
+                controller: scrollController,
                 slivers: [
                   _buildSliverAppBar(_height, args["searchWord"]!),
-
                   ((userPreferences!.getString("mode1") ?? "card") == "card") ?
                   _buildList(postProvider, 0.4 * _height, _width,  args["searchWord"]) : _buildDividedList(postProvider, 0.4 * _height, _width)],
               );
@@ -121,35 +148,48 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
 
   Widget _buildList(SearchProvider postListProvider, double height, double width, String searchWord) {
     return SliverToBoxAdapter(
-        child: ListView.builder(
+        child: Container(
+          child: ListView.builder(
+              primary: false,
+              shrinkWrap: true,
+              itemCount: postListProvider.searchResults.length + 2,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return _buildSortWidget(searchWord, 5, postListProvider);
+                }
+                else  if(index == postListProvider.searchResults.length+1){
+                  return  Center(
+                      child: Container(
+                          margin: EdgeInsets.all(10),
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).selectedRowColor,
+                          )));
+                }
+                else {
+                  index = index - 1;
+                  return _buildSinglePost(index, height, width, postListProvider);
+                }
+              }),
+        ));
+  }
+
+  Widget _buildDividedList(SearchProvider postListProvider, double height, double width) {
+    return SliverToBoxAdapter(
+        child: Container(
+          child: ListView.builder(
             primary: false,
             shrinkWrap: true,
             itemCount: postListProvider.searchResults.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
-                return _buildSortWidget(searchWord, 5, postListProvider);
+                return _buildSortWidget("searchWord", 5, postListProvider);
               } else {
                 index = index - 1;
                 return _buildSinglePost(index, height, width, postListProvider);
               }
-            }));
-  }
+            },
 
-  Widget _buildDividedList(SearchProvider postListProvider, double height, double width) {
-    return SliverToBoxAdapter(
-        child: ListView.builder(
-          primary: false,
-          shrinkWrap: true,
-          itemCount: postListProvider.searchResults.length + 1,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return _buildSortWidget("searchWord", 5, postListProvider);
-            } else {
-              index = index - 1;
-              return _buildSinglePost(index, height, width, postListProvider);
-            }
-          },
-
+          ),
         ));
   }
 
@@ -207,14 +247,17 @@ class _SearchresultscreenState extends State<Searchresultscreen> {
                 child: Container(width: 30, height: 30, child: SvgPicture.asset("assets/icons/options.svg")),
                 enabled: true,
                 onSelected: (value) async {
+                  _searchProvider.cleanList();
                   if (value == "second1") {
-                    await postListsProvider.searchPostByTitle(10, 1, "latestdate", searchWord, _userManagementProvider.userId??"");
+                    sortWord = "latestdate";
                   }
                   else if (value == "second2") {
-                    await postListsProvider.searchPostByTitle(10, 1, "olddate", searchWord, _userManagementProvider.userId??"");
+                    sortWord = "olddate";
+
                   }
                   else if (value == "second3") {
-                    await postListsProvider.searchPostByTitle(10, 1, "views", searchWord, _userManagementProvider.userId??"");
+                    sortWord = "views";
+
                   }
                   setState(() {});
                 },

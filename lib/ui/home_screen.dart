@@ -31,13 +31,15 @@ class _HomeScreenState extends State<HomeScreen> {
   HomeProvider _homePageProvider = HomeProvider();
   UserManagementProvider _userManagementProvider = UserManagementProvider();
 
+
+
   int currentLength = 0;
   String?  language;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    print("efygqiueryfgiuqyerf");
+
 
      _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
      _homePageProvider = Provider.of<HomeProvider>(context, listen: true);
@@ -77,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                 margin: EdgeInsets.all(10),
                 child: Text(
-                  "${lazyLoadinNoResult[AutofillHints.language]}",
+                  "${lazyLoadinNoResult[language]}",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ));
@@ -231,9 +233,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Container(
-              width: 2 * radius,
+              width: 3 * radius,
               child: Text(
-                categories[language]![index],
+               categories[language]![index].length >=6?"${categories[language]![index].substring(0,5)}...":categories[language]![index],
                 maxLines: 1,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: homeProvider.activeAcategories[index] ? Theme.of(context).selectedRowColor : Colors.black, fontSize: 12),
@@ -246,26 +248,38 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildSubCategoriesB(HomeProvider homeProvider, int i) {
     return Container(
       margin: EdgeInsets.only(left: 20),
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Wrap(
-            alignment: WrapAlignment.start,
-            direction: Axis.horizontal,
-            spacing: 10.0,
-            children: List.generate(homeProvider.subCategories(i).length, (index) {
-              return InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id": homeProvider.categoryIds(i)[index], "title": homeProvider.subCategories(i)[index]});
-                },
-                child: Chip(
-                    elevation: 5.0,
-                    backgroundColor: Theme.of(context).buttonColor,
-                    label: Text(
-                      homeProvider.subCategories(i)[index],
-                      style: Theme.of(context).textTheme.bodyText2,
-                    )),
-              );
-            })),
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 10, bottom: 10),
+            child: Text(categories[language]![i], style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).selectedRowColor
+            ),),
+          ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Wrap(
+                alignment: WrapAlignment.start,
+                direction: Axis.horizontal,
+                spacing: 10.0,
+                children: List.generate(homeProvider.subCategories(i).length, (index) {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, CategoryViewScreen.route, arguments: {"id": homeProvider.categoryIds(i)[index], "title": homeProvider.subCategories(i)[index]});
+                    },
+                    child: Chip(
+                        elevation: 5.0,
+                        backgroundColor: Theme.of(context).buttonColor,
+                        label: Text(
+                          homeProvider.subCategories(i)[index],
+                          style: Theme.of(context).textTheme.bodyText2,
+                        )),
+                  );
+                })),
+          ),
+        ],
       ),
     );
   }

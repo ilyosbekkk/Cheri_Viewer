@@ -17,6 +17,8 @@ Map<String, List<String>> menu2 = {english: ["Date(latest)","Date(older)", "View
 Map<String, String> toastSignIn =  {english:"Please, Sign in first!", korean: "먼저 로그인 하십시오!"};
 Map<String, String> bookmarkSave = {english: "Bookmark has been saved", korean: "북마크에 저장되었습니다."};
 Map<String, String> bookMarkUnsave = {english: "Bookmark has been removed", korean: "북마크에서 삭제되었습니다"};
+
+Map<String, String> searchCheri = {english:"Please type the Cheri name", korean:"체리 아름을 입력해주세요"};
 Map<String, List<String>> timeUnit = {english: [
   "moment ago", "minute(s) ago", "hour(s) ago", "day(s) ago", "week(s) ago", "month(s) ago", "year(s) ago"],
   korean: ["방금 전", "분 전", "사간 전", "일 전", "주 전", "개 월 전",  "년 전"]};

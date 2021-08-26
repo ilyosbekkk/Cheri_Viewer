@@ -1,19 +1,21 @@
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:async';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:viewerapp/utils/strings.dart';
+import 'package:flutter/material.dart';
+import 'dart:async';
 
 
-
+//vars
 SharedPreferences? userPreferences;
 SharedPreferences? languagePreferences;
 
-const int pageSize = 5;
+const int pageSize = 10;
 const int category = 0;
 const orderBy = "views";
 
 
+
+//util functions
 void showToast(String message) {
   Fluttertoast.showToast(msg: message,
       toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.CENTER,
@@ -59,10 +61,13 @@ Future<void> initPreferences() async {
   languagePreferences = await SharedPreferences.getInstance();
 }
 
+
+//enums
 enum CheriState{
   SAVED,
   UNSAVED,
   IDLE
 }
+enum Button { BOOKMARK, OPEN_CHERI }
 
 

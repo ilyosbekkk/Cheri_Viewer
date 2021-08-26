@@ -1,10 +1,12 @@
 
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/all.dart';
+import 'package:viewerapp/utils/strings.dart';
 
 import 'package:viewerapp/utils/utils.dart';
 
@@ -72,8 +74,10 @@ class UserManagementProvider extends ChangeNotifier {
 
     NaverLoginResult res = await FlutterNaverLogin.logIn();
     print(res);
+    print(res);
     final naverAccessToken = await FlutterNaverLogin.currentAccessToken;
     String accessToken = naverAccessToken.accessToken;
+    print(accessToken);
     return {"access_token": accessToken};
   }
 
@@ -118,10 +122,15 @@ class UserManagementProvider extends ChangeNotifier {
     return isDelete;
   }
 
-  Future<bool> langChange(String newLang) async {
+  Future<void> langChange(String newLang, BuildContext context) async {
     bool langchange = await languagePreferences!.setString("language",newLang);
+
+    if(langchange){
+      showToast(languageChanged[newLang]??"");
+      Navigator.pop(context);
+    }
+
     notifyListeners();
-   return  langchange;
   }
 }
 

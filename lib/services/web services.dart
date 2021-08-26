@@ -78,18 +78,18 @@ class WebServices {
     return response;
   }
 
-  static Future<http.Response> fetchBookmarkList(String memberId, String pageSize, String nowPage, String orderBy) async {
+  static Future<http.Response> fetchBookmarkList(String memberId, int  pageSize, int  nowPage, String orderBy) async {
     final url = Uri.https(baseUrl, bookMarkList);
-    final body = {'member_id': memberId, 'pagesize': pageSize, 'nowpage' :nowPage, 'orderby':orderBy};
+    final body = {'member_id': memberId, 'pagesize': pageSize.toString(), 'nowpage' :nowPage.toString(), 'orderby':orderBy};
 
     http.Response response = await http.post(url, headers: headers, body: body);
 
     return response;
   }
 
-  static Future<http.Response> fetchOpenedCheriList(String memberId, String pageSize, String nowPage, String orderBy) async {
+  static Future<http.Response> fetchOpenedCheriList(String memberId, int  pageSize, int  nowPage, String orderBy) async {
     final url = Uri.https(baseUrl,openCheriList);
-    final body = {'member_id': memberId, 'pagesize': pageSize, 'nowpage' :nowPage, 'orderby':orderBy};
+    final body = {'member_id': memberId, 'pagesize': pageSize.toString(), 'nowpage' :nowPage.toString(), 'orderby':orderBy};
     http.Response response = await http.post(url, headers: headers, body: body);
 
     return response;

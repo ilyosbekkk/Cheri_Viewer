@@ -19,7 +19,7 @@ class StorageBoxScreen extends StatefulWidget {
   double? width;
   ScrollController? _scrollController;
 
-  StorageBoxScreen(this.height, this.width);
+  StorageBoxScreen(this.height, this.width, this._scrollController);
 
   StorageBoxScreen.scroll(this._scrollController);
 
@@ -33,246 +33,217 @@ class StorageBoxScreen extends StatefulWidget {
 class _StorageBoxScreenState extends State<StorageBoxScreen> {
   bool _searchMode = false;
   Button mode = Button.BOOKMARK;
+  String sortWord1 = "views";
+  String sortWord2 = "views";
   CollectionsProvider _collectionsProvider = CollectionsProvider();
   UserManagementProvider _userManagementProvider = UserManagementProvider();
 
   TextEditingController _textControllerB = TextEditingController();
   TextEditingController _textControllerO = TextEditingController();
-  bool netwrokCallDone = false;
+  bool networkCallDone = false;
   String? language;
+  int initPage1 = 1;
+  int initPage2 = 1;
+  int currentLength1 = 0;
+  int currentLength2 = 0;
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _collectionsProvider.isScrollControllerRegistered = false;
+    _collectionsProvider.cleanCollections();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _collectionsProvider =
-        Provider.of<CollectionsProvider>(context, listen: true);
-    _userManagementProvider =
-        Provider.of<UserManagementProvider>(context, listen: true);
+    _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
+    _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
     String memberId = _userManagementProvider.userId ?? "";
-
-    if (!_collectionsProvider.networkCallDone && memberId.isNotEmpty) {
-      _collectionsProvider.networkCallDone = true;
-      if ((_collectionsProvider.statusCode1 == 0 ||
-          _collectionsProvider.statusCode1 == -2)) {
-        _collectionsProvider
-            .fetchSavedPostsList(
-                _userManagementProvider.userId ?? "", "20", "1", "views")
-            .then((value) {});
-      }
-      if ((_collectionsProvider.statusCode2 == 0 ||
-          _collectionsProvider.statusCode2 == -2)) {
-        _collectionsProvider
-            .fetchOpenedPostsList(
-                _userManagementProvider.userId ?? "", "20", "1", "views")
-            .then((value) {});
-      }
-    }
     language = languagePreferences!.getString("language") ?? "ko";
-    int? count = 2;
-    if (_searchMode) count = count + 1;
+    int count = 2;
 
-    if (mode == Button.BOOKMARK) {
-      if (_searchMode)
-        count = _collectionsProvider.searchSavedPosts.isNotEmpty
-            ? count + _collectionsProvider.searchSavedPosts.length
-            : count + 1;
-      else
-        count = _collectionsProvider.savedPosts.isNotEmpty
-            ? count + _collectionsProvider.savedPosts.length
-            : count + 1;
-    }
-  else  if (mode == Button.OPEN_CHERI) {
-      if (_searchMode)
-        count = _collectionsProvider.searchOpenedPosts.isNotEmpty
-            ? count + _collectionsProvider.searchOpenedPosts.length
-            : count + 1;
-      else
-        count = _collectionsProvider.openedPosts.isNotEmpty
-            ? count + _collectionsProvider.openedPosts.length
-            : count + 1;
-    }
+    addListenerToScroll();
+    fetchAllData(memberId);
+
 
     if (memberId == "") {
-      return Center(
-        child: Container(
-            margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "먼저 로그인 하십시오!",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-                CupertinoButton(
-                    color: Theme.of(context).selectedRowColor,
-                    child: Text("로그인"),
-                    onPressed: () {
-                      Navigator.pushNamed(context, AuthScreen.route)
-                          .then((value) {
-                        setState(() {
-                          memberId = userPreferences!.getString("id") ?? "";
-                        });
-                      });
-                    })
-              ],
-            )),
-      );
-    } else {
-      if (_collectionsProvider.statusCode1 == 200 &&
-          _collectionsProvider.statusCode2 == 200)
-        return ListView.builder(
-            primary: false,
-            shrinkWrap: true,
-            itemCount: count,
-            itemBuilder: (BuildContext context, index) {
-              if (index == 0) {
-                return _buildCustomTabBar();
-              } else if (index == 1) {
-                return _buildSortWidget(memberId, _collectionsProvider);
-              } else if (index == 2 && _searchMode) {
-                return _buildSearchWidget();
-              } else {
-                if (_searchMode)
-                  index = index - 3;
-                else
-                  index = index - 2;
-
-                if (mode == Button.BOOKMARK) {
-                  if (_searchMode) {
-                    if (_collectionsProvider.searchSavedPosts.isEmpty)
-                      return _buildEmptyMessageBuilder();
-                    else
-                      return _buildPostWidget(
-                          widget.height!.toDouble(),
-                          widget.width!.toDouble(),
-                          index,
-                          _collectionsProvider);
-                  } else {
-                    if (_collectionsProvider.savedPosts.isEmpty)
-                      return _buildEmptyMessageBuilder();
-                    else
-                      return _buildPostWidget(
-                          widget.height!.toDouble(),
-                          widget.width!.toDouble(),
-                          index,
-                          _collectionsProvider);
-                  }
-                } else {
-                  if (_searchMode) {
-                    if (_collectionsProvider.searchOpenedPosts.isEmpty)
-                      return _buildEmptyMessageBuilder();
-                    else
-                      return _buildPostWidget(
-                          widget.height!.toDouble(),
-                          widget.width!.toDouble(),
-                          index,
-                          _collectionsProvider);
-                  } else {
-                    if (_collectionsProvider.openedPosts.isEmpty)
-                      return _buildEmptyMessageBuilder();
-                    else
-                      return _buildPostWidget(
-                          widget.height!.toDouble(),
-                          widget.width!.toDouble(),
-                          index,
-                          _collectionsProvider);
-                  }
-                }
-              }
-            });
-      else if (_collectionsProvider.statusCode1 == -1 ||
-          _collectionsProvider.statusCode2 == -1)
-        return Center(
-          child: Column(
-            children: [
-              Text("TimeOut happened:("),
-              MaterialButton(
-                onPressed: () {
-                  _collectionsProvider
-                      .fetchSavedPostsList(
-                          memberId, pageSize.toString(), "1", orderBy)
-                      .then((value) {});
-                  _collectionsProvider
-                      .fetchOpenedPostsList(
-                          memberId, pageSize.toString(), "1", orderBy)
-                      .then((value) {});
-                },
-                child: Text("try again"),
-              )
-            ],
-          ),
-        );
-      else if (_collectionsProvider.statusCode1 == -2 ||
-          _collectionsProvider.statusCode2 == -2) {
-        return Center(
-          child: Container(
-            margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.wifi_off,
-                  size: 30,
-                ),
-                Text(
-                  "Please check your internet connectivity!",
-                  style: TextStyle(fontSize: 15),
-                ),
-                MaterialButton(
-                  color: Theme.of(context).selectedRowColor,
-                  textColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  onPressed: () async {
-                    _collectionsProvider
-                        .fetchSavedPostsList(
-                            _userManagementProvider.userId ?? "",
-                            "20",
-                            "1",
-                            "views")
-                        .then((value) {});
-                    _collectionsProvider
-                        .fetchOpenedPostsList(
-                            _userManagementProvider.userId ?? "",
-                            "20",
-                            "1",
-                            "views")
-                        .then((value) {});
-                  },
-                  child: Text("Reload Page"),
-                )
-              ],
-            ),
-          ),
-        );
-      } else if (_collectionsProvider.statusCode1 == -3 ||
-          _collectionsProvider.statusCode2 == -3) {
-        return Center(
-          child: Container(
-            margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
-            child: Column(
-              children: [
-                Text("Unexpected error happened"),
-                MaterialButton(
-                  onPressed: () {},
-                  child: Text("Try again"),
-                )
-              ],
-            ),
-          ),
-        );
-      } else {
-        print(_collectionsProvider.statusCode1);
-        print(_collectionsProvider.statusCode2);
-        return Center(
-          child: Container(
-              margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
-              child: CircularProgressIndicator(
-                color: Theme.of(context).selectedRowColor,
-              )),
-        );
+      return _buildNoAuthWidget(memberId);
+    }
+    else {
+      if (_collectionsProvider.statusCode1 == 200 && _collectionsProvider.statusCode2 == 200) return _buildItemList(setItemCount(count), memberId);
+      else if (_collectionsProvider.statusCode1 == -2 || _collectionsProvider.statusCode2 == -2) {
+        return _buildNoInternetWidget();
+      }
+      else {
+        return _buildLoadingWidget();
       }
     }
+  }
+
+  //widgets
+  Widget _buildNoAuthWidget(String  memberId){
+    return Center(
+      child: Container(
+          margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "먼저 로그인 하십시오!",
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+              CupertinoButton(
+                  color: Theme.of(context).selectedRowColor,
+                  child: Text("로그인"),
+                  onPressed: () {
+                    _collectionsProvider.cleanCollections();
+                    Navigator.pushNamed(context, AuthScreen.route)
+                        .then((value) {
+                      setState(() {
+                        memberId = userPreferences!.getString("id") ?? "";
+                      });
+                    });
+                  })
+            ],
+          )),
+    );
+  }
+
+  Widget _buildLoadingWidget() {
+    return Center(
+      child: Container(
+          margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
+          child: CircularProgressIndicator(
+            color: Theme.of(context).selectedRowColor,
+          )),
+    );
+  }
+
+  Widget _buildNoInternetWidget() {
+    return Center(
+      child: Container(
+        margin: EdgeInsets.only(top: widget.width!.toDouble() * 0.5),
+        child: Column(
+          children: [
+            Icon(
+              Icons.wifi_off,
+              size: 30,
+            ),
+            Text(
+              "Please check your internet connectivity!",
+              style: TextStyle(fontSize: 15),
+            ),
+            MaterialButton(
+              color: Theme.of(context).selectedRowColor,
+              textColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              onPressed: () async {
+                _collectionsProvider
+                    .fetchSavedPostsList(_userManagementProvider.userId ?? "",
+                        pageSize, 1, sortWord1)
+                    .then((value) {});
+                _collectionsProvider
+                    .fetchOpenedPostsList(_userManagementProvider.userId ?? "",
+                        pageSize, 1, sortWord2)
+                    .then((value) {});
+              },
+              child: Text("Reload Page"),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildItemList(int count, String memberId) {
+
+    int  finalCount = count;
+
+    // if(_searchMode){
+    //   if(mode == Button.BOOKMARK && _collectionsProvider.searchSavedPosts.isEmpty ||mode == Button.OPEN_CHERI && _collectionsProvider.searchOpenedPosts.isEmpty)
+    //      finalCount =count;
+    // }
+    // else{
+    //   if(mode == Button.BOOKMARK && _collectionsProvider.savedPosts.isEmpty ||mode == Button.OPEN_CHERI && _collectionsProvider.openedPosts.isEmpty)
+    //     finalCount = count;
+    // }
+
+    return ListView.builder(
+        primary: false,
+        shrinkWrap: true,
+        itemCount:finalCount,
+        itemBuilder: (BuildContext context, index) {
+          if (index == 0) {
+            return _buildCustomTabBar();
+          }
+          // else if ((mode == Button.BOOKMARK && (index == count)) || (mode == Button.OPEN_CHERI && (index == count))){
+          //
+          //   // if((mode == Button.BOOKMARK && currentLength1 == count)  || (mode == Button.OPEN_CHERI && currentLength2 == count)){
+          //   //   return Center(
+          //   //       child: Container(
+          //   //         margin: EdgeInsets.all(10),
+          //   //         child: Text(
+          //   //           "${lazyLoadinNoResult[language]}",
+          //   //           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          //   //         ),
+          //   //       ));
+          //   // }
+          //   //
+          //   // if(mode == Button.BOOKMARK){
+          //   //   currentLength1 = count;
+          //   // }
+          //   // else if(mode == Button.OPEN_CHERI){
+          //   //   currentLength2 = count;
+          //   // }
+          //   return Center(
+          //       child: Container(
+          //           margin: EdgeInsets.all(10),
+          //           child: CircularProgressIndicator(color: Theme.of(context).selectedRowColor)));
+          // }
+
+          else if (index == 1) {
+            return _buildSortWidget(memberId, _collectionsProvider);
+          }
+          else if (index == 2 && _searchMode) {
+            return _buildSearchWidget();
+          }
+          else {
+            if (_searchMode)
+              index = index - 3;
+            else
+              index = index - 2;
+            if (mode == Button.BOOKMARK) {
+              if (_searchMode) {
+
+                if (_collectionsProvider.searchSavedPosts.isEmpty) return _buildEmptyMessageBuilder();
+                else
+                  return _buildPostWidget(widget.height!.toDouble(), widget.width!.toDouble(), index, _collectionsProvider);
+              } else {
+                if (_collectionsProvider.savedPosts.isEmpty) return _buildEmptyMessageBuilder();
+                else
+                  return _buildPostWidget(widget.height!.toDouble(), widget.width!.toDouble(), index, _collectionsProvider);
+              }
+            } else {
+              if (_searchMode) {
+                if (_collectionsProvider.searchOpenedPosts.isEmpty)
+                  return _buildEmptyMessageBuilder();
+                else
+                  return _buildPostWidget(widget.height!.toDouble(),
+                      widget.width!.toDouble(), index, _collectionsProvider);
+              } else {
+                if (_collectionsProvider.openedPosts.isEmpty)
+                  return _buildEmptyMessageBuilder();
+                else
+                  return _buildPostWidget(widget.height!.toDouble(),
+                      widget.width!.toDouble(), index, _collectionsProvider);
+              }
+            }
+          }
+        });
   }
 
   Widget _buildCustomTabBar() {
@@ -344,8 +315,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
     );
   }
 
-  Widget _buildSortWidget(
-      String memberId, CollectionsProvider postListsProvidert) {
+  Widget _buildSortWidget(String memberId, CollectionsProvider postListsProvidert) {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: Row(
@@ -361,7 +331,6 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
           InkWell(
               onTap: () {
                 setState(() {
-
                   _textControllerB.clear();
                   _textControllerO.clear();
                   _searchMode = !_searchMode;
@@ -418,27 +387,16 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                   enabled: true,
                   onSelected: (value) async {
                     if (!_searchMode) {
+                      _collectionsProvider.cleanCollections();
                       if (value == "second1") {
-                        mode == Button.BOOKMARK
-                            ? await postListsProvidert.fetchSavedPostsList(
-                                memberId, "10", "1", "latestdate")
-                            : await postListsProvidert.fetchOpenedPostsList(
-                                memberId, "10", "1", "latestdate");
+                        mode == Button.BOOKMARK? sortWord1 = "latestdate" : sortWord2 = "latestdate";
                       } else if (value == "second2") {
-                        mode == Button.BOOKMARK
-                            ? await postListsProvidert.fetchSavedPostsList(
-                                memberId, "10", "1", "olddate")
-                            : await postListsProvidert.fetchOpenedPostsList(
-                                memberId, "10", "1", "olddate");
+                        mode == Button.BOOKMARK? sortWord1 = "olddate" : sortWord2 = "olddate";
                       } else if (value == "second3") {
-                        mode == Button.BOOKMARK
-                            ? await postListsProvidert.fetchSavedPostsList(
-                                memberId, "10", "1", "views")
-                            : await postListsProvidert.fetchOpenedPostsList(
-                                memberId, "10", "1", "views");
+                        mode == Button.BOOKMARK? sortWord1 = "views" : sortWord2 = "views";
                       }
                       setState(() {});
-                    } else {}
+                    }
                   },
                   itemBuilder: (context) => [
                         PopupMenuItem(
@@ -460,8 +418,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
     );
   }
 
-  Widget _buildPostWidget(double height, double width, index,
-      CollectionsProvider collectionsProvider) {
+  Widget _buildPostWidget(double height, double width, index, CollectionsProvider collectionsProvider) {
     List<Post> posts = [];
     if (mode == Button.BOOKMARK) {
       if (_searchMode)
@@ -487,7 +444,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
       child: Container(
         margin: EdgeInsets.only(left: 10.0, right: 10.0),
         child: TextField(
-          controller:mode==Button.BOOKMARK? _textControllerB:_textControllerO,
+          controller:
+              mode == Button.BOOKMARK ? _textControllerB : _textControllerO,
           onSubmitted: (searchWord) {
             setState(() {
               _searchMode = false;
@@ -505,13 +463,10 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
           decoration: InputDecoration(
             suffixIcon: IconButton(
               onPressed: () {
-
                 if (mode == Button.BOOKMARK) {
-
                   _textControllerB.clear();
                   _collectionsProvider.searchSaved("");
                 } else if (mode == Button.OPEN_CHERI) {
-
                   _textControllerO.clear();
                   _collectionsProvider.searchOpened("");
                 }
@@ -525,7 +480,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
                   BorderSide(width: 1, color: Color.fromRGBO(175, 27, 63, 1)),
             ),
             contentPadding: EdgeInsets.only(left: 10.0),
-            hintText: searchHint[korean],
+            hintText: searchHint[language],
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -545,6 +500,66 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
               fontSize: 20, color: Theme.of(context).selectedRowColor),
         ));
   }
-}
 
-enum Button { BOOKMARK, OPEN_CHERI }
+  //utils
+  int  setItemCount(int count) {
+    print("res1");
+    print(_collectionsProvider.savedPosts.length);
+    print("res2");
+    print(_collectionsProvider.openedPosts.length);
+
+    if (_searchMode) count = count + 1;
+    if (mode == Button.BOOKMARK) {
+      if (_searchMode)
+        count = _collectionsProvider.searchSavedPosts.isNotEmpty
+            ? count + _collectionsProvider.searchSavedPosts.length
+            : count + 1;
+      else
+        count = _collectionsProvider.savedPosts.isNotEmpty
+            ? count + _collectionsProvider.savedPosts.length
+            : count + 1;
+    }
+    else if (mode == Button.OPEN_CHERI) {
+      if (_searchMode)
+        count = _collectionsProvider.searchOpenedPosts.isNotEmpty
+            ? count + _collectionsProvider.searchOpenedPosts.length
+            : count + 1;
+      else
+        count = _collectionsProvider.openedPosts.isNotEmpty
+            ? count + _collectionsProvider.openedPosts.length
+            : count + 1;
+    }
+
+    return count;
+  }
+  void fetchAllData(String memberId) {
+    if (!_collectionsProvider.networkCallDone && memberId.isNotEmpty) {
+      _collectionsProvider.networkCallDone = true;
+      if ((_collectionsProvider.statusCode1 == 0 ||
+          _collectionsProvider.statusCode1 == -2)) {
+        _collectionsProvider.fetchSavedPostsList(_userManagementProvider.userId ?? "", pageSize, 1, sortWord1).then((value) {});
+      }
+      if ((_collectionsProvider.statusCode2 == 0 ||
+          _collectionsProvider.statusCode2 == -2)) {
+        _collectionsProvider.fetchOpenedPostsList(
+                _userManagementProvider.userId ?? "", pageSize, 1, sortWord2).then((value) {});
+      }
+    }
+  }
+  void addListenerToScroll() {
+    if (!_collectionsProvider.isScrollControllerRegistered) {
+      _collectionsProvider.isScrollControllerRegistered = true;
+      widget._scrollController!.addListener(() {
+        if (widget._scrollController!.position.pixels == widget._scrollController!.position.maxScrollExtent) {
+          if (mode == Button.BOOKMARK) {
+            initPage1 += 1;
+            _collectionsProvider.fetchSavedPostsList(_userManagementProvider.userId ?? "", pageSize, initPage1, sortWord1).then((value) {});
+          } else if (mode == Button.OPEN_CHERI) {
+             initPage2 += 1;
+            _collectionsProvider.fetchOpenedPostsList(_userManagementProvider.userId ?? "", pageSize, initPage2, sortWord2).then((value) {});
+          }
+        }
+      });
+    }
+  }
+}

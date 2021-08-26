@@ -11,14 +11,11 @@ class SearchProvider extends ChangeNotifier {
   List<Post> _searchResults = [];
   List<SearchWord> _recentSearches = [];
   List<SearchWord> _relatedSearches = [];
+  bool  isControllerRegistered = false;
   bool loaded  = false;
-
+  bool  resultDone = false;
+  bool  searching = true;
   Future<bool> searchPostByTitle(int pageSize, int nowPage, String orderBy, String searchWord, String memberId) async {
-
-
-    print("searching by $orderBy");
-
-    if (_searchResults.isNotEmpty) _searchResults.clear();
     try {
       Response response = await WebServices.searchPostByTitle(pageSize, nowPage, orderBy, searchWord, memberId);
       if (response.statusCode == 200) {
@@ -91,6 +88,8 @@ class SearchProvider extends ChangeNotifier {
   List<SearchWord> get recentSearches => _recentSearches;
 
   void cleanList() {
+    resultDone = false;
+    searching = true;
     if (_searchResults.isNotEmpty) _searchResults.clear();
     if (_relatedSearches.isNotEmpty) _relatedSearches.clear();
     if (_recentSearches.isNotEmpty) _recentSearches.clear();

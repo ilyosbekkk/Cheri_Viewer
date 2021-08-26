@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:viewerapp/models/postslist_model.dart';
+import 'package:viewerapp/providers/category%20screen%20%20provider.dart';
 import 'package:viewerapp/providers/cheri%20%20individual%20post%20%20provider.dart';
+import 'package:viewerapp/providers/home%20provider.dart';
 import 'package:viewerapp/providers/saved%20posts%20screen%20provider.dart';
 
 import 'package:viewerapp/ui/auth_screen.dart';
@@ -36,6 +38,8 @@ class _ListViewWidgetState extends State<ListViewWidget> {
   @override
   Widget build(BuildContext context) {
     var _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
+   var _homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    var categoriesProvider = Provider.of<CategoriesProvider>(context, listen: true);
 
     language = languagePreferences!.getString("language") ?? "ko";
     return Consumer<CheriProvider>(builder: (context, cheriProvider, child) {
@@ -45,6 +49,10 @@ class _ListViewWidgetState extends State<ListViewWidget> {
             "cheriId": widget.post.cheriId,
             "memberId": memberId
           }).then((value) {
+            _collectionsProvider.cleanCollections();
+            _homeProvider.cleanHomeScreen();
+            categoriesProvider.cleanCategoryScreen();
+
             if (value == CheriState.SAVED) {
               widget.post.saved = "Y";
             } else if (value == CheriState.UNSAVED) {
@@ -171,7 +179,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                                     provider.savedPosts.add(widget.post);
                                     widget.post.saved = "Y";
                                     showToast(bookmarkSave[language]!);
-                                    _collectionsProvider.update();
+                                    _collectionsProvider.cleanCollections();
                                   });
                               });
                             else
@@ -194,8 +202,9 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                                     provider.savedPosts.removeWhere((element) =>
                                         element.cheriId == widget.post.cheriId);
                                     widget.post.saved = "N";
-                                    showToast(bookMarkUnsave[english]!);
-                                    _collectionsProvider.update();
+                                    showToast(bookMarkUnsave[language]!);
+                                    _collectionsProvider.cleanCollections();
+
 
                                   });
                                 }

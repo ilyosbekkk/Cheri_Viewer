@@ -35,6 +35,14 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>naverlogin</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
 				<string>kakao818a2baccb86e7432dcdb89f7957110d</string>
 			</array>
 		</dict>
@@ -50,7 +58,21 @@
 		<string>storykompassauth</string>
 		<string>kakaolink</string>
 		<string>kakaotalk-5.9.7</string>
+
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>naversearchapp</string>
+        <string>naversearchthirdlogin</string>
+    </array>
+            <key>kServiceAppUrlScheme</key>
+            <string>naverlogin</string>
+            <key>kConsumerKey</key>
+            <string>FMdH0oJmzmq_rmP4wE1p</string>
+            <key>kConsumerSecret</key>
+            <string>bDfwibJwMt</string>
+            <key>kServiceAppName</key>
+            <string>Cheri Viewer</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>

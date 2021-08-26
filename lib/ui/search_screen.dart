@@ -32,16 +32,18 @@ class _SearchScreenState extends State<SearchScreen> {
    late String _memberId;
    UserManagementProvider _userManagementProvider = UserManagementProvider();
   bool _searchActive = false;
-  bool _searching = false;
 
-  bool _noSearchResult = false;
+  var _scrollController = ScrollController();
   String?  language;
 
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(() {
+      FocusScope.of(context).unfocus();
 
+    });
 
   }
 
@@ -52,6 +54,9 @@ class _SearchScreenState extends State<SearchScreen> {
     _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
     _memberId = _userManagementProvider.userId??"";
     return GestureDetector(
+     onVerticalDragUpdate: (f){
+       FocusScope.of(context).unfocus();
+     },
       onTap: (){
         FocusScope.of(context).unfocus();
       }
@@ -91,6 +96,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
 
     return ListView.builder(
+      controller: _scrollController,
         shrinkWrap: true,
         itemCount: count,  itemBuilder: (context, index) {
       if(index == 0)
@@ -152,7 +158,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 homePageProvider.cleanList();
                 homePageProvider.fetchRelatedSearches(searchWord).then((value) {});
                 setState(() {
-                  _noSearchResult = false;
                 });
               },
               onTap: () {
@@ -179,7 +184,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   borderSide: BorderSide(width: 1,color: Color.fromRGBO(175, 27, 63, 1)),
                 ),
                 contentPadding: EdgeInsets.only(left: 10.0),
-                hintText: searchHint[korean],
+                hintText: searchHint[language],
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),

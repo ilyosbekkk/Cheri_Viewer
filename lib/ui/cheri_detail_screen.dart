@@ -49,14 +49,18 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
 
 
     return Scaffold(
-      body: WillPopScope(
-        onWillPop: () async {
-          if (Navigator.of(context).userGestureInProgress)
-            return false;
-          else
-            return true;
-        },
-        child: SafeArea(child: Consumer<DetailedViewProvider>(builder: (context, detailedProvider, child) {
+      body:
+        // onWillPop: () async {
+        //   if (Navigator.of(context).userGestureInProgress) {
+        //     showToast("you cant huhuhuhuh");
+        //     print("yuhuhuhuhuhuh");
+        //
+        //     return false;
+        //   }
+        //   else
+        //     return true;
+        // },
+         SafeArea(child: Consumer<DetailedViewProvider>(builder: (context, detailedProvider, child) {
           if (!_loaded) {
             _loaded = true;
             detailedProvider.fetchDetailedViewData(cheriId, _userManagementProvider.userId??"").then((value) {});
@@ -67,7 +71,7 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
             slivers: [_buildSliverAppBar(height, detailedProvider), _buildList(detailedProvider, width, _userManagementProvider.userId??"", cheriId)],
           );
         })),
-      )
+
     );
   }
 
@@ -214,7 +218,6 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                   ),
                   onPressed: () {
                     String? encrypedId = (userPreferences!.getString("encrypt_id") ?? null);
-                    print(encrypedId);
 
                     Navigator.pushNamed(context, ProfileScreen.route, arguments: {"encrypt_id": encrypedId,  "user_id": detailedViewProvider.postsResponse.detailedPosts!.memberId});
 
@@ -416,7 +419,6 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
                      detailedViewProvider.cheriTextOpen = true;
                    });
                 } else {
-                  print("3");
                   showdialog(context, items[index].comment!, detailedViewProvider.itemFiles(items[index].itemId!)[0].saveFileName).then((value)  {
                       detailedViewProvider.cheriContentOpen = true;
                       detailedViewProvider.cheriTextOpen = true;
@@ -436,7 +438,6 @@ class _CheriDetailViewScreenState extends State<CheriDetailViewScreen> {
 
 
 
-    print(saveFileName);
 
 
     await showDialog(

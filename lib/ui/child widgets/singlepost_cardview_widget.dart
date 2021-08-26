@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:viewerapp/providers/category%20screen%20%20provider.dart';
 import 'package:viewerapp/providers/cheri%20%20individual%20post%20%20provider.dart';
+import 'package:viewerapp/providers/home%20provider.dart';
 import 'package:viewerapp/providers/saved%20posts%20screen%20provider.dart';
 
 import 'package:viewerapp/providers/user%20management%20provider.dart';
@@ -26,6 +28,8 @@ class _CardViewWidgetState extends State<CardViewWidget> {
 
   UserManagementProvider _userManagementProvider = UserManagementProvider();
   CollectionsProvider _collectionsProvider = CollectionsProvider();
+  HomeProvider _homeProvider = HomeProvider();
+  CategoriesProvider _categoriesProvider = CategoriesProvider();
   String? language;
   late String memberId;
   @override
@@ -36,9 +40,11 @@ class _CardViewWidgetState extends State<CardViewWidget> {
   @override
   Widget build(BuildContext context) {
      language = languagePreferences!.getString("language")??"ko";
-     var provider = Provider.of<CollectionsProvider>(context, listen: false);
+      _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: false);
+      _homeProvider = Provider.of<HomeProvider>(context, listen: false);
      _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
-     _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
+     _categoriesProvider = Provider.of<CategoriesProvider>(context, listen: true);
+
 
      memberId = _userManagementProvider.userId??"";
 
@@ -50,12 +56,16 @@ class _CardViewWidgetState extends State<CardViewWidget> {
         child: InkWell(
           onTap: () {
             Navigator.pushNamed(context, CheriDetailViewScreen.route, arguments: {"cheriId": widget.post.cheriId, "memberId": memberId}).then((value) {
+              _collectionsProvider.cleanCollections();
+              _homeProvider.cleanHomeScreen();
+              _categoriesProvider.cleanCategoryScreen();
+
                 if(value == CheriState.SAVED) {
-                   provider.savedPosts.add(widget.post);
+                //   provider.savedPosts.add(widget.post);
                   widget.post.saved = "Y";
                 }
                 else if(value == CheriState.UNSAVED) {
-                  provider.savedPosts.removeWhere((element) => element.cheriId == widget.post.cheriId);
+                  //provider.savedPosts.removeWhere((element) => element.cheriId == widget.post.cheriId);
                   widget.post.saved = "N";
                 }
                 setState(() {
@@ -116,10 +126,6 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                               ),
                             ),
 
-
-
-
-
                             Container(
                                 alignment: Alignment.center,
                                 width: 30,
@@ -135,10 +141,10 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                                         if(value)
                                           setState(() {
 
-                                            provider.savedPosts.add(widget.post);
+                                          //  provider.savedPosts.add(widget.post);
                                             widget.post.saved = "Y";
                                             showToast(bookmarkSave[language]!);
-                                            _collectionsProvider.update();
+                                            _collectionsProvider.cleanCollections();
                                           });
                                       });
                                     else {
@@ -156,10 +162,10 @@ class _CardViewWidgetState extends State<CardViewWidget> {
                                       cheriProvider.saveCheriPost(widget.post.cheriId, "N", memberId).then((value){
                                         if(value) {
                                           setState(() {
-                                            provider.savedPosts.removeWhere((element) => element.cheriId == widget.post.cheriId);
+                                           // provider.savedPosts.removeWhere((element) => element.cheriId == widget.post.cheriId);
                                             widget.post.saved = "N";
                                             showToast(bookMarkUnsave[language]!);
-                                            _collectionsProvider.update();});
+                                            _collectionsProvider.cleanCollections();});
                                         }
                                       });
                                     else {

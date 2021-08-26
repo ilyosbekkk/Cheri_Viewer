@@ -23,79 +23,78 @@ class CategoryViewScreen extends StatefulWidget {
 class _CategoryViewScreenState extends State<CategoryViewScreen> {
   late double _height;
   late double _width;
-  bool _loaded = false;
   String? language;
+  String sortWord = "views";
   UserManagementProvider userManagementProvider = UserManagementProvider();
-  var scrollConttoller = ScrollController();
-  bool isScrollControllerRegistered = false;
+  CategoriesProvider categoriesProvider = CategoriesProvider();
+  var scrollController = ScrollController();
   int initPage = 1;
+  int currentLength = 0;
 
-@override
+  @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-   scrollConttoller.dispose();
+    scrollController.dispose();
+    categoriesProvider.fetchRequestDone = false;
+    categoriesProvider.categories.clear();
+    categoriesProvider.isScrollControllerRegistered = false;
+  }
 
-}
   @override
   Widget build(BuildContext context) {
+
     language = languagePreferences!.getString("language") ?? "ko";
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
-    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     userManagementProvider =
         Provider.of<UserManagementProvider>(context, listen: true);
+    categoriesProvider = Provider.of<CategoriesProvider>(context, listen: true);
+
+    if (!categoriesProvider.isScrollControllerRegistered) {
+      categoriesProvider.isScrollControllerRegistered = true;
+      scrollController.addListener(() {
+        if (scrollController.position.pixels ==
+            scrollController.position.maxScrollExtent) {
+          initPage += 1;
+          print("page: $initPage");
+          categoriesProvider
+              .fetchCategories(pageSize, initPage, sortWord,
+                  int.parse(args["id"]!), userManagementProvider.userId ?? "")
+              .then((value) {});
+        }
+      });
+    }
+
+    if (!categoriesProvider.fetchRequestDone) {
+      print("dalbayob");
+      categoriesProvider
+          .fetchCategories(pageSize, 1, sortWord, int.parse(args["id"]!),
+              userManagementProvider.userId ?? "")
+          .then((value) {
+        categoriesProvider.fetchRequestDone = true;
+      });
+    }
 
     return Scaffold(
-      body: SafeArea(child: Consumer<CategoriesProvider>(
-          builder: (context, postProvider, widget) {
-        if (!isScrollControllerRegistered) {
-          print("rtwguhwrtiuhgwrthurtiphwrtpih");
-          isScrollControllerRegistered = true;
-          scrollConttoller.addListener(() {
-            if (scrollConttoller.position.pixels == scrollConttoller.position.maxScrollExtent) {
-              initPage += 1;
-              print("gfargaregrrthqrt");
-              postProvider
-                  .fetchCategories(
-                      pageSize,
-                      initPage,
-                      orderBy,
-                      int.parse(args["id"]!),
-                      userManagementProvider.userId ?? "")
-                  .then((value) {});
-            }
-          });
-        }
-
-        if (!_loaded) {
-          postProvider
-              .fetchCategories(pageSize, 1, orderBy, int.parse(args["id"]!),
-                  userManagementProvider.userId ?? "")
-              .then((value) {
-            _loaded = true;
-          });
-        }
-        if (postProvider.categoryLoading)
-          return Center(
-              child: CircularProgressIndicator(
-            color: Theme.of(context).selectedRowColor,
-          ));
-        else
-          return CustomScrollView(
-            slivers: [
-              _buildSliverAppBar(_height, args["title"]!),
-              ((userPreferences!.getString("mode1") ?? "card") == "card")
-                  ? _buildList(postProvider, 0.4 * _height, _width, args["id"]!)
-                  : _buildDividedList(
-                      postProvider, 0.4 * _height, _width, args["id"]!)
-            ],
-          );
-      })),
-    );
+        body: categoriesProvider.categoryLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                color: Theme.of(context).selectedRowColor,
+              ))
+            : CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  _buildSliverAppBar(_height, args["title"]!),
+                  ((userPreferences!.getString("mode1") ?? "card") == "card")
+                      ? _buildList(categoriesProvider, 0.4 * _height, _width,
+                          args["id"]!)
+                      : _buildDividedList(categoriesProvider, 0.4 * _height,
+                          _width, args["id"]!)
+                ],
+              ));
   }
-
-
 
   Widget _buildSliverAppBar(double height, String title) {
     return SliverAppBar(
@@ -134,26 +133,32 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
   ) {
     return SliverToBoxAdapter(
         child: ListView.builder(
-
             primary: false,
             shrinkWrap: true,
-            itemCount: postListProvider.categories.length + 1,
+            itemCount: postListProvider.categories.length + 2,
             itemBuilder: (context, index) {
               if (index == 0) {
                 return _buildSortWidget(
-                    "searchWord", 5, postListProvider, category);
-              }
-
-              else if (index == postListProvider.categories.length) {
+                    "searchWord", postListProvider, category);
+              } else if (index == postListProvider.categories.length + 1) {
+                if(currentLength == postListProvider.categories.length+1){
+                  return Center(
+                      child: Container(
+                        margin: EdgeInsets.all(10),
+                        child: Text(
+                          "${lazyLoadinNoResult[language]}",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ));
+                }
+                currentLength = postListProvider.categories.length+1;
                 return Center(
                     child: Container(
                         margin: EdgeInsets.all(10),
                         child: CircularProgressIndicator(
                           color: Theme.of(context).selectedRowColor,
                         )));
-              }
-
-              else {
+              } else {
                 index = index - 1;
                 return _buildSinglePost(index, height, width, postListProvider);
               }
@@ -165,22 +170,19 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
     return SliverToBoxAdapter(
         child: ListView.builder(
       primary: false,
-      controller: scrollConttoller,
       shrinkWrap: true,
-      itemCount: postListProvider.categories.length + 1,
+      itemCount: postListProvider.categories.length + 2,
       itemBuilder: (context, index) {
         if (index == 0) {
-          return _buildSortWidget("searchWord", 5, postListProvider, category);
-        } else if (index == postListProvider.categories.length) {
+          return _buildSortWidget("searchWord", postListProvider, category);
+        } else if (index == postListProvider.categories.length + 1) {
           return Center(
               child: Container(
                   margin: EdgeInsets.all(10),
                   child: CircularProgressIndicator(
                     color: Theme.of(context).selectedRowColor,
                   )));
-        }
-
-        else {
+        } else {
           index = index - 1;
           return _buildSinglePost(index, height, width, postListProvider);
         }
@@ -198,7 +200,7 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
       return ListViewWidget(height, width, posts[index]);
   }
 
-  Widget _buildSortWidget(String searchWord, int count,
+  Widget _buildSortWidget(String searchWord,
       CategoriesProvider postListsProvidert, String category) {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
@@ -243,27 +245,13 @@ class _CategoryViewScreenState extends State<CategoryViewScreen> {
                     child: SvgPicture.asset("assets/icons/options.svg")),
                 enabled: true,
                 onSelected: (value) async {
+                  categoriesProvider.cleanCategoryScreen();
                   if (value == "second1") {
-                    await postListsProvidert.fetchCategories(
-                        10,
-                        1,
-                        "latestdate",
-                        int.parse(category),
-                        userManagementProvider.userId ?? "");
+                      sortWord = "latestdate";
                   } else if (value == "second2") {
-                    await postListsProvidert.fetchCategories(
-                        10,
-                        1,
-                        "olddate",
-                        int.parse(category),
-                        userManagementProvider.userId ?? "");
+                    sortWord = "olddate";
                   } else if (value == "second3") {
-                    await postListsProvidert.fetchCategories(
-                        10,
-                        1,
-                        "views",
-                        int.parse(category),
-                        userManagementProvider.userId ?? "");
+                    sortWord = "views";
                   }
                   setState(() {});
                 },

@@ -95,6 +95,11 @@ class _AuthScreenState extends State<AuthScreen> {
                   });
 
               _controller.addJavaScriptHandler(handlerName: "naver_user_info", callback: (args) {
+
+
+                print("naver ${args}");
+
+
                   authProvider.saveUserData(args[0]["ID"], args[0]["EMAIL"], args[0]["PICTURE"], args[0]["NAME"], args[0]["encrypt_id"]).then((value) {
                     if(value) Navigator.pop(context);
                     else showToast("Unexpected error happened, Please  try again");
@@ -103,6 +108,7 @@ class _AuthScreenState extends State<AuthScreen> {
               });
               _controller.addJavaScriptHandler(
                   handlerName: "naver", callback: (args) async{
+                    print(args);
                 return await authProvider.signInWithNaver();
               });
 
@@ -115,7 +121,8 @@ class _AuthScreenState extends State<AuthScreen> {
                   if (value == true) {
                     Navigator.pop(context);
                     showToast("${emailLoginSuccess[language]}");
-                  } else
+                  }
+                  else
                     showToast("${emailLoginSuccessFailure[language]}");
                 });
               });
