@@ -21,20 +21,27 @@ class UserManagementProvider extends ChangeNotifier {
 
   Future<Map<String, String>> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = (await GoogleSignIn().signIn())!;
+
+    print(googleUser.toString());
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
+     print(credential);
+    print("step1");
     await FirebaseAuth.instance.signInWithCredential(credential);
 
+    print("step2");
     Map<String, String> credentials = {"access_token": "${googleAuth.accessToken}", "id_token": " ${googleAuth.idToken}", "site_id": "${googleUser.id}", "email": "${googleUser.email}", "name": "${googleUser.displayName}", "picture": "${googleUser.photoUrl}"};
 
+
+    print(credentials.toString());
     return credentials;
   }
 
   Future<Map<String,  String>?> signInWithKakao() async {
-    KakaoContext.clientId = "818a2baccb86e7432dcdb89f7957110d";
+    KakaoContext.clientId = "4effb95abd11159ccd9271c8660e58cc";
     final installed = await isKakaoTalkInstalled();
     String? authCode;
     Map<String,String>? credentials;

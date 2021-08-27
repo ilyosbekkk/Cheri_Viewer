@@ -40,10 +40,8 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
 
   TextEditingController _textControllerB = TextEditingController();
   TextEditingController _textControllerO = TextEditingController();
-  bool networkCallDone = false;
   String? language;
-  int initPage1 = 1;
-  int initPage2 = 1;
+
   int currentLength1 = 0;
   int currentLength2 = 0;
 
@@ -56,14 +54,38 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+
+    super.didChangeDependencies();
     _collectionsProvider = Provider.of<CollectionsProvider>(context, listen: true);
     _userManagementProvider = Provider.of<UserManagementProvider>(context, listen: true);
+
+
+      // if (!_collectionsProvider.isScrollControllerRegistered) {
+      //   _collectionsProvider.isScrollControllerRegistered = true;
+      //   widget._scrollController!.addListener(() {
+      //     if (widget._scrollController!.position.pixels == widget._scrollController!.position.maxScrollExtent) {
+      //       if (mode == Button.BOOKMARK) {
+      //         _collectionsProvider.initPage1 += 1;
+      //         _collectionsProvider.fetchSavedPostsList(_userManagementProvider.userId ?? "", pageSize, _collectionsProvider.initPage1, sortWord1).then((value) {});
+      //       } else if (mode == Button.OPEN_CHERI) {
+      //         _collectionsProvider.initPage2 += 1;
+      //         _collectionsProvider.fetchOpenedPostsList(_userManagementProvider.userId ?? "", pageSize,  _collectionsProvider.initPage2, sortWord2).then((value) {});
+      //       }
+      //     }
+      //   });
+      // }
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
     String memberId = _userManagementProvider.userId ?? "";
     language = languagePreferences!.getString("language") ?? "ko";
     int count = 2;
 
-    addListenerToScroll();
+
     fetchAllData(memberId);
 
 
@@ -144,11 +166,11 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
               onPressed: () async {
                 _collectionsProvider
                     .fetchSavedPostsList(_userManagementProvider.userId ?? "",
-                        pageSize, 1, sortWord1)
+                        100, 1, sortWord1)
                     .then((value) {});
                 _collectionsProvider
                     .fetchOpenedPostsList(_userManagementProvider.userId ?? "",
-                        pageSize, 1, sortWord2)
+                        100, 1, sortWord2)
                     .then((value) {});
               },
               child: Text("Reload Page"),
@@ -503,10 +525,7 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
 
   //utils
   int  setItemCount(int count) {
-    print("res1");
-    print(_collectionsProvider.savedPosts.length);
-    print("res2");
-    print(_collectionsProvider.openedPosts.length);
+
 
     if (_searchMode) count = count + 1;
     if (mode == Button.BOOKMARK) {
@@ -537,29 +556,14 @@ class _StorageBoxScreenState extends State<StorageBoxScreen> {
       _collectionsProvider.networkCallDone = true;
       if ((_collectionsProvider.statusCode1 == 0 ||
           _collectionsProvider.statusCode1 == -2)) {
-        _collectionsProvider.fetchSavedPostsList(_userManagementProvider.userId ?? "", pageSize, 1, sortWord1).then((value) {});
+        _collectionsProvider.fetchSavedPostsList(_userManagementProvider.userId ?? "", 100, 1, sortWord1).then((value) {});
       }
       if ((_collectionsProvider.statusCode2 == 0 ||
           _collectionsProvider.statusCode2 == -2)) {
         _collectionsProvider.fetchOpenedPostsList(
-                _userManagementProvider.userId ?? "", pageSize, 1, sortWord2).then((value) {});
+                _userManagementProvider.userId ?? "", 100, 1, sortWord2).then((value) {});
       }
     }
   }
-  void addListenerToScroll() {
-    if (!_collectionsProvider.isScrollControllerRegistered) {
-      _collectionsProvider.isScrollControllerRegistered = true;
-      widget._scrollController!.addListener(() {
-        if (widget._scrollController!.position.pixels == widget._scrollController!.position.maxScrollExtent) {
-          if (mode == Button.BOOKMARK) {
-            initPage1 += 1;
-            _collectionsProvider.fetchSavedPostsList(_userManagementProvider.userId ?? "", pageSize, initPage1, sortWord1).then((value) {});
-          } else if (mode == Button.OPEN_CHERI) {
-             initPage2 += 1;
-            _collectionsProvider.fetchOpenedPostsList(_userManagementProvider.userId ?? "", pageSize, initPage2, sortWord2).then((value) {});
-          }
-        }
-      });
-    }
-  }
+
 }

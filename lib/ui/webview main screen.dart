@@ -34,88 +34,101 @@ class _ProfileScreenState extends State<ProfileScreen> {
       
       
       
-      Scaffold(
+      WillPopScope(
 
-        body:
+        onWillPop: (){
+          var future = _controller.canGoBack();
+          future.then((value) {
+            if(value){
+              _controller.goBack();
+            }
+            else {
+              Navigator.pop(context);
+            }
+          });
 
-        WillPopScope(
-          onWillPop: () async{
-           return true;
-          },
-        child:  SafeArea(
-            child: InAppWebView(
-                initialUrlRequest: URLRequest(url: Uri.parse(url)),
-                initialOptions: InAppWebViewGroupOptions(
-                    crossPlatform: InAppWebViewOptions(
-                      javaScriptEnabled: true,
-                    ),
-                    android: AndroidInAppWebViewOptions(
-                      useHybridComposition: true,
-                    ),
-                    ios: IOSInAppWebViewOptions(
-                      allowsInlineMediaPlayback: true,
-                    )),
-                onWebViewCreated: (InAppWebViewController controller) {
-                  setState(() {
-                    _controller = controller;
-                  });
+          return Future.value(true);
 
-                  _controller.addJavaScriptHandler(
-                      handlerName: "go_main",
-                      callback: (args) {
-                        print(args);
-                        switch (args[0]) {
-                          case "go_main":
-                            {
-                              Navigator.pop(context);
-                              break;
-                            }
-                          case "pw_change":
-                            {
-                              Navigator.pop(context);
-                              showToast("${passwordChanged[language]}");
-                              break;
-                            }
+        },
+        child: Scaffold(
 
-                          case "log_out":
-                            {
-                              provider.logout().then((value) {
-                                if (value) {
-                                  savedPostsProvider.cleanCollections();
-                                  homeProvider.cleanHomeScreen();
+          body:
 
-                                  Navigator.pop(context);
-                                  showToast("${logoutMessage[language]}");
-                                } else {
-                                  showToast("${logoutFailure[language]}");
-                                }
-                              });
-                              break;
-                            }
-                          case "delete_account":
-                            {
-                              provider.logout().then((value) {
-                                if (value) {
-                                  savedPostsProvider.cleanCollections();
-                                  homeProvider.cleanHomeScreen();
+            SafeArea(
+              child: InAppWebView(
+                  initialUrlRequest: URLRequest(url: Uri.parse(url)),
+                  initialOptions: InAppWebViewGroupOptions(
+                      crossPlatform: InAppWebViewOptions(
+                        javaScriptEnabled: true,
+                      ),
+                      android: AndroidInAppWebViewOptions(
+                        useHybridComposition: true,
+                      ),
+                      ios: IOSInAppWebViewOptions(
+                        allowsInlineMediaPlayback: true,
+                      )),
+                  onWebViewCreated: (InAppWebViewController controller) {
+                    setState(() {
+                      _controller = controller;
+                    });
 
-                                  showToast("${deleteAcountMessage[language]}");
-                                } else
-                                  showToast("${deleteAccountError[language]}");
-                              });
-                              break;
-                            }
-                        }
-                      });
-                  _controller.addJavaScriptHandler(
-                      handlerName: "change_language",
-                      callback: (args) {
-                        provider.langChange(args[0], context);
-                      });
-                }),
-          ),
-     
-    ),
+                    _controller.addJavaScriptHandler(
+                        handlerName: "go_main",
+                        callback: (args) {
+                          print(args);
+                          switch (args[0]) {
+                            case "go_main":
+                              {
+                                Navigator.pop(context);
+                                break;
+                              }
+                            case "pw_change":
+                              {
+                                Navigator.pop(context);
+                                showToast("${passwordChanged[language]}");
+                                break;
+                              }
+
+                            case "log_out":
+                              {
+                                provider.logout().then((value) {
+                                  if (value) {
+                                    savedPostsProvider.cleanCollections();
+                                    homeProvider.cleanHomeScreen();
+
+                                    Navigator.pop(context);
+                                    showToast("${logoutMessage[language]}");
+                                  } else {
+                                    showToast("${logoutFailure[language]}");
+                                  }
+                                });
+                                break;
+                              }
+                            case "delete_account":
+                              {
+                                provider.logout().then((value) {
+                                  if (value) {
+                                    savedPostsProvider.cleanCollections();
+                                    homeProvider.cleanHomeScreen();
+
+                                    showToast("${deleteAcountMessage[language]}");
+                                  } else
+                                    showToast("${deleteAccountError[language]}");
+                                });
+                                break;
+                              }
+                          }
+                        });
+                    _controller.addJavaScriptHandler(
+                        handlerName: "change_language",
+                        callback: (args) {
+                          provider.langChange(args[0], context);
+                        });
+                  }),
+            ),
+
+
+        ),
       );
   }
 }

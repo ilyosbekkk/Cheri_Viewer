@@ -1,28 +1,20 @@
 {
   "project_info": {
-    "project_number": "1049194575299",
-    "project_id": "cheriviewer",
-    "storage_bucket": "cheriviewer.appspot.com"
+    "project_number": "1024652851809",
+    "project_id": "cheri--viewer",
+    "storage_bucket": "cheri--viewer.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1049194575299:android:1c670d25f036ee4a46b976",
+        "mobilesdk_app_id": "1:1024652851809:android:96a647b9575e47bcf34820",
         "android_client_info": {
           "package_name": "com.cheristoryboard.viewerapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1049194575299-fd2hkb9k8mejjq4cnm706pbdp0nldtfa.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.cheristoryboard.viewerapp",
-            "certificate_hash": "a5713533f84619bdd963a87f6d5ae14d9e49efab"
-          }
-        },
-        {
-          "client_id": "1049194575299-up3barub3db4v0satjuilukhmtakj6he.apps.googleusercontent.com",
+          "client_id": "1024652851809-b2trcjbj4dangqafth11arob4br7tsns.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.cheristoryboard.viewerapp",
@@ -30,50 +22,60 @@
           }
         },
         {
-          "client_id": "1049194575299-j28uld610f8dgjeoajgelavmt9n5b0v4.apps.googleusercontent.com",
+          "client_id": "1024652851809-c3cjoejusrarjlf6eccqrc3koo12meho.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cheristoryboard.viewerapp",
+            "certificate_hash": "8831a931030bbeab320f1ca9a152217728cc3105"
+          }
+        },
+        {
+          "client_id": "1024652851809-j25lmpk8pgol5vpc1du809dd4tns9894.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cheristoryboard.viewerapp",
+            "certificate_hash": "819f102281081caf5faa7f9c89908cef4db5806b"
+          }
+        },
+        {
+          "client_id": "1024652851809-lppbao9d2ll2ori7ho9r34cjj4kl5bhf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cheristoryboard.viewerapp",
+            "certificate_hash": "a5713533f84619bdd963a87f6d5ae14d9e49efab"
+          }
+        },
+        {
+          "client_id": "1024652851809-n6d00cruj413vt2uvesc53vns27j699b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cheristoryboard.viewerapp",
+            "certificate_hash": "fb4a3d476d8dab092e16216b784e8791e72f04d7"
+          }
+        },
+        {
+          "client_id": "1024652851809-vnbh5b6ipuqgc8p5n3ills6pvs8asblc.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCJf7SkM3T6SubAQVY6Apb_4LE_BlGDirM"
+          "current_key": "AIzaSyD8XKLftn7kJwTVzeNsPfYw-SBNKlZZZUQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1049194575299-j28uld610f8dgjeoajgelavmt9n5b0v4.apps.googleusercontent.com",
+              "client_id": "1024652851809-vnbh5b6ipuqgc8p5n3ills6pvs8asblc.apps.googleusercontent.com",
               "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1049194575299:android:a5ef73f29c386a1d46b976",
-        "android_client_info": {
-          "package_name": "com.i"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1049194575299-j28uld610f8dgjeoajgelavmt9n5b0v4.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCJf7SkM3T6SubAQVY6Apb_4LE_BlGDirM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
+            },
             {
-              "client_id": "1049194575299-j28uld610f8dgjeoajgelavmt9n5b0v4.apps.googleusercontent.com",
-              "client_type": 3
+              "client_id": "1024652851809-stpc6oc2t9eho6rtqnsni5o6pfom2hd6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cheristoryboard.viewerapp"
+              }
             }
           ]
         }

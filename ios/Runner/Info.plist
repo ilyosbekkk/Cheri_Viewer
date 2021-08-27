@@ -27,7 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.1049194575299-58n4ic9alf7bd1hvc465f7k9da6hm6kr</string>
+				<string>com.googleusercontent.apps.1024652851809-stpc6oc2t9eho6rtqnsni5o6pfom2hd6</string>
 			</array>
 		</dict>
 		<dict>
@@ -43,17 +43,17 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>kakao818a2baccb86e7432dcdb89f7957110d</string>
+				<string>kakao4effb95abd11159ccd9271c8660e58cc</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>KAKAO_APP_KEY</key>
-	<string>818a2baccb86e7432dcdb89f7957110d</string>
+	<string>4effb95abd11159ccd9271c8660e58cc</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>kakao818a2baccb86e7432dcdb89f7957110d</string>
+		<string>kakao4effb95abd11159ccd9271c8660e58cc</string>
 		<string>kakaokompassauth</string>
 		<string>storykompassauth</string>
 		<string>kakaolink</string>

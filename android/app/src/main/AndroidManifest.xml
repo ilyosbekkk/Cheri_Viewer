@@ -28,7 +28,7 @@
         <meta-data
             android:name="com.naver.sdk.clientName"
             android:value="@string/client_name" />
-
+`
 
         <activity
             android:name=".MainActivity"
@@ -75,7 +75,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="kakao818a2baccb86e7432dcdb89f7957110d" android:host="oauth"/>
+                <data android:scheme="kakao4effb95abd11159ccd9271c8660e58cc" android:host="oauth"/>
             </intent-filter>
         </activity>
     </application>

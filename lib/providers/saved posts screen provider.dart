@@ -14,6 +14,8 @@ class CollectionsProvider extends ChangeNotifier {
   List<Post> searchOpenedPosts = [];
   int statusCode1 = 0;
   int statusCode2 = 0;
+  int initPage1 = 0;
+  int initPage2 = 0;
   List<Post> openedPosts = [];
   bool isScrollControllerRegistered = false;
   bool networkCallDone = false;
@@ -43,8 +45,9 @@ class CollectionsProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> fetchOpenedPostsList(
-      String memberId, int pageSize, int nowPage, String orderBy) async {
+  Future<bool> fetchOpenedPostsList(String memberId, int pageSize, int nowPage, String orderBy) async {
+
+
     try {
       Response response = await WebServices.fetchOpenedCheriList(
           memberId, pageSize, nowPage, orderBy);
@@ -56,26 +59,15 @@ class CollectionsProvider extends ChangeNotifier {
         print(decodedResponse);
         openedPosts.addAll(postsResponse.data);
         statusCode2 = response.statusCode;
-        print("size");
-        print(openedPosts.length);
+
+
         notifyListeners();
         return true;
       } else {
-        print("opened");
-        print(response.body);
         return false;
       }
-    } on TimeoutException catch (e) {
-      statusCode2 = -1;
-      notifyListeners();
-      return false;
-    } on SocketException catch (e) {
+    }  on SocketException catch (e) {
       statusCode2 = -2;
-      notifyListeners();
-      return false;
-    } on Error catch (e) {
-      print(e);
-      statusCode2 = -3;
       notifyListeners();
       return false;
     }
@@ -101,13 +93,14 @@ class CollectionsProvider extends ChangeNotifier {
   }
 
   void cleanCollections() {
+     initPage1 = 0;
+     initPage2 = 0;
     savedPosts.clear();
     openedPosts.clear();
     statusCode1 = 0;
     searchSavedPosts.clear();
     searchOpenedPosts.clear();
     statusCode2 = 0;
-    isScrollControllerRegistered = false;
     networkCallDone = false;
     notifyListeners();
   }

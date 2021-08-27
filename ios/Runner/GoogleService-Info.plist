@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1024652851809-stpc6oc2t9eho6rtqnsni5o6pfom2hd6.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1024652851809-stpc6oc2t9eho6rtqnsni5o6pfom2hd6</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1024652851809-b2trcjbj4dangqafth11arob4br7tsns.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAgJkyExKsJcjFFAm79LoC06DP4uRbPmtk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1024652851809</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.cheristoryboard.viewerapp</string>
+	<key>PROJECT_ID</key>
+	<string>cheri--viewer</string>
+	<key>STORAGE_BUCKET</key>
+	<string>cheri--viewer.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1024652851809:ios:cc0bc27de11ec6a2f34820</string>
+</dict>
+</plist>

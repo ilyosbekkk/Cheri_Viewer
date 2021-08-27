@@ -10,7 +10,7 @@ Map<String, String> openedTab = {english: "Opened Cheri", korean: "열어본 체
 Map<String, String> homeTitle = {english: "Home", korean: "홈"};
 Map<String, String> searchTitle = {english: "Search", korean: "검색"};
 Map<String, String> storageTitle = {english: "Collections", korean: "보관함"};
-Map<String, String> appName = {english: "Cheri Viewer", korean: "체리뷰버"};
+Map<String, String> appName = {english: "Cheri Viewer", korean: "체리뷰"};
 Map<String, String> searchHint = {english: "Please enter cheri name...", korean: "체리 이름을 입력하십시오..."};
 Map<String, List<String>> menu1 = {english: ["Card view", "List view"], korean: ["카드 형식", "리스트 형식"]};
 Map<String, List<String>> menu2 = {english: ["Date(latest)","Date(older)", "Views"], korean: [ "추가된 날짜(최신순)","추가된 날짜(오래된순)",  "조회순"]};
@@ -18,7 +18,7 @@ Map<String, String> toastSignIn =  {english:"Please, Sign in first!", korean: "�
 Map<String, String> bookmarkSave = {english: "Bookmark has been saved", korean: "북마크에 저장되었습니다."};
 Map<String, String> bookMarkUnsave = {english: "Bookmark has been removed", korean: "북마크에서 삭제되었습니다"};
 
-Map<String, String> searchCheri = {english:"Please type the Cheri name", korean:"체리 아름을 입력해주세요"};
+Map<String, String> searchCheri = {english:"Please type the Cheri name", korean:"체리 이름을 입력해주세요"};
 Map<String, List<String>> timeUnit = {english: [
   "moment ago", "minute(s) ago", "hour(s) ago", "day(s) ago", "week(s) ago", "month(s) ago", "year(s) ago"],
   korean: ["방금 전", "분 전", "사간 전", "일 전", "주 전", "개 월 전",  "년 전"]};
@@ -64,7 +64,7 @@ Map<String, String> languageChangeError = {english: "Language has not been chang
 Map<String, String> turnonthenet = {english: "Please,turn on the internet", korean: "인터넷 좀 켜주세요!"};
 Map<String, String> bookMarkScreen = {english:"Bookmark", korean:"북마크"};
 Map<String, String> count = {english:"", korean:"건"};
-Map<String, String> noResult = {english:"No results for the searched word!", korean:"검색됀 체리가 없습니다!"};
+Map<String, String> noResult = {english:"No results for the searched word!", korean:"검색된 체리가 없습니다!"};
 Map<String, String> back = {english:"Go back", korean:"돌아가기"};
 Map<String, String> noRecentSearches = {english:"No recent searches!", korean:"최근 검색어가 없습니다!"};
 Map<String, String> noSavedPosts = {english:"No saved posts found", korean:"저장된 체리가 없습니다!"};
